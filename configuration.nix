@@ -109,41 +109,6 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
- # Enable and configure SSSD for AD
-  services.sssd = {
-    enable = true;
-    config = {
-      # SSSD domains and configuration
-      domains = [ "ad.example.com" ];
-      
-      # SSSD configuration
-      services = "nss, pam";
-
-      # AD domain configuration
-      domains."ad.example.com" = {
-        id_provider = "ad";
-        access_provider = "ad";
-        ad_domain = "utcsheffield.org.uk";
-        krb5_realm = "utcsheffield.org.uk";
-        realmd_tags = "manages-system joined-with-samba";
-
-        # Optional: Uncomment and configure if necessary
-        # ldap_id_mapping = true;
-        # use_fully_qualified_names = false;
-
-        # Optional: Configuration for advanced scenarios
-        # ad_hostname = "hostname.ad.example.com";
-        # ad_server = "dc.ad.example.com";
-        # ad_backup_server = "backupdc.ad.example.com";
-        # ad_gpo_access_control = "enforcing";
-      };
-    };
-  };
-
-  # Configure PAM to use SSSD
-  services.pam.services.sssd = {
-    enable = true;
-  };
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
