@@ -22,17 +22,17 @@
     enable = true;
     config = {
       # SSSD domains and configuration
-      domains = [ "ad.example.com" ];
+      domains = [ "sutc.internal" ];
       
       # SSSD configuration
       services = "nss, pam";
 
       # AD domain configuration
-      domains."ad.example.com" = {
+      domains."sutc.internal" = {
         id_provider = "ad";
         access_provider = "ad";
-        ad_domain = "ad.example.com";
-        krb5_realm = "AD.EXAMPLE.COM";
+        ad_domain = "sutc.internal";
+        krb5_realm = "SUTC.INTERNAL";
         realmd_tags = "manages-system joined-with-samba";
 
         # Optional: Uncomment and configure if necessary
@@ -64,9 +64,9 @@
   networking.kerberos = {
     enable = true;
     realms = {
-      "AD.EXAMPLE.COM" = {
-        kdc = "dc.ad.example.com";
-        admin_server = "dc.ad.example.com";
+      "SUTC.INTERNAL" = {
+        kdc = "sutc.internal";
+        admin_server = "sutc.internal";
       };
     };
   };
