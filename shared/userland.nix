@@ -1,5 +1,8 @@
 { config, lib, pkgs, ... }:
 {
+  imports = [
+   ../programs/firefox.nix
+  ];
   services.xserver = {
     enable = true;
     displayManager.sddm.enable = true;

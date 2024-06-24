@@ -2,7 +2,7 @@
 let
   lock-false = {
     Value = false;
-    Status = "unlocked";
+    Status = "locked";
   };
   lock-true = {
     Value = true;
@@ -14,22 +14,29 @@ in
       enable = true;
       languagePacks = [ "en-GB" ];
       /* Policies */
-      DisableTelemetry = lock-true;
-      DisableFirefoxStudies = lock-true;
-      EnableTrackingProtection = {
-	Value = lock-true;
-	Locked = lock-true;
-	Cryptomining = lock-true;
-	Fingerprinting = lock-true;
-      };
-      DisablePocket = lock-true;
-      DisableFirefoxAccounts = lock-true;
-      DisableAccounts = lock-true;
-      DisableFirefoxScreenshots = lock-true;
-      DontCheckDefaultBrowser = lock-true;
-      DisplayBookmarksToolbar = "always"; # Otherwise: "newtab"
-      DisplayMenuBar = "default-off"; # Otherwise: "always", "never", "default-on"
-      SearchBar = "unified"; # Otherwise "seperate"
-      ExtensionSettings = {
-      };
-  }
+      policies = {
+	DisableTelemetry = true;
+	DisableFirefoxStudies = true;
+	EnableTrackingProtection = {
+	  Value = true;
+	  Locked = true;
+	  Cryptomining = true;
+	  Fingerprinting = true;
+        };
+	DisablePocket = true;
+	DisableFirefoxAccounts = true;
+	DisableAccounts = true;
+	DisableFirefoxScreenshots = true;
+	DontCheckDefaultBrowser = true;
+	DisplayBookmarksToolbar = "always"; # Otherwise: "newtab"
+	DisplayMenuBar = "default-off"; # Otherwise: "always", "never", "default-on"
+	SearchBar = "unified"; # Otherwise "seperate"
+	ExtensionSettings = {
+	  "*".installation_mode = "blocked";
+	};
+     };
+     preferences = {
+	"extensions.pocket.enabled" = false;
+    };
+  };
+}
