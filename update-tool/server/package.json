@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Update Tool Server",
   "main": "dist/index.js",
+  "type": "module",
   "author": "Sean Outram <outramsean0@gmail.com>",
   "license": "MIT",
   "private": true,
@@ -11,8 +12,8 @@
     "yarn": "4.3.1"
   },
   "devDependencies": {
-    "@sapphire/ts-config": "^5.0.1",
-    "typescript": "^5.5.4"
+    "@sapphire/ts-config": "5.0.1",
+    "typescript": "5.5.2"
   },
   "packageManager": "yarn@4.3.1",
   "dependencies": {

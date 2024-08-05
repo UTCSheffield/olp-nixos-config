@@ -1,24 +1,17 @@
-import WebSocket from "ws";
-import { logger } from "./lib/logger";
-import { container } from "@sapphire/pieces";
-import { MessageStore } from "./lib/structures/messageStore";
+import { WebSocketServer, WebSocket } from "ws";
+import { logger } from "./lib/logger.js";
+import { fetchResponses } from "./lib/responseLoader.js";
+import { createColors } from "colorette";
 
+createColors(); // This is used to color the console output. Makes it easier to read.
 
-// A bunch of container sets, TODO: Move this to lib/setup.ts
-container.logger = logger;
-
-/*
-  We dynamically load our protocool responders from the messages store (the messages folder in this directory)
-  This allows us to segregate our code into smaller, more manageable chunks without 1 long switch, making it more readable.
-*/
-container.stores.register(new MessageStore());
-console.log(container.stores.get('messages').paths);
-logger.info(`Loaded ${container.stores.get('messages').size} message responders from store.`);
+const avaliableResponses = await fetchResponses();
+logger.info(`Loaded ${avaliableResponses.size} responses`);
 /*
     This is where we start the WebSocket server.
     - The websocket is used for communication with clients
 */
-const server = new WebSocket.Server({
+const server = new WebSocketServer({
   port: 8080
 });
 
@@ -37,15 +30,22 @@ server.on('connection', function(socket) {
 
   
   // When we receive a message from a client, Throw it into a big switch statement (Easier to maintain system coming soon)
-  socket.on('message', function(msg) {
-    logger.info(`Received message from client`);
+  socket.on('message', async function(msg) {
     const parsedMsg: IWebsocketEventStructure = JSON.parse(msg.toString());
-    const messageResponder = container.stores.get('messages').get(parsedMsg.type);
-    if (!messageResponder) {
+    logger.info(`[${parsedMsg.id}] Received message from client`);
+    const selectedResponse = avaliableResponses.get(parsedMsg.type);
+    if (!selectedResponse) {
       logger.error(`No message responder found for type ${parsedMsg.type}`);
       return;
+    } else {
+      logger.info(`[${parsedMsg.id}] Selected response for type ${parsedMsg.type}`);
+      // We call the selected response function and send the result back to the requesting client
+      const response = await selectedResponse();
+      socket.send(JSON.stringify({
+        id: parsedMsg.id,
+        value: response
+      }));
     }
-    messageResponder.run(parsedMsg.value, parsedMsg.id);
   });
   // When a socket closes, or disconnects, remove it from the array.
   socket.on('close', function() {
@@ -58,15 +58,4 @@ interface IWebsocketEventStructure {
     type: string;
     id: number;
     value: any;
-}
-
-declare module '@sapphire/pieces' {
-
-  interface Container {
-    logger: typeof logger;
-  }
-
-  interface StoreRegistryEntries {
-		messages: MessageStore;
-	}
 }
