@@ -15,4 +15,7 @@ export async function fetchResponses() {
 
 
 /* Response functions */
-type ResponseFunction = () => Promise<string>;
+type ResponseFunction = (value: string, id: number) => Promise<{
+    type: string;
+    value: any;
+}>;

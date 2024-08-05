@@ -1,5 +1,6 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { logger } from "./lib/logger.js";
+import "./lib/container.js";
 import { fetchResponses } from "./lib/responseLoader.js";
 import { createColors } from "colorette";
 
@@ -7,6 +8,7 @@ createColors(); // This is used to color the console output. Makes it easier to 
 
 const avaliableResponses = await fetchResponses();
 logger.info(`Loaded ${avaliableResponses.size} responses`);
+console.log(avaliableResponses);
 /*
     This is where we start the WebSocket server.
     - The websocket is used for communication with clients
@@ -22,13 +24,25 @@ server.on('listening', () => {
 let sockets: WebSocket[] = [];
 server.on('connection', function(socket) {
   sockets.push(socket);
+  const id = sockets.length;
   logger.info(`New connection. Total connections: ${sockets.length}`);
   socket.send(JSON.stringify({
     type: 'configVersion',
-    id: sockets.length
+    id: id
   })); // We want to know the config version of the client so we can determine if an Upgrade is needed
-
   
+  // Start a cron to issue a ping every 5 seconds to ensure the connection is still alive
+  setInterval(() => {
+    logger.debug(`Issuing ping to client ${id}`);
+    try {
+      socket.ping();
+    } catch (e) {
+      logger.error(`Failed to issue ping to client ${id}`);
+      socket.terminate();
+      sockets = sockets.filter(s => s !== socket);
+    }
+  }, 5000);
+
   // When we receive a message from a client, Throw it into a big switch statement (Easier to maintain system coming soon)
   socket.on('message', async function(msg) {
     const parsedMsg: IWebsocketEventStructure = JSON.parse(msg.toString());
@@ -38,12 +52,13 @@ server.on('connection', function(socket) {
       logger.error(`No message responder found for type ${parsedMsg.type}`);
       return;
     } else {
-      logger.info(`[${parsedMsg.id}] Selected response for type ${parsedMsg.type}`);
+      logger.debug(`[${parsedMsg.id}] Selected response for type ${parsedMsg.type}`);
       // We call the selected response function and send the result back to the requesting client
-      const response = await selectedResponse();
+      const response = await selectedResponse(parsedMsg.value, parsedMsg.id);
       socket.send(JSON.stringify({
         id: parsedMsg.id,
-        value: response
+        type: response.type,
+        value: response.value
       }));
     }
   });
