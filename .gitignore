@@ -4,3 +4,6 @@ node_modules
 dist
 .yarn/install-state.gz
 .yarn/build-state.yml
+
+# Rust
+target

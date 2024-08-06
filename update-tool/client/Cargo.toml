@@ -1,0 +1,9 @@
+[package]
+name = "client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "4.5.13"
+json = "0.12.4"
+tungstenite = "0.23.0"
