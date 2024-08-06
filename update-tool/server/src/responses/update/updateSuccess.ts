@@ -1,4 +1,4 @@
-import { logger } from "../lib/logger.js";
+import { logger } from "../../lib/logger.js";
 
 export default function updateSuccess(_val: string, id: number) {
     // Log that the update was successful, We want to display this somewhere eventually

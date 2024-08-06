@@ -1,5 +1,5 @@
-import { container } from "../lib/container.js";
-import { logger } from "../lib/logger.js";
+import { container } from "../../lib/container.js";
+import { logger } from "../../lib/logger.js";
 
 export default async function currentVersion(val: string, id: number) {
     if (container.latestGitCommitHash !== val) {

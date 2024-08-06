@@ -8,7 +8,6 @@ createColors(); // This is used to color the console output. Makes it easier to 
 
 const avaliableResponses = await fetchResponses();
 logger.info(`Loaded ${avaliableResponses.size} responses`);
-console.log(avaliableResponses);
 /*
     This is where we start the WebSocket server.
     - The websocket is used for communication with clients
