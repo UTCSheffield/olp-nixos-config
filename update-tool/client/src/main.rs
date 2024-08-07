@@ -1,5 +1,6 @@
 mod cli_commands;
 pub mod utils;
+pub mod responses;
 
 use clap::{Parser, Subcommand, command};
 
