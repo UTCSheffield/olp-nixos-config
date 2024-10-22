@@ -19,6 +19,7 @@
     emacs
     android-studio
     supercollider
+    python310
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
