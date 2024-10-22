@@ -31,6 +31,8 @@ read -p "Target Config (ex: dell-3040-client)" config
   nix-env -iA nixos.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
   nixos-install --flake /mnt/etc/nixos#$config
+  echo "Please enter new password for user"
+  nixos-enter -c "passwd makerlab"
   touch /mnt/root/setup.toml
   echo config=$config >> /mnt/root/setup.toml
   
