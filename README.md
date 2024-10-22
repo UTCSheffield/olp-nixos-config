@@ -1,9 +1,9 @@
 # School Nixos Config
 
 ```bash
-curl -s -L https://tinyurl.com/olpnixos
+curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
 #or
-curl -s https://raw.githubusercontent.com/UTCSheffield/olp-nixos-config/refs/heads/master/setup.sh
+curl -s https://raw.githubusercontent.com/UTCSheffield/olp-nixos-config/refs/heads/master/setup.sh | sudo bash -
 
 
 ```
