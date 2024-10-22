@@ -6,16 +6,13 @@ Boot a minimal NixOS https://nixos.org/download/#nixos-iso
 
 ```bash
 curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
-#or
-curl -s https://raw.githubusercontent.com/UTCSheffield/olp-nixos-config/refs/heads/master/setup.sh | sudo bash -
-
-
+sudo ./setup.sh
 ```
 
 
 
 ## Need to implement:
-- ### Flakes
+- ### Flakes : Done
 - ### Config Sync/Auto upgrade
 - ### SMB Shares
 - ### Active Directory Login
