@@ -12,7 +12,7 @@
         specialArgs = attrs;
         modules = [
           ./hardware/dell-3040.nix
-          ./machines/client.nix
+          ./machines/makerlab-client.nix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
