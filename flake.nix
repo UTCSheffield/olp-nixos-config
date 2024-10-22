@@ -7,7 +7,7 @@
   };
   outputs = { self, nixpkgs, home-manager, ... }@attrs: {
     nixosConfigurations = {
-      dell-3040-client = nixpkgs.lib.nixosSystem {
+      3040-makerlab = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = attrs;
         modules = [
