@@ -1,5 +1,14 @@
 # School Nixos Config
 
+```bash
+curl -s -L https://tinyurl.com/olpnixos
+#or
+curl -s https://raw.githubusercontent.com/UTCSheffield/olp-nixos-config/refs/heads/master/setup.sh
+
+
+```
+
+
 
 ## Need to implement:
 - ### Flakes
