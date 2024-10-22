@@ -3,7 +3,6 @@ if [ $(whoami) != 'root' ]; then
   echo "You are not ROOT";
   exit
 fi
-read -p "blah" c
 read -p "Target Config (ex: dell-3040-client)" config
   echo "Partitioning"
   parted /dev/sda -- mklabel gpt
