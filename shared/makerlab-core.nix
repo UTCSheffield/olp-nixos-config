@@ -18,7 +18,6 @@
     vscode
     emacs
     android-studio
-    "android-studio-tools"
     supercollider
   ];
   nixpkgs.config.allowUnfree = true;
