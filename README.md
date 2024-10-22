@@ -9,6 +9,17 @@ curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
 sudo ./setup.sh
 ```
 
+or build iso in this repo
+
+```bash
+nixos-build .#iso.config.system.build.isoImage
+```
+
+then boot the outputted iso and run 
+
+```bash
+sudo /etc/setup.sh
+```
 
 
 ## Need to implement:
