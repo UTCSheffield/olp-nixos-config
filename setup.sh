@@ -1,5 +1,5 @@
 echo "OLP NixOS Setup"
-if [ $(whoami} != 'root' ]; then
+if [ $(whoami) != 'root' ]; then
   echo "You are not ROOT";
   exit
 fi
