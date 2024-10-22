@@ -1,5 +1,9 @@
 # School Nixos Config
 
+## How to
+
+Boot a minimal NixOS https://nixos.org/download/#nixos-iso
+
 ```bash
 curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
 #or
