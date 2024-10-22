@@ -30,7 +30,7 @@ if [ $config ]; then
   echo "Setup Nixos"
   mkdir -p /mnt/etc
   mkdir -p /mnt/etc/nixos
-  nix-env -iA git
+  nix-env -iA nixpkgs.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
   
   nixos-install --flake .#$config
