@@ -3,7 +3,7 @@ if [ $(whoami) != 'root' ]; then
   echo "You are not ROOT";
   exit
 fi
-read -p "Target Config (ex: 3040-makerlab) " config
+read -p "Target Config (ex: makerlab-3040) " config
   echo "Partitioning"
   parted /dev/sda -- mklabel gpt
   parted /dev/sda -- mkpart root ext4 512MB -8GB
