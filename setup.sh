@@ -5,7 +5,6 @@ if [ $(whoami) != 'root' ]; then
 fi
 
 read -p "Target Config (ex: dell-3040-client)" config
-if [ $config ]; then
   echo "Partitioning"
   parted /dev/sda -- mklabel gpt
   parted /dev/sda -- mkpart root ext4 512MB -8GB
@@ -43,5 +42,3 @@ if [ $config ]; then
   
   echo "Done now rebooting with reboot"
 
-  exit
-fi
