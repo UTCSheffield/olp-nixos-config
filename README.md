@@ -12,7 +12,7 @@ sudo ./setup.sh
 or build iso in this repo
 
 ```bash
-nixos-build .#iso.config.system.build.isoImage
+nix build .#nixosConfigurations.iso.config.system.build.isoImage --experimental-features "nix-command flakes"
 ```
 
 then boot the outputted iso and run 
