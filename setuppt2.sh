@@ -30,13 +30,11 @@ read -p "Target Config (ex: dell-3040-client)" config
   mkdir -p /mnt/etc/nixos
   nix-env -iA nixos.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
-  
-  nixos-install --flake .#$config
+  nixos-install --flake /mnt/etc/nixos#$config
   touch /mnt/root/setup.toml
   echo config=$config >> /mnt/root/setup.toml
   
   echo "Finishing touches"
-  nixos-enter --root /mnt -c passwd
   echo hostname=$1 >> /mnt/root/setup.toml
   
   echo "Done now rebooting with reboot"
