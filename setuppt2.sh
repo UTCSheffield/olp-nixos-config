@@ -31,6 +31,8 @@ read -p "Target Config (ex: makerlab-3040) " config
   echo "Please enter new password for makerlab user"
   nixos-enter -c "passwd makerlab"
 
+  nixos-enter -c "nix-store --gc"
+
   touch /mnt/root/setup.toml
   echo config=$config >> /mnt/root/setup.toml
   
