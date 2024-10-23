@@ -2,7 +2,6 @@
 {
   imports = [
     ../programs/firefox.nix
-    ../programs/vscode-with-vex.nix
   ];
   services.xserver = {
     enable = true;
