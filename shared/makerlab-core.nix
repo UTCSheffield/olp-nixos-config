@@ -15,7 +15,6 @@
     wget
     git
     gh
-    vscode
     emacs
     android-studio
     supercollider
