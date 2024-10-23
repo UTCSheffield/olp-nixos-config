@@ -5,7 +5,9 @@
 Boot a minimal NixOS https://nixos.org/download/#nixos-iso
 
 ```bash
-curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
+curl -s -L https://tinyurl.com/olpnixos -o dl-setup.sh
+chmod +x dl-setup.sh
+./dl-setup.sh
 ```
 
 or build iso in this repo
@@ -17,7 +19,7 @@ nix build .#nixosConfigurations.iso.config.system.build.isoImage --experimental-
 then boot the outputted iso and run 
 
 ```bash
-sudo /etc/setup.sh
+/etc/setup.sh
 ```
 
 
