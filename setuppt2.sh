@@ -26,12 +26,7 @@ read -p "Target Config (ex: makerlab-3040) " config
   nix-env -iA nixos.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
 
-  nixos-install --flake /mnt/etc/nixos#$config --no-root-password
-
-  echo "Please enter new password for makerlab user"
-  nixos-enter -c "passwd makerlab"
-
-  nixos-enter -c "nix-store --gc"
+  nixos-install --flake /mnt/etc/nixos#$config
 
   touch /mnt/root/setup.toml
   echo config=$config >> /mnt/root/setup.toml
