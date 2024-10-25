@@ -21,20 +21,17 @@ jobs:
         name: utcsheffield
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-    - name: Build nixos-rebuild
-      run: nix build nixpkgs#nixos-rebuild
-
     - name: Build makerlab-3040
-      run: ./result/bin/nixos-rebuild build --flake .#makerlab-3040
+      run: nix build nixpkgs#nixos-rebuild && ./result/bin/nixos-rebuild build --flake .#makerlab-3040
 
     #- name: Build [config name]
-    #  run: ./result/bin/nixos-rebuild build --flake .#[config name]
+    #  run: nix build nixpkgs#nixos-rebuild && ./result/bin/nixos-rebuild build --flake .#[config name]
 
     #- name: Build [config name]
-    #  run: ./result/bin/nixos-rebuild build --flake .#[config name]
+    #  run: nix build nixpkgs#nixos-rebuild && ./result/bin/nixos-rebuild build --flake .#[config name]
 
     - name: Build iso
-      run: ./result/bin/nixos-rebuild build --flake .#makerlab-3040
+      run: nix build nixpkgs#nixos-rebuild && ./result/bin/nixos-rebuild build --flake .#iso
 
     - name: Check Flake
       run: nix flake check
