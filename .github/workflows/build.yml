@@ -1,9 +1,6 @@
 name: Nix Flake Build
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
