@@ -20,5 +20,18 @@
   };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+
+  systemd.services.utc-update-client = {
+    enable = true;
+    serviceConfig = {
+      ExecStart = "utc-update-client";
+      User = "root";
+      Restart = "on-failure";
+      RestartSec = 10;
+      StartLimitIntervalSec = 30;
+      StartLimitBurst = 3;
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 }
 
