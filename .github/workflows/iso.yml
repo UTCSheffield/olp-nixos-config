@@ -32,22 +32,18 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.14.0
         with:
-          name: ${{ steps.hash.outputs.short }}
+          name: Commit ${{ steps.hash.outputs.short }}
           tag: ${{ steps.hash.outputs.short }}
-          draft: true
 
       - name: Zip Result Folder
-        run: zip -r iso-build.zip ./result
-
-      - name: Upload ZIP as Artifact
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          path: iso-build.zip
+        run: zip iso-build.zip ./result/iso/*
 
       - name: Upload ZIP to Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: iso-build.zip
-          asset_name: build-iso-${{ steps.hash.outputs.short }}.zip
+          asset_name: iso-${{ steps.hash.outputs.short }}.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
