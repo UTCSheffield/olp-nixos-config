@@ -19,7 +19,10 @@ jobs:
         uses: cachix/cachix-action@v15
         with:
           name: utcsheffield
-          authToken: ${{ secrets.CACHIX_SECRET }}
+        env:
+          CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_SECRET }}
+
+      - run: cachix use utcsheffield
 
       - name: Build ISO
         run: nix build .#nixosConfigurations.iso.config.system.build.isoImage --experimental-features "nix-command flakes"
