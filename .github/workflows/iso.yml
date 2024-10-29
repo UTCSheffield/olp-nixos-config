@@ -34,11 +34,21 @@ jobs:
         with:
           name: ${{ steps.hash.outputs.short }}
           tag: ${{ steps.hash.outputs.short }}
+          draft: true
+
+      - name: Find ISO File
+        id: find_iso
+        run: echo "ISO_PATH=$(find ./result -name '*.iso')" >> $GITHUB_ENV
+
+      - name: Upload ISO as Artifact
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          path: ./result/*.iso
 
       - name: Upload ISO to Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./result/*
-          asset_name: build-iso-${{ steps.hash.outputs.short }}.iso
+          asset_path: ${{ env.ISO_PATH }}
+          asset_name: utc-olp-nixos.iso
           asset_content_type: application/octet-stream
