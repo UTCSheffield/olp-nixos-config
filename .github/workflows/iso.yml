@@ -39,6 +39,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./result/*.iso
+          asset_path: ./result/*
           asset_name: build-iso-${{ steps.hash.outputs.short }}.iso
           asset_content_type: application/octet-stream
