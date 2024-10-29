@@ -2,7 +2,7 @@ name: "Build ISO"
 on:
   push:
     branches: ['master']
-    paths: ['machines/iso.nix', 'setup.sh']
+    paths: ['machines/iso.nix', 'setup.sh', '.github/workflows/iso.yml']
   workflow_dispatch:
 
 jobs:
@@ -49,6 +49,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ find_iso.ISO_PATH }}
+          asset_path: ${{ steps.outputs.find_iso.ISO_PATH }}
           asset_name: utc-olp-nixos.iso
           asset_content_type: application/octet-stream
