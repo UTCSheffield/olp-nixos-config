@@ -39,6 +39,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Commit ${{ steps.hash.outputs.short }}
-          tag_name: ${{ steps.hash.outputs.long }}
+          tag_name: ${{ steps.hash.outputs.short }}
           make_latest: true
           files: iso.zip
