@@ -29,9 +29,6 @@ read -p "Target Config (ex: makerlab-3040) " config
   nixos-install --flake /mnt/etc/nixos#$config
 
   touch /mnt/root/setup.toml
-  echo config=$config >> /mnt/root/setup.toml
-  
-  echo "Finishing touches"
-  echo hostname=$1 >> /mnt/root/setup.toml
+  echo config="$config" >> /mnt/root/setup.toml
   
   echo "Done, reboot."
