@@ -37,7 +37,7 @@ jobs:
         with:
           name: Commit ${{ steps.hash.outputs.short }}
           tag: ${{ steps.hash.outputs.short }}
-          latest: true
+          makeLatest: true
 
       - name: Zip Result Folder
         run: zip -j iso-build.zip ./result/iso/*
