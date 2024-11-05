@@ -1,0 +1,44 @@
+name: Nix Flake Build
+
+on:
+  push:
+    branches:
+      - '**'
+      -  '!master'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Specify self-hosted and NixOS labels
+    steps:
+    - uses: actions/checkout@v4
+      
+    - uses: cachix/install-nix-action@v27
+      with:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - uses: cachix/cachix-action@v15
+      with:
+        name: utcsheffield
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+    - name: Build nixos-rebuild
+      run: nix build nixpkgs#nixos-rebuild -o ./build
+
+    - name: Build makerlab-3040
+      run: ./build/bin/nixos-rebuild build --flake .#makerlab-3040
+
+    #- name: Build [config name]
+    #  run: ./build/bin/nixos-rebuild build --flake .#[config name]
+
+    #- name: Build [config name]
+    #  run: ./build/bin/nixos-rebuild build --flake .#[config name]
+
+    - name: Build iso
+      run: ./build/bin/nixos-rebuild build --flake .#iso
+
+    - name: Check Flake
+      run: nix flake check
