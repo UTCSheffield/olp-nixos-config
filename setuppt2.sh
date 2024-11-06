@@ -5,10 +5,8 @@ if [ $(whoami) != 'root' ]; then
 fi
 read -p "Target Config (ex: makerlab-3040) " config
   echo "Partitioning"
-  drive="sda"
-  if lsblk -o NAME,MOUNTPOINT | grep -E '^sda' | grep -v '^\s*$' > /dev/null; then
-    drive="sdb"
-  fi
+  lsblk
+  read -p "Which Drive? (ex: sda) " drive
   parted /dev/$drive -- mklabel gpt
   parted /dev/$drive -- mkpart root ext4 512MB -8GB
   parted /dev/$drive -- mkpart swap linux-swap -8GB 100%
