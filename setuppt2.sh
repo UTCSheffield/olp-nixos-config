@@ -5,20 +5,29 @@ if [ $(whoami) != 'root' ]; then
 fi
 read -p "Target Config (ex: makerlab-3040) " config
   echo "Partitioning"
-  parted /dev/sda -- mklabel gpt
-  parted /dev/sda -- mkpart root ext4 512MB -8GB
-  parted /dev/sda -- mkpart swap linux-swap -8GB 100%
-  parted /dev/sda -- mkpart ESP fat32 1MB 512MB
-  parted /dev/sda -- set 3 esp on
+  drive="sda"
+  if lsblk -o NAME,MOUNTPOINT | grep sda > /dev/null; then
+    drive="sdb"
+  fi
+  parted /dev/$drive -- mklabel gpt
+  parted /dev/$drive -- mkpart root ext4 512MB -8GB
+  parted /dev/$drive -- mkpart swap linux-swap -8GB 100%
+  parted /dev/$drive -- mkpart ESP fat32 1MB 512MB
+  parted /dev/$drive -- set 3 esp on
   echo "Formatting"
-  mkfs.ext4 -L nixos /dev/sda1
-  mkswap -L swap /dev/sda2
-  mkfs.fat -F 32 -n boot /dev/sda3
+
+  drive1="$drive"1
+  drive2="$drive"2
+  drive3="$drive"3
+
+  mkfs.ext4 -L nixos /dev/$drive1
+  mkswap -L swap /dev/$drive2
+  mkfs.fat -F 32 -n boot /dev/$drive3
   echo "Mounting"
   mount /dev/disk/by-label/nixos /mnt
   mkdir -p /mnt/boot
   mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
-  swapon /dev/sda2
+  swapon /dev/$drive2
   echo "Setup Nixos"
   mkdir -p /mnt/etc
   mkdir -p /mnt/etc/nixos
