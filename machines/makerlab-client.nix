@@ -16,7 +16,7 @@
      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
      ];
-     hashedPassword = "$y$j9T$.IYpfqUfad1f75Cis.NmG1$nBq/MwwZXcQhIB.nVrJtLuGGDcvmvI8GrJ5XmqLaxjA";
+     hashedPassword = "$y$j9T$tZxf41zJFng6RPVjkF1XJ1$yusYNqRcnRozLOrUMvdOCF9CFMFdilJVmw0/BTHmC.0";
   };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
