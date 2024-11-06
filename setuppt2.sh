@@ -6,7 +6,7 @@ fi
 read -p "Target Config (ex: makerlab-3040) " config
   echo "Partitioning"
   drive="sda"
-  if lsblk -o NAME,MOUNTPOINT | grep -E '^sda' | grep -v '^\s*$' > /dev/null then
+  if lsblk -o NAME,MOUNTPOINT | grep -E '^sda' | grep -v '^\s*$' > /dev/null; then
     drive="sdb"
   fi
   parted /dev/$drive -- mklabel gpt
