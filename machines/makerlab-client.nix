@@ -20,5 +20,6 @@
   };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  networking.networkmanager.enabled = true;
 }
 
