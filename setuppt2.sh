@@ -30,7 +30,6 @@ read -p "Target Config (ex: makerlab-3040) " config
   mkdir -p /mnt/etc
   mkdir -p /mnt/etc/nixos
 
-  nix-env -iA nixos.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
 
   nixos-install --flake /mnt/etc/nixos#$config
