@@ -10,7 +10,7 @@
     keyMap = lib.mkForce "uk";
     useXkbConfig = true;
   };
-  pkgs.callPackage "../update-tool/client.nix" {
+  pkgs.callPackage ./../update-tool/client.nix {
     inherit (pkgs) lib;
   }
   environment.systemPackages = with pkgs; [
