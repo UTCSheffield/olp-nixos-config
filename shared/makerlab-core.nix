@@ -19,6 +19,9 @@
     android-studio
     supercollider
     python310
+    callPackage ../update-tool/client.nix {
+      inherit (pkgs) lib;
+    }
     (vscode-with-extensions.override {
       vscodeExtensions = with vscode-extensions; [] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
