@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [
+    ../update-tool/client.nix
+  ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   time.timeZone = "Europe/London";
@@ -19,7 +22,6 @@
     android-studio
     supercollider
     python310
-    (callPackage ../update-tool/client.nix {})
     (vscode-with-extensions.override {
       vscodeExtensions = with vscode-extensions; [] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
