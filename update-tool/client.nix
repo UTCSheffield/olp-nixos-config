@@ -6,7 +6,6 @@ let client = pkgs.rustPlatform.buildRustPackage rec {
 
   src = ./client;  # Use current directory as source
   cargoHash = "sha256-g6M3SZXk5ReUNi1MHfLHE3CtDy9P41ZofTmhAekI0LQ=";
-  subPackages = ["client"];
 };
 in
 {
