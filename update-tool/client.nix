@@ -1,6 +1,6 @@
 { config, pkgs }:
 
-let client = rustPlatform.buildRustPackage rec {
+let client = pkgs.rustPlatform.buildRustPackage rec {
   pname = "update-tool-client";
   version = "1.0.0";
 
