@@ -1,4 +1,4 @@
-{ lib, rustPlatform }:
+{ rustPlatform, lib }:
 
 rustPlatform.buildRustPackage rec {
   pname = "update-tool-client";
@@ -6,7 +6,7 @@ rustPlatform.buildRustPackage rec {
 
   src = ./client;  # Use current directory as source
 
-  cargoHash = "sha256-jtBw4ahSl88L0iuCXxQgZVm1EcboWRJMNtjxLVTtzts=";
+  cargoHash = "sha256-g6M3SZXk5ReUNi1MHfLHE3CtDy9P41ZofTmhAekI0LQ=";
 
   meta = {
     description = "Update Client";
