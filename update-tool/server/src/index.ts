@@ -3,6 +3,8 @@ import { logger } from "./lib/logger.js";
 import "./lib/container.js";
 import { fetchResponses } from "./lib/responseLoader.js";
 import { createColors } from "colorette";
+import http, { RequestListener } from "http";
+import { Webhooks } from "@octokit/webhooks";
 
 createColors(); // This is used to color the console output. Makes it easier to read.
 
@@ -73,3 +75,40 @@ interface IWebsocketEventStructure {
     id: number;
     value: any;
 }
+
+// Simple HTTP server for github push webhooks
+const requestListener: RequestListener = async function async (req, _res) {
+  if (req.headers["content-type"] == "application/json" && req.method == "POST") {
+    let body = "";
+    let continueProcess = false;
+
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on("end", () => {
+      continueProcess = true; 
+    })
+    while (continueProcess == false) {}
+    // If the request type is JSON, then check the secret
+    const webhooks = new Webhooks({
+      secret: String(process.env.WEBHOOK_SECRET),
+    });
+    const signature = String(req.headers["x-hub-signature-256"]);
+    if (!(await webhooks.verify(body, signature))) {
+      return;
+    }
+    sockets.forEach((socket) => {
+      socket.send(JSON.stringify(
+        {
+          type: 'updateAvaliable',
+          value: "force"
+        }
+      ))
+    })
+  }
+};
+
+const httpServer = http.createServer(requestListener);
+httpServer.listen(3000, "0.0.0.0", () => {
+    logger.info(`WebServer is running on http://0.0.0.0:3000`);
+});
