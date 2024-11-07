@@ -6,7 +6,7 @@ with lib;
 
     environment.systemPackages = [
         git
-    ]
+    ];
 
     services.getty.autologinUser = lib.mkForce "root";
 }
