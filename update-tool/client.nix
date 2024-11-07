@@ -14,12 +14,14 @@ in
     systemd.services.updateClient = {
       description = "Update tool Client";
       serviceConfig = {
-      ExecStart = "${client}/bin/client";
-      User = "root";
-      Restart = "on-failure";
-      RestartSec = 10;
-      StartLimitIntervalSec = 30;
-      StartLimitBurst = 3;
+        ExecStart = "${client}/bin/client";
+        User = "root";
+        Restart = "on-failure";
+        RestartSec = 10;
+        StartLimitIntervalSec = 30;
+        StartLimitBurst = 3;
+      };
+      wantedBy = [ "multi-user.target" ];
     };
-    wantedBy = [ "multi-user.target" ];
-  }
+  };
+}
