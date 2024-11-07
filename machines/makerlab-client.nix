@@ -6,18 +6,20 @@
 
 {
   imports = [
-    ../shared/core.nix
-    ../shared/userland.nix
+    ../shared/makerlab-core.nix
+    ../shared/makerlab-userland.nix
   ];
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.sean = {
+  users.users.makerlab = {
+     description = "MakerLab";
      isNormalUser = true;
      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
      ];
-     hashedPassword = null;
+     hashedPassword = "$y$j9T$tZxf41zJFng6RPVjkF1XJ1$yusYNqRcnRozLOrUMvdOCF9CFMFdilJVmw0/BTHmC.0";
   };
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  networking.networkmanager.enable = true;
 }
 

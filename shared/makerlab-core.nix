@@ -15,8 +15,20 @@
     wget
     git
     gh
-    vscode
     emacs
+    android-studio
+    supercollider
+    python310
+    (vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions; [] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "vexcode";
+          publisher = "VEXRobotics";
+          version = "0.6.0";
+          sha256 = "sha256-7O3vRuWhPpS6yfyLBlRfmvttJ1qeAP1gPLef3B+jspI=";
+        }
+      ];
+    })
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";

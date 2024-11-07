@@ -1,8 +1,30 @@
 # School Nixos Config
 
+## How to
+
+Boot a minimal NixOS https://nixos.org/download/#nixos-iso
+
+```bash
+curl -s -L https://tinyurl.com/olpnixos -o dl-setup.sh
+chmod +x dl-setup.sh
+./dl-setup.sh
+```
+
+or build iso in this repo
+
+```bash
+nix build .#nixosConfigurations.iso.config.system.build.isoImage --experimental-features "nix-command flakes"
+```
+
+then boot the outputted iso and run 
+
+```bash
+/etc/setup.sh
+```
+
 
 ## Need to implement:
-- ### Flakes
+- ### Flakes : Done
 - ### Config Sync/Auto upgrade
 - ### SMB Shares
 - ### Active Directory Login
