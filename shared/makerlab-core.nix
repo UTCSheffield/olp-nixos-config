@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [
+    ../update-tool/client.nix
+  ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   time.timeZone = "Europe/London";
@@ -10,9 +13,6 @@
     keyMap = lib.mkForce "uk";
     useXkbConfig = true;
   };
-  pkgs.callPackage ./../update-tool/client.nix {
-    inherit (pkgs) lib;
-  }
   environment.systemPackages = with pkgs; [
     vim
     wget
