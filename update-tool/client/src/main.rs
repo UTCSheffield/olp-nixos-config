@@ -23,7 +23,8 @@ struct Cli {
 enum Commands {
     Install {
         package: Option<String>
-    }
+    },
+    Upgrade {}
 }
 
 fn main() {
@@ -31,6 +32,7 @@ fn main() {
     // Rust version of a switch statement
     match &cli.command {
         Some(Commands::Install { package }) => cli_commands::install::run(package.as_ref().unwrap()),
+        Some(Commands::Upgrade {} => cli_commands::upgrade::run()),
         None => cli_commands::run(&cli.wss_path, &cli.repo_path),
     };
 }

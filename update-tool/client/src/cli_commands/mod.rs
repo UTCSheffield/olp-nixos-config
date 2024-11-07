@@ -1,5 +1,5 @@
 pub mod install;
-
+pub mod upgrade;
 
 use crate::utils;
 
