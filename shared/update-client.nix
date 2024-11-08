@@ -15,6 +15,10 @@ in
         RestartSec = 10;
         StartLimitIntervalSec = 30;
         StartLimitBurst = 3;
+        StandardOutput = "journal";
+	StandardError = "journal";
+	ProtectSystem = "false";
+	ReadWritePaths = [ "/etc/nixos" ];
       };
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];

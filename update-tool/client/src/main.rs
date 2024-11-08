@@ -14,7 +14,7 @@ struct Cli {
     #[arg(short, long, default_value_t = String::from("ws://localhost:8080"))]
     wss_path: String,
 
-    #[arg(short, long, default_value_t = String::from("/etc/nixos"))]
+    #[arg(short, long, default_value_t = String::from("/etc/nixos/"))]
     repo_path: String
 }
 
