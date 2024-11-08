@@ -1,4 +1,4 @@
-{ config, lib, pkgs }:
+{ config, lib, pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -7,7 +7,7 @@
   systemd.services.updateClient = {
       description = "Update tool Client";
       serviceConfig = {
-        ExecStart = "update-client";
+        ExecStart = "${updateClient}/bin/update-client";
         User = "root";
         Restart = "on-failure";
         RestartSec = 10;
