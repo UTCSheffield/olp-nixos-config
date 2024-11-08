@@ -1,8 +1,10 @@
 { config, lib, pkgs, ... }:
 
+let updateClient = pkgs.callPackage ../update-tool/client.nix {};
+in
 {
   environment.systemPackages = with pkgs; [
-    (callPackage ../update-tool/client.nix {})
+     updateClient
   ];
   systemd.services.updateClient = {
       description = "Update tool Client";
