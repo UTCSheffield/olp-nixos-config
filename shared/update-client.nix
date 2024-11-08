@@ -9,7 +9,7 @@ in
   systemd.services.updateClient = {
       description = "Update tool Client";
       serviceConfig = {
-        ExecStart = "${updateClient}/bin/update-client --wss-path=127.0.0.1:8080";
+        ExecStart = "${updateClient}/bin/update-client --wss-path=ws://127.0.0.1:8080";
         User = "root";
         Restart = "on-failure";
         RestartSec = 10;
