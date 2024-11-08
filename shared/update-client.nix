@@ -15,5 +15,5 @@
         StartLimitBurst = 3;
       };
       wantedBy = [ "multi-user.target" ];
-    };
-  };    
+  };
+}   
