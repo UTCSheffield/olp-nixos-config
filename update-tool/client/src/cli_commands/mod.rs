@@ -18,8 +18,13 @@ pub fn run(wss_path: &String, repo_path: &String) {
             match parsed_msg["type"].as_str().unwrap() {
                 "configVersion" => crate::responses::config_version::run(repo_path, &mut socket, &parsed_msg),
                 "updateAvaliable" => crate::responses::update_avaliable::run(repo_path, &mut socket, &parsed_msg),
+                "updateNotAvaliable" => do_nothing() 
                 _ => todo!(),
             };
         }
     }
 }
+
+fn do_nothing() {
+
+};
