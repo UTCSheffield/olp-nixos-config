@@ -8,6 +8,9 @@ in
   ];
   systemd.services.updateClient = {
       description = "Update tool Client";
+      path = [
+	pkgs.git
+      ];
       serviceConfig = {
         ExecStart = "${updateClient}/bin/update-client --wss-path=ws://127.0.0.1:8080";
         User = "root";
