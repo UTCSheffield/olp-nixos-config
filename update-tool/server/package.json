@@ -18,6 +18,7 @@
     "typescript": "5.5.2"
   },
   "dependencies": {
+    "@octokit/core": "^6.1.2",
     "@octokit/webhooks": "^13.3.0",
     "colorette": "^2.0.20",
     "ws": "^8.18.0"

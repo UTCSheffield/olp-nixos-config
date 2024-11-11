@@ -5,8 +5,21 @@ import { fetchResponses } from "./lib/responseLoader.js";
 import { createColors } from "colorette";
 import http, { RequestListener } from "http";
 import { Webhooks } from "@octokit/webhooks";
+import { Octokit } from "@octokit/core";
+import { container } from "./lib/container.js";
 
 createColors(); // This is used to color the console output. Makes it easier to read.
+
+const octokit = new Octokit(); // Setup octokit (Github) client
+const github_api_response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
+  owner: 'UTCSheffield',
+  repo: 'olp-nixos-config',
+  ref: 'master',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})
+container.latestGitCommitHash = github_api_response.data.sha;
 
 const avaliableResponses = await fetchResponses();
 logger.info(`Loaded ${avaliableResponses.size} responses`);
@@ -97,6 +110,8 @@ const requestListener: RequestListener = async function async (req, _res) {
     if (!(await webhooks.verify(body, signature))) {
       return;
     }
+    const parsedbody = JSON.parse(body);
+    container.latestGitCommitHash = parsedbody.after
     sockets.forEach((socket) => {
       socket.send(JSON.stringify(
         {
