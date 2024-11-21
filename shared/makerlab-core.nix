@@ -31,7 +31,7 @@
           name = "vexfeedback";
           publisher = "VEXRobotics";
           version = "0.2.4";
-          sha256 = ""
+          sha256 = "";
         }
       ];
     })
