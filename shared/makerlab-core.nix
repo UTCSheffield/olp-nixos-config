@@ -30,7 +30,7 @@
         {
           name = "vexfeedback";
           publisher = "VEXRobotics";
-          version = "";
+          version = "0.2.4";
           sha256 = ""
         }
       ];
