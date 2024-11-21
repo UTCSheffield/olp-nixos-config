@@ -13,7 +13,7 @@
   users.users.makerlab = {
      description = "MakerLab";
      isNormalUser = true;
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "dialout" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
      ];
      hashedPassword = "$y$j9T$tZxf41zJFng6RPVjkF1XJ1$yusYNqRcnRozLOrUMvdOCF9CFMFdilJVmw0/BTHmC.0";
