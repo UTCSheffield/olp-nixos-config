@@ -26,6 +26,12 @@
           publisher = "VEXRobotics";
           version = "0.6.0";
           sha256 = "sha256-7O3vRuWhPpS6yfyLBlRfmvttJ1qeAP1gPLef3B+jspI=";
+        },
+        {
+          name = "vexfeedback";
+          publisher = "VEXRobotics";
+          version = "";
+          sha256 = ""
         }
       ];
     })
