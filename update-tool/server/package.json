@@ -1,0 +1,30 @@
+{
+  "name": "updatetool-server",
+  "version": "1.0.0",
+  "description": "Update Tool Server",
+  "main": "dist/index.js",
+  "type": "module",
+  "author": "Sean Outram <outramsean0@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "volta": {
+    "node": "20.16.0",
+    "yarn": "4.3.1"
+  },
+  "devDependencies": {
+    "@sapphire/ts-config": "5.0.1",
+    "@types/node": "^22.9.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "5.5.2"
+  },
+  "dependencies": {
+    "@octokit/core": "^6.1.2",
+    "@octokit/webhooks": "^13.3.0",
+    "colorette": "^2.0.20",
+    "ws": "^8.18.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  }
+}
