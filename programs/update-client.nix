@@ -12,7 +12,7 @@ in
 	pkgs.git
       ];
       serviceConfig = {
-        ExecStart = "${updateClient}/bin/update-client --wss-path=ws://olp-nixos-config-production.up.railway.app";
+        ExecStart = "${updateClient}/bin/update-client --wss-path='ws://olp-nixos-config-production.up.railway.app'";
         User = "root";
         Restart = "on-failure";
         RestartSec = 10;
