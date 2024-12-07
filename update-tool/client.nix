@@ -6,7 +6,7 @@ rustPlatform.buildRustPackage rec {
 
   src = ./client;  # Use current directory as source
 
-  cargoHash = "sha256-zObAAp/a/+x4zOMax2EMqsW0LsySzYh+8fw5RrgD3yg=";
+  cargoHash = "sha256-beNik/xLr4adwFcFOxcplvwvjvE7dpQhqBA+gKPPFEM=";
   buildInputs = [ openssl_3 pkg-config ];
 
   preBuild = ''
