@@ -1,4 +1,4 @@
-{ rustPlatform, lib }:
+{ rustPlatform, lib, pkg-config, openssl_3 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "update-tool-client";
@@ -6,7 +6,15 @@ rustPlatform.buildRustPackage rec {
 
   src = ./client;  # Use current directory as source
 
-  cargoHash = "sha256-g6M3SZXk5ReUNi1MHfLHE3CtDy9P41ZofTmhAekI0LQ=";
+  cargoHash = "sha256-beNik/xLr4adwFcFOxcplvwvjvE7dpQhqBA+gKPPFEM=";
+  buildInputs = [ openssl_3 pkg-config ];
+
+  preBuild = ''
+    export OPENSSL_DIR=${openssl_3.dev}
+    export OPENSSL_INCLUDE_DIR=${openssl_3.dev}/include
+    export OPENSSL_LIB_DIR=${openssl_3.out}/lib
+    export PKG_CONFIG_PATH=${openssl_3.dev}/lib/pkgconfig
+  '';
 
   meta = {
     description = "Update Client";
