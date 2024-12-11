@@ -21,7 +21,7 @@ pub fn git_pull(directory: &str) -> bool {
         .expect("Failed to execute command");
     // Check if hash is correct and work from there
     let new_hash = git_get_latest_hash(directory);
-    if new_hash !== old_hash { // If the hashes are the same, the pull did nothing
+    if new_hash != old_hash { // If the hashes are the same, the pull did nothing
         return true;
     } else {
         return false;
