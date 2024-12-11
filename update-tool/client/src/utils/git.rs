@@ -13,14 +13,15 @@ pub fn git_get_latest_hash(directory: &str) -> String {
 }
 
 pub fn git_pull(directory: &str) -> bool {
+    let old_hash = git_get_latest_hash(directory);
     let cmd = Command::new("git")
         .args(&["pull"])
         .current_dir(directory)
         .output()
         .expect("Failed to execute command");
-    let output = String::from_utf8_lossy(cmd.stdout.as_slice()).into_owned();
-    // We check if the command output contains that string, if it does, we know the pull actually pulled something
-    if output.contains("remote: Counting objects") {
+    // Check if hash is correct and work from there
+    let new_hash = git_get_latest_hash(directory);
+    if new_hash !== old_hash { // If the hashes are the same, the pull did nothing
         return true;
     } else {
         return false;
