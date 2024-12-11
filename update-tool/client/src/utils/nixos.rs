@@ -1,4 +1,4 @@
-pub fn rebuild_system(directory: &str) {
+pub fn rebuild_system(directory: &str) -> String {
     let cmd = Command::new("nixos-rebuild")
     .args(&["switch", "--flake", ".#makerlab-3040"])
     .current_dir(directory) // Directory: /etc/nixos
