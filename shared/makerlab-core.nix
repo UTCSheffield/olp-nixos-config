@@ -24,6 +24,8 @@
     python310Full
     vscode
     chromium
+    tk
+    python310Packages.keyboard
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
