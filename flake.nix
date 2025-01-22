@@ -15,6 +15,14 @@
           ./machines/makerlab-client.nix
         ];
       };
+      makerlab-3040-lite = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = attrs;
+        modules = [
+          ./hardware/dell-3040.nix
+          ./machines/makerlab-lite-client.nix
+        ];
+      };
       iso = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = attrs;
