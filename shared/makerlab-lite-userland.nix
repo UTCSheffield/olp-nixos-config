@@ -8,6 +8,6 @@
     xkb.layout = "gb";
   };
   services.displayManager.sddm.enable = true;
-  services.windowManager.default = "lxqt";
+  services.desktopManager.lxqt.enable = true;
   services.printing.enable = true; # Enables printing
 }
