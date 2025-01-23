@@ -7,7 +7,7 @@
     enable = true;
     xkb.layout = "gb";
   };
-  services.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.lxqt.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
   services.printing.enable = true; # Enables printing
 }
