@@ -6,7 +6,7 @@
 
 {
   imports = [
-    ../shared/makerlab-core.nix
+    ../shared/makerlab-lite-core.nix
     ../shared/makerlab-lite-userland.nix
   ];
   # Define a user account. Don't forget to set a password with ‘passwd’.
