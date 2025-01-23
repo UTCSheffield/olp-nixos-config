@@ -33,8 +33,5 @@ jobs:
     #- name: Build [config name]
     #  run: ./build/bin/nixos-rebuild build --flake .#[config name]
 
-    - name: Build iso
-      run: ./build/bin/nixos-rebuild build --flake .#iso
-
     - name: Check Flake
       run: nix flake check
