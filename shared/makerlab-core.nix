@@ -24,6 +24,8 @@
     vscode
     chromium
     tk
+    openscad
+    obsidian
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
