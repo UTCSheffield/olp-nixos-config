@@ -20,12 +20,13 @@
     gh
     emacs
     supercollider
-    python310Full
+    python312Full
     vscode
     chromium
     tk
     openscad
     obsidian
+    python312Packages.solidpython2
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
