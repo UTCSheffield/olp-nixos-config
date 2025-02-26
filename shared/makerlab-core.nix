@@ -26,7 +26,7 @@
     tk
     openscad
     obsidian
-    pkgs.bambu-studio
+    pkgs.orca-slicer
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
