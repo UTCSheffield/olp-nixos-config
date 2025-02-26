@@ -26,7 +26,7 @@
     tk
     openscad
     obsidian
-    "bambu-studio"
+    pkgs.bambu-studio
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
