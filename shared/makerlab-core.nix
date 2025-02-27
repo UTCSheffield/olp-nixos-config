@@ -3,6 +3,7 @@
 {
   imports = [
     ../programs/update-client.nix
+    ./makerlab-startup.nix
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
