@@ -2,8 +2,8 @@
 
 {
   environment.systemPackages = with pkgs; [
-    (python.withPackages (with pythonPackages: [
-      solidpython2
-    ]));
+    (python312Full.withPackages (python-pkgs: with python-pkgs; [
+      p.solidpython2
+    ]))
   ];
 }
