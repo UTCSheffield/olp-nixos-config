@@ -3,6 +3,7 @@
 {
   imports = [
     ../programs/update-client.nix
+    ../programs/python.nix
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -20,13 +21,11 @@
     gh
     emacs
     supercollider
-    python312Full
     vscode
     chromium
     tk
     openscad
     obsidian
-    python312Packages.solidpython2
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
