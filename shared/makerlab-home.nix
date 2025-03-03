@@ -4,7 +4,6 @@
   home.username = "makerlab";
   home.homeDirectory = "/home/makerlab";
 
-  # OpenSCAD BOSL2 Library (Impure Fetch)
   home.file.".local/share/OpenSCAD/libraries/BOSL2" = {
     source = builtins.fetchGit {
       url = "https://github.com/BelfrySCAD/BOSL2";
@@ -12,6 +11,7 @@
     };
   };
 
-  # Enable Home-Manager
+  home.stateVersion = "24.05"
+  
   programs.home-manager.enable = true;
 }
