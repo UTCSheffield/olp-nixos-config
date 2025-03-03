@@ -34,4 +34,4 @@ jobs:
     #  run: ./build/bin/nixos-rebuild build --flake .#[config name]
 
     - name: Check Flake
-      run: nix flake check
+      run: nix flake check --impure
