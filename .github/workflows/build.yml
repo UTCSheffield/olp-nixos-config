@@ -25,7 +25,7 @@ jobs:
       run: nix build nixpkgs#nixos-rebuild -o ./build
 
     - name: Build makerlab-3040
-      run: ./build/bin/nixos-rebuild build --flake .#makerlab-3040
+      run: ./build/bin/nixos-rebuild build --flake .#makerlab-3040 --impure
 
     #- name: Build [config name]
     #  run: ./build/bin/nixos-rebuild build --flake .#[config name]
