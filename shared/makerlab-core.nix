@@ -4,6 +4,7 @@
   imports = [
     ../programs/update-client.nix
     ../programs/python.nix
+    ../programs/solidpython2.nix
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
