@@ -21,7 +21,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.makerlab = import ./home.nix;
+            home-manager.users.makerlab = import ./shared/home.nix;
           }
         ];
       };
