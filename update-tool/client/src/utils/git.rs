@@ -15,7 +15,13 @@ pub fn git_get_latest_hash(directory: &str) -> String {
 pub fn git_pull(directory: &str) -> bool {
     let old_hash = git_get_latest_hash(directory);
     let cmd = Command::new("git")
-        .args(&["pull"])
+        .args(&["fetch", "--all"])
+        .current_dir(directory)
+        .output()
+        .expect("Failed to execute command");
+
+    let cmd = Command::new("git")
+        .args(&["reset", "--hard", "origin/master"])
         .current_dir(directory)
         .output()
         .expect("Failed to execute command");
