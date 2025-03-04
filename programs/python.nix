@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-let solidPythonFull = pkgs.callPackage ../update-tool/client.nix {};
+let solidPythonFull = pkgs.callPackage ./solidpython2-package.nix {};
 in
 {
   environment.systemPackages = with pkgs; [
