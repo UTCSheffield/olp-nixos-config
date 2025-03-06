@@ -1,6 +1,7 @@
 use std::process::Command;
 
 pub fn rebuild_system(directory: &str) -> String {
+    printLn!("Current Path {}", directory.unwrap());
     let cmd = Command::new("nixos-rebuild")
     .args(&["switch", "--flake", ".#makerlab-3040"])
     .current_dir(directory) // Directory: /etc/nixos
