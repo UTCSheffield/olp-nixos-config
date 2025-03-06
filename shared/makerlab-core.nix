@@ -26,6 +26,7 @@
     tk
     openscad
     obsidian
+    sl
   ];
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
