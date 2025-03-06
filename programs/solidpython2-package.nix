@@ -1,10 +1,10 @@
-{ pkgs, lib, buildPythonPackage, fetchFromGitHub, withOpenSCAD ? false }:
+{ pkgs, lib, withOpenSCAD ? false }:
 
-buildPythonPackage rec {
+pkgs.buildPythonPackage rec {
   pname = "solidpython2";
   version = "2.1.0";
   pyproject = true;
-  src = fetchFromGitHub {
+  src = pkgs.fetchFromGitHub {
     owner = "jeff-dh";
     repo = "SolidPython";
     rev = "v${version}";
