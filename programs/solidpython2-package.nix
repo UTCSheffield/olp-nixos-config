@@ -1,4 +1,4 @@
-{ pkgs, lib, withOpenSCAD }:
+{ pkgs, lib, withOpenSCAD ? false }:
 
 pkgs.buildPythonPackage rec {
   pname = "solidpython2";
