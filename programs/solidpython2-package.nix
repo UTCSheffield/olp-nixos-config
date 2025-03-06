@@ -1,4 +1,7 @@
-{ lib, fetchFromGitHub, ply, setuptools, poetry-core, withOpenSCAD ? false, openscad, pkgs }:
+{
+  pkgs
+  lib
+}:
 
 pkgs.buildPythonPackage rec {
   pname = "solidpython2";
@@ -12,17 +15,17 @@ pkgs.buildPythonPackage rec {
     hash = "sha256-Tq3hrsC2MmueCqChk6mY/u/pCjF/pFuU2o3K+qw7ImY=";
   };
 
-  patches = [ ./difftool_tests.patch ];
+  # patches = [ ./difftool_tests.patch ];
 
-  propagatedBuildInputs = lib.optionals withOpenSCAD [ openscad ];
+  propagatedBuildInputs = lib.optionals withOpenSCAD [ pkgs.openscad ];
 
   build-system = [
-    poetry-core
+    pkgs.poetry-core
   ];
 
   dependencies = [
-    ply
-    setuptools
+    pkgs.ply
+    pkgs.setuptools
   ];
 
   pythonImportsCheck = [ "solid2" ];
