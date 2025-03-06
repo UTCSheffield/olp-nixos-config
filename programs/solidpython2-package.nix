@@ -4,7 +4,7 @@ pkgs.buildPythonPackage rec {
   pname = "solidpython2";
   version = "2.1.0";
   pyproject = true;
-  src = fetchFromGitHub {
+  src = lib.fetchFromGitHub {
     owner = "jeff-dh";
     repo = "SolidPython";
     rev = "v${version}";
