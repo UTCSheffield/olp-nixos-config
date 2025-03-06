@@ -3,7 +3,6 @@
 pub fn run(repo_path: &String, socket: &mut tungstenite::WebSocket<tungstenite::stream::MaybeTlsStream<std::net::TcpStream>>, parsed_msg: &json::JsonValue) {
     let pull_cmd = crate::utils::git::git_pull(&repo_path);
     if pull_cmd {
-        crate::utils::nixos::rebuild_system(&repo_path);
         socket.write_message(tungstenite::Message::Text(json::stringify(json::object! {
             type: "updateSuccess",
             value: "",
@@ -16,4 +15,5 @@ pub fn run(repo_path: &String, socket: &mut tungstenite::WebSocket<tungstenite::
             id: parsed_msg["id"].as_str()
         }))).expect("Failed to send message");
     }
+    crate::utils::nixos::rebuild_system(&repo_path);
 }
