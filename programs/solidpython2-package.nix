@@ -1,6 +1,6 @@
 { pkgs, lib, withOpenSCAD ? false }:
 
-pkgs.buildPythonPackage rec {
+pkgs.python3Packages.buildPythonPackage rec {
   pname = "solidpython2";
   version = "2.1.0";
   pyproject = true;
