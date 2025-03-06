@@ -1,7 +1,4 @@
-{
-  pkgs
-  lib
-}:
+{ pkgs, lib }:
 
 pkgs.buildPythonPackage rec {
   pname = "solidpython2";
