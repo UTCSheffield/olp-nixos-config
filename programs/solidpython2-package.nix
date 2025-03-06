@@ -1,4 +1,4 @@
-{ pkgs, lib, buildPythonPackage, fetchFromGithub, withOpenSCAD ? false }:
+{ pkgs, lib, buildPythonPackage, fetchFromGitHub, withOpenSCAD ? false }:
 
 buildPythonPackage rec {
   pname = "solidpython2";
