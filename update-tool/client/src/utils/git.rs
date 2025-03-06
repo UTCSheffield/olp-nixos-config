@@ -20,6 +20,7 @@ pub fn git_pull(directory: &str) -> bool {
         .output()
         .expect("Failed to execute command");
     // Check if hash is correct and work from there
+    println!("Pull Output Command {:?}", cmd);
     let new_hash = git_get_latest_hash(directory);
     if new_hash != old_hash { // If the hashes are the same, the pull did nothing
         return true;
