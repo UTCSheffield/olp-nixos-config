@@ -10,7 +10,7 @@ let
   };
  
   bosl2Repo = pkgs.fetchFromGitHub {
-    owner = "your-owner";  # Replace with the actual owner of BOSL2
+    owner = "BelfrySCAD";  # Replace with the actual owner of BOSL2
     repo = "BOSL2";
     rev = "main";  # Replace with the desired branch, tag, or commit hash
     fetchSubmodules = true;
