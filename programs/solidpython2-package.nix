@@ -48,8 +48,8 @@ in pkgs.python3Packages.buildPythonPackage rec {
     runHook preBuild
  
     # Create the extensions directory and move BOSL2 into it
-    mkdir -p $out/extension/bosl2
-    cp -r ${bosl2Repo} $out/extension/bosl2/
+    mkdir -p $out/extensions/bosl2
+    cp -r ${bosl2Repo} $out/extensions/bosl2/
  
     # Call the default build phase again
     runHook postBuild
