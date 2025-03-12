@@ -13,13 +13,14 @@
         modules = [
           ./hardware/dell-3040.nix
           ./machines/makerlab-client.nix
+        
+          home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.makerlab = import ./shared/makerlab-home.nix;
+            }
         ];
-        home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.makerlab = import ./shared/makerlab-home.nix;
-          }
       };
       iso = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
