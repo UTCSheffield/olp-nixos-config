@@ -4,13 +4,13 @@ pkgs.python3Packages.buildPythonPackage rec {
   pname = "solidpython2";
   version = "2.1.0";
   pyproject = true;
-  src = pkgs.fetchFromGitHub {
-    owner = "jeff-dh";
-    repo = "SolidPython";
+  src = pkgs.fetchFromGit {
+    url = "https://github.com/jeff-dh/SolidPython.git";
     rev = "v${version}";
     fetchSubmodules = true;
     hash = "sha256-Tq3hrsC2MmueCqChk6mY/u/pCjF/pFuU2o3K+qw7ImY=";
   };
+
 
   # patches = [ ./difftool_tests.patch ];
 
