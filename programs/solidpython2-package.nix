@@ -1,16 +1,27 @@
 { pkgs, lib, withOpenSCAD ? false }:
 
-pkgs.python3Packages.buildPythonPackage rec {
-  pname = "solidpython2";
-  version = "2.1.0";
-  pyproject = true;
-  src = pkgs.fetchFromGitHub {
+let
+  solidPythonRepo = pkgs.fetchFromGitHub {
     owner = "jeff-dh";
     repo = "SolidPython";
-    rev = "v${version}";
+    rev = "v2.1.1";
     fetchSubmodules = true;
     hash = "sha256-Tq3hrsC2MmueCqChk6mY/u/pCjF/pFuU2o3K+qw7ImY=";
   };
+ 
+  bosl2Repo = pkgs.fetchFromGitHub {
+    owner = "your-owner";  # Replace with the actual owner of BOSL2
+    repo = "BOSL2";
+    rev = "main";  # Replace with the desired branch, tag, or commit hash
+    fetchSubmodules = true;
+    hash = "";  # Replace with the actual hash
+  };
+ 
+in pkgs.python3Packages.buildPythonPackage rec {
+  pname = "solidpython2";
+  version = "2.1.1";
+  pyproject = true;
+  src = solidPythonRepo;
 
   # patches = [ ./difftool_tests.patch ];
 
@@ -30,6 +41,18 @@ pkgs.python3Packages.buildPythonPackage rec {
     runHook preCheck
     python $TMPDIR/source/tests/run_tests.py
     runHook postCheck
+  '';
+
+  buildPhase = ''
+    # Call the default build phase
+    runHook preBuild
+ 
+    # Create the extensions directory and move BOSL2 into it
+    mkdir -p $out/extension/bosl2
+    cp -r ${bosl2Repo} $out/extension/bosl2/
+ 
+    # Call the default build phase again
+    runHook postBuild
   '';
 
   meta = with lib; {
