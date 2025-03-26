@@ -28,6 +28,7 @@
     obsidian
     sl
   ];
+  networking.extraHosts = "10.102.237.138 olp-mls02";
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
 }
