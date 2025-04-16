@@ -4,20 +4,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    himmelblau.url = "github:himmelblau-idm/himmelblau/main";
-    himmelblau.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, home-manager, himmelblau, ... }@attrs: {
-    nixosModules.azureEntraId = {
-        imports = [ himmelblau.nixosModules.himmelblau ];
-        services.himmelblau = {
-            enable = true;
-            settings = {
-                domains = ["utcsheffield.org.uk"];
-                local_groups = [ "wheel" "docker" ];
-            };
-        };
-    };
+  outputs = { self, nixpkgs, home-manager, ... }@attrs: {
     nixosConfigurations = {
       makerlab-3040 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -25,7 +13,7 @@
         modules = [
           ./hardware/dell-3040.nix
           ./machines/makerlab-client.nix
-          self.nixosModules.azureEntraId
+          ./shared/entra.nix
         ];
       };
       iso = nixpkgs.lib.nixosSystem {
