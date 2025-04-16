@@ -7,7 +7,7 @@
     himmelblau.url = "github:himmelblau-idm/himmelblau/main";
     himmelblau.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, home-manager, ... }@attrs: {
+  outputs = { self, nixpkgs, home-manager, himmelblau, ... }@attrs: {
     nixosModules.azureEntraId = {
         imports = [ himmelblau.nixosModules.himmelblau ];
         services.himmelblau = {
