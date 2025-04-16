@@ -19,4 +19,4 @@ url="https://raw.githubusercontent.com/UTCSheffield/olp-nixos-config/refs/heads/
 
 curl -o ./setuppt2.sh -L "$url"
 chmod +x ./setuppt2.sh
-./setuppt2.sh
+./setuppt2.sh --branch "$branch"
