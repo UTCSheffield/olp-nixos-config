@@ -31,5 +31,5 @@ jobs:
           name: Commit ${{ steps.hash.outputs.short }} (${{ github.ref_name }})
           tag_name: ${{ steps.hash.outputs.short }}
           make_latest: true
-          draft: ${{ github.ref_name != 'master' }}
+          prerelease: ${{ github.ref_name != 'master' }}
           files: iso.zip
