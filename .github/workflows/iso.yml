@@ -1,7 +1,6 @@
 name: "Build ISO"
 on:
   push:
-    branches: ['master']
     paths: ['machines/iso.nix', 'setup.sh', '.github/workflows/iso.yml']
   workflow_dispatch:
 
