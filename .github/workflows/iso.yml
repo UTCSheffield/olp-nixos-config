@@ -1,6 +1,7 @@
 name: "Build ISO"
 on:
   push:
+    branches: ['master']
     paths: ['machines/iso.nix', 'setup.sh', '.github/workflows/iso.yml']
   workflow_dispatch:
 
@@ -13,6 +14,8 @@ jobs:
 
       - name: Setup Nix
         uses: cachix/install-nix-action@v30
+
+      - run: cachix use utcsheffield
 
       - name: Build ISO
         run: nix build .#nixosConfigurations.iso.config.system.build.isoImage --experimental-features "nix-command flakes"
@@ -31,5 +34,5 @@ jobs:
           name: Commit ${{ steps.hash.outputs.short }} (${{ github.ref_name }})
           tag_name: ${{ steps.hash.outputs.short }}
           make_latest: true
-          draft: ${{ github.ref_name != 'master' }}
+          prerelease: ${{ github.ref_name != 'master' }}
           files: iso.zip
