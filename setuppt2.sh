@@ -50,6 +50,7 @@ echo "Setup NixOS"
 mkdir -p /mnt/etc/nixos
 git clone --branch "$branch" https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
 
+cachix use himmelblau
 nixos-install --flake /mnt/etc/nixos#$config
 
 touch /mnt/root/setup.toml
