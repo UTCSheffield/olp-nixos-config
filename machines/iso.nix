@@ -6,5 +6,6 @@ with lib;
     services.getty.autologinUser = lib.mkForce "root";
     environment.systemPackages = [
         pkgs.git
+        pkgs.cachix
     ];
 }
