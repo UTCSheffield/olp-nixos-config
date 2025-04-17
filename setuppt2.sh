@@ -50,7 +50,7 @@ echo "Setup NixOS"
 mkdir -p /mnt/etc/nixos
 git clone --branch "$branch" https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
 
-nix profile install --accept-flake-config nixpkgs#cachix
+nix profile install --accept-flake-config nixpkgs#cachix --extra-experimental-features flakes
 cachix use himmelblau
 nixos-install --flake /mnt/etc/nixos#$config
 
