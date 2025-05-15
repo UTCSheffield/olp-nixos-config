@@ -5,5 +5,6 @@ in pkgs.mkShell {
     cargo
     rustc
     typescript
+    openssl
   ];
 }
