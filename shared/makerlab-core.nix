@@ -8,7 +8,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   time.timeZone = "Europe/London";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_GB.UTF-8";
   console = {
     font = "Lat2-Terminus16";
     keyMap = lib.mkForce "uk";
@@ -28,7 +28,12 @@
     obsidian
     sl
   ];
-  networking.extraHosts = "10.102.237.138 olp-mls02";
+  networking.networkmanager.insertNameservers = [
+    "10.102.237.136"
+    "1.1.1.1"
+    "1.0.0.1"
+  ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }
