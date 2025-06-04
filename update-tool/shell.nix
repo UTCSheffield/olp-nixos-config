@@ -4,9 +4,12 @@ in pkgs.mkShell {
   buildInputs = with pkgs; [
     cargo
     rustc
-    typescript
-    openssl
-    pkgs.pkg-config
-    nodejs_20
+    python312Full
+    python312Packages.pip
   ];
+  shellHook = ''
+    python -m venv venv
+    source venv/bin/activate
+    pip install -r server/requirements.txt
+  '';
 }
