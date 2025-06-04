@@ -2,8 +2,8 @@ use std::process::Command;
 
 pub fn run() {
     // Run the command to manually trigger a rebuild
-    let output = Command::new("sudo nixos-rebuild switch") // TODO: FUTURE: Make this read the flake from setup.toml
-        .args(&["--flake", "/etc/nixos#makerlab3040"])
+    let output = Command::new("nixos-rebuild switch") // TODO: FUTURE: Make this read the flake from setup.toml
+        .args(&["--flake", "/etc/nixos#makerlab-3040"])
         .output()
         .expect("Failed to execute command");
 

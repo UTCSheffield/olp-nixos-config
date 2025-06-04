@@ -6,5 +6,7 @@ in pkgs.mkShell {
     rustc
     typescript
     openssl
+    pkgs.pkg-config
+    nodejs_20
   ];
 }
