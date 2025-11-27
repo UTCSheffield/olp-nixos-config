@@ -4,7 +4,7 @@ if [ $(whoami) != 'root' ]; then
   exit
 fi
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
   echo "Usage: setup.sh [hostname]"
   exit
 fi
