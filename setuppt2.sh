@@ -8,7 +8,6 @@ if [ -z $1 ]; then
   echo "Usage: setup.sh [hostname]"
   exit
 fi
-read -p "Target Config (ex: dell-3040-client)" config
   echo "Partitioning"
   parted /dev/sda -- mklabel gpt
   parted /dev/sda -- mkpart root ext4 512MB -8GB
