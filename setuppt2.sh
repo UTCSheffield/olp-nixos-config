@@ -3,6 +3,11 @@ if [ $(whoami) != 'root' ]; then
   echo "You are not ROOT";
   exit
 fi
+
+if [ -z $1 ]; then
+  echo "Usage: setup.sh [hostname]"
+  exit
+fi
 read -p "Target Config (ex: dell-3040-client)" config
   echo "Partitioning"
   parted /dev/sda -- mklabel gpt
@@ -30,9 +35,9 @@ read -p "Target Config (ex: dell-3040-client)" config
   mkdir -p /mnt/etc/nixos
   nix-env -iA nixos.git
   git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
-  nixos-install --flake /mnt/etc/nixos#$config
+  nixos-install --flake /mnt/etc/nixos#makerlab-3040
   touch /mnt/root/setup.toml
-  echo config=$config >> /mnt/root/setup.toml
+  echo config=makerlab-3040 >> /mnt/root/setup.toml
   
   echo "Finishing touches"
   echo hostname=$1 >> /mnt/root/setup.toml
