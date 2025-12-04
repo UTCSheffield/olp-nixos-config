@@ -1,45 +1,60 @@
-echo "OLP NixOS Setup"
 if [ $(whoami) != 'root' ]; then
-  echo "You are not ROOT";
+  echo "You are not ROOT, try running sudo ./setup2.sh";
+  exit
+fi
+read -p "Target Config (ex: gaius) " config
+echo "Partitioning"
+lsblk
+read -p "Which Drive? (ex: sda or /dev/sda or nvme0n1) " drive
+
+if [[ "$drive" != /dev/* ]]; then
+  drive="/dev/$drive"
+fi
+
+parted "$drive" -- mklabel gpt
+parted "$drive" -- mkpart root ext4 512MB -8GB
+parted "$drive" -- mkpart swap linux-swap -8GB 100%
+parted "$drive" -- mkpart ESP fat32 1MB 512MB
+parted "$drive" -- set 3 esp on
+
+parted "$drive" name 1 encryptedroot || true
+parted "$drive" name 2 swap || true
+parted "$drive" name 3 boot || true
+
+echo "Formatting
+"
+if [[ "$drive" == *"nvme"* || "$drive" == *"mmcblk"* ]]; then
+  suf="p"
+else
+  suf=""
+fi
+
+drive1="${drive}${suf}1"
+drive2="${drive}${suf}2"
+drive3="${drive}${suf}3"
+
+mkfs.ext4 -L nixos /dev/mapper/cryptroot
+mkswap -L swap "$drive2"
+mkfs.fat -F 32 -n boot "$drive3"
+
+echo "Mounting"
+mount /dev/disk/by-label/nixos /mnt
+mkdir -p /mnt/boot
+mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
+
+swapon "$drive2"
+
+mkdir -p /mnt/etc
+mkdir -p /mnt/config
+git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/config
+ln -s /mnt/config /mnt/etc/nixos
+
+if [ -d /mnt/config ]; then
+  nixos-install --flake /mnt/config#$config;
+else
+  echo "NixOS Config not found!";
   exit
 fi
 
-if [ -z "$1" ]; then
-  echo "Usage: setup.sh [hostname]"
-  exit
-fi
-  echo "Partitioning"
-  parted /dev/sda -- mklabel gpt
-  parted /dev/sda -- mkpart root ext4 512MB -8GB
-  parted /dev/sda -- mkpart swap linux-swap -8GB 100%
-  parted /dev/sda -- mkpart ESP fat32 1MB 512MB
-  parted /dev/sda -- set 3 esp on
-  
-  echo "Formatting"
-  mkfs.ext4 -L nixos /dev/sda1
-  mkswap -L swap /dev/sda2
-  mkfs.fat -F 32 -n boot /dev/sda3
-  
-  echo "Mounting"
-  mount /dev/disk/by-label/nixos /mnt
-  mkdir -p /mnt/boot
-  mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
-  swapon /dev/sda2
-  echo "Setup Nixos"
-  mkdir -p /mnt/etc
-  mkdir -p /mnt/etc/nixos
-
-  echo "Setup Nixos"
-  mkdir -p /mnt/etc
-  mkdir -p /mnt/etc/nixos
-  nix-env -iA nixos.git
-  git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
-  nixos-install --flake /mnt/etc/nixos#makerlab-3040
-  touch /mnt/root/setup.toml
-  echo config=makerlab-3040 >> /mnt/root/setup.toml
-  
-  echo "Finishing touches"
-  echo hostname=$1 >> /mnt/root/setup.toml
-  
-  echo "Done now rebooting with reboot"
-
+read -p "Press any key to reboot." nothing
+reboot
