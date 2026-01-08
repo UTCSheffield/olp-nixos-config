@@ -52,6 +52,7 @@ mkdir -p /mnt/config
 git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/config
 ln -s /mnt/config /mnt/etc/nixos
 
+cachix use utcsheffield
 nixos-install --flake /mnt/config#$config
 
 echo "Rebooting in 5 seconds..."

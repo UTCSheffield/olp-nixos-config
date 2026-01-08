@@ -1,7 +1,7 @@
 {
   description = "OLP NixOS config";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -29,8 +29,6 @@
             ./machines/iso.nix
           ];
         };
-        packages.x86_64-linux.iso =
-          self.nixosConfigurations.iso.config.system.build.isoImage;
       };
     };
 }

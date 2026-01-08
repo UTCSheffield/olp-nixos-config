@@ -2,6 +2,7 @@
 {
     environment.systemPackages = with pkgs; [
         git
+        cachix
     ];
     services.getty.autologinUser = lib.mkForce "root";
     environment.etc."setup.sh".source = ../setup.sh;
