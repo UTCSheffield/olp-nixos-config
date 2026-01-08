@@ -9,6 +9,7 @@ fi
 
 read -p "Hostname: " hostname
 read -p "Config (ex: makerlab): " config
+read -sp "Root Password: " rootpwd
 
 lsblk
 read -p "Which Drive? (ex: sda or /dev/sda or /dev/nvme0n1) " drive
@@ -51,7 +52,8 @@ hostname = $hostname
 config = $config
 EOF
 
-nixos-install --flake /mnt/etc/nixos#$config
+nixos-install --flake /mnt/etc/nixos#$config --no-root-password
+echo "root:$ROOT_PASSWORD" | chroot /mnt chpasswd
 
 echo "Rebooting in 5 seconds..."
 sleep 5
