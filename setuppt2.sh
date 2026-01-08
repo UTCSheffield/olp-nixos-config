@@ -42,7 +42,7 @@ echo "Mounting Disks..."
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot
 mount /dev/disk/by-label/boot /mnt/boot
-swapon "$drive2"
+swapon "$drive3"
 
 echo "Installing System..."
 mkdir -p /mnt/etc
