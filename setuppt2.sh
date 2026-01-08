@@ -1,6 +1,6 @@
 if [ $(whoami) != 'root' ]; then
-  echo "You are not ROOT, try running sudo ./setup2.sh";
-  exit
+    echo "You are not ROOT, try running sudo ./setup2.sh"
+    exit
 fi
 read -p "Target Config (ex: gaius) " config
 echo "Partitioning"
@@ -8,7 +8,7 @@ lsblk
 read -p "Which Drive? (ex: sda or /dev/sda or nvme0n1) " drive
 
 if [[ "$drive" != /dev/* ]]; then
-  drive="/dev/$drive"
+    drive="/dev/$drive"
 fi
 
 parted "$drive" -- mklabel gpt
@@ -24,9 +24,9 @@ parted "$drive" name 3 boot || true
 echo "Formatting
 "
 if [[ "$drive" == *"nvme"* || "$drive" == *"mmcblk"* ]]; then
-  suf="p"
+    suf="p"
 else
-  suf=""
+    suf=""
 fi
 
 drive1="${drive}${suf}1"
@@ -49,12 +49,8 @@ mkdir -p /mnt/config
 git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/config
 ln -s /mnt/config /mnt/etc/nixos
 
-if [ -d /mnt/config ]; then
-  nixos-install --flake /mnt/config#$config;
-else
-  echo "NixOS Config not found!";
-  exit
-fi
+nixos-install --flake /mnt/config#$config
 
-read -p "Press any key to reboot." nothing
+echo "Rebooting in 5 seconds..."
+sleep 5
 reboot
