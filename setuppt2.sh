@@ -53,7 +53,7 @@ config = $config
 EOF
 
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
-echo -e "$ROOT_PASSWORD\n$ROOT_PASSWORD\n" | chroot /mnt passwd root
+echo -e "root:$ROOT_PASSWORD" | nixos-enter -c "chpasswd"
 
 echo "Rebooting in 5 seconds..."
 sleep 5
