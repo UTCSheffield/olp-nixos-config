@@ -18,11 +18,11 @@ if [[ "$drive" != /dev/* ]]; then
     drive="/dev/$drive"
 fi
 
-parted -s $drive mklabel gpt
-parted -s $drive mkpart root ext4 512MB -8GB
-parted -s $drive mkpart swap linux-swap -8GB 100%
-parted -s $drive mkpart ESP fat32 1MB 512MB
-parted -s $drive set 3 esp on
+parted -s $drive -- mklabel gpt
+parted -s $drive -- mkpart root ext4 512MB -8GB
+parted -s $drive -- mkpart swap linux-swap -8GB 100%
+parted -s $drive -- mkpart ESP fat32 1MB 512MB
+parted -s $drive -- set 3 esp on
 partprobe "$drive"
 
 echo "Formatting Disks..."
