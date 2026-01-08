@@ -25,6 +25,7 @@ parted -s $drive -- set 1 esp on
 parted -s $drive -- mkpart root ext4 2050MiB -8GiB
 parted -s $drive -- mkpart swap linux-swap -8GiB 100%
 partprobe "$drive"
+udevadm settle
 
 echo "Formatting Disks..."
 suf=$([[ "$drive" == *nvme* || "$drive" == *mmcblk* ]] && echo "p" || echo "")
@@ -40,7 +41,7 @@ mkswap -f -L swap "$drive3"
 echo "Mounting Disks..."
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot
-mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
+mount /dev/disk/by-label/boot /mnt/boot
 swapon "$drive2"
 
 echo "Installing System..."
