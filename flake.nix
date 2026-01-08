@@ -29,6 +29,8 @@
             ./machines/iso.nix
           ];
         };
+        packages.x86_64-linux.iso =
+          self.nixosConfigurations.iso.config.system.build.isoImage;
       };
     };
 }

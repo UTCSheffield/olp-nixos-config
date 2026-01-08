@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - machines/iso.nix
+
+  pull_request:
+    paths:
+      - machines/iso.nix
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+
+      - name: Configure Cachix
+        uses: cachix/cachix-action@v14
+        with:
+          name: utcsheffield
+
+      - name: Build NixOS ISO
+        run: nix build .#nixosConfigurations.iso.config.system.build.isoImage
+
+      - name: Upload ISO artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-iso
+          path: result/iso/nixos-*.iso
+
+      - name: Release ISO
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: master-${{ github.sha }}
+          name: ISO build ${{ github.sha }}
+          files: result/iso/nixos-*.iso

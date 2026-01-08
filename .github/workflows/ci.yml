@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+
+      - name: Configure Cachix
+        uses: cachix/cachix-action@v14
+        with:
+          name: utcsheffield
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build NixOS configuration
+        run: nix build .#nixosConfigurations.makerlab.config.system.build.toplevel --print-out-paths
+
+      - name: Push result to Cachix
+        uses: cachix/push-to-cachix-action@main
+        with:
+          host: utcsheffield.cachix.org
+          paths: result
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}

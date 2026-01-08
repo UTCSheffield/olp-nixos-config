@@ -1,9 +1,12 @@
 if [ $(whoami) != 'root' ]; then
-    echo "You are not ROOT, try running sudo ./setup2.sh"
+    echo "You are not ROOT, rerunning with sudo..."
+    sudo bash "$0" "$@"
     exit
 fi
-read -p "Target Config (ex: gaius) " config
-echo "Partitioning"
+
+read -p "Target Config (ex: makerlab) " config
+
+echo "Begin Partitioning"
 lsblk
 read -p "Which Drive? (ex: sda or /dev/sda or nvme0n1) " drive
 
