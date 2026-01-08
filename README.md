@@ -12,8 +12,12 @@ sudo ./setup.sh
 ## TODO
 * ~~Install VSCode extensions while allowing new extensions to be installed~~
 
-## Config Test
+## Building
 ```bash
 nix build .#nixosConfigurations.makerlab.config.system.build.toplevel \
+  --print-build-logs
+```
+```bash
+nix build .#nixosConfigurations.iso.config.system.build.isoImage \
   --print-build-logs
 ```
