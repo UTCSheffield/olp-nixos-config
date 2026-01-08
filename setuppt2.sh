@@ -18,14 +18,12 @@ if [[ "$drive" != /dev/* ]]; then
     drive="/dev/$drive"
 fi
 
-parted -s /dev/vda mklabel gpt
-parted -s /dev/vda mkpart root ext4 512MB -8GB
-parted -s /dev/vda mkpart swap linux-swap -8GB 100%
-parted -s /dev/vda mkpart ESP fat32 1MB 512MB
-parted -s /dev/vda set 3 esp on
-parted -s /dev/vda name 1 nixos || true
-parted -s /dev/vda name 2 swap || true
-parted -s /dev/vda name 3 boot || true
+parted -s $drive mklabel gpt
+parted -s $drive mkpart root ext4 512MB -8GB
+parted -s $drive mkpart swap linux-swap -8GB 100%
+parted -s $drive mkpart ESP fat32 1MB 512MB
+parted -s $drive set 3 esp on
+partprobe "$drive"
 
 echo "Formatting Disks..."
 suf=$([[ "$drive" == *nvme* || "$drive" == *mmcblk* ]] && echo "p" || echo "")
@@ -35,7 +33,7 @@ drive2="${drive}${suf}2"
 drive3="${drive}${suf}3"
 
 mkfs.ext4 -F -L nixos "$drive1"
-mkswap -F -L swap "$drive2"
+mkswap -f -L swap "$drive2"
 mkfs.fat -I -F 32 -n boot "$drive3"
 
 echo "Mounting Disks..."
