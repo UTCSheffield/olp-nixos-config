@@ -8,20 +8,15 @@
     environment.etc."setup.sh".source = ../setup.sh;
     environment.etc."setup.sh".mode = "0755";
 
-    environment.etc."nixos-shell-hook.sh".text = ''
-        #!/usr/bin/env bash
-        [[ "$(tty)" != "/dev/tty1" ]] && return
-
-        FLAG="$HOME/.installer-ran"
-        if [ -f "$FLAG" ]; then
-        return
-        fi
-        touch "$FLAG"
-
-        /etc/setup.sh
-    '';
-
     programs.bash.interactiveShellInit = ''
-        source /etc/nixos-shell-hook.sh
+      [[ "$(tty)" != "/dev/tty1" ]] && return
+      FLAG="$HOME/.installer-ran"
+      [ -f "$FLAG" ] && return
+    
+      # wait for network (up to 30s)
+      for i in {1..30}; do ping -c1 -W1 1.1.1.1 &>/dev/null && break; sleep 1; done
+    
+      touch "$FLAG"
+      /etc/setup.sh
     '';
 }
