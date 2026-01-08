@@ -34,9 +34,9 @@ drive1="${drive}${suf}1"
 drive2="${drive}${suf}2"
 drive3="${drive}${suf}3"
 
-mkfs.ext4 -L nixos "$drive1"
-mkswap -L swap "$drive2"
-mkfs.fat -F 32 -n boot "$drive3"
+mkfs.ext4 -F -L nixos "$drive1"
+mkswap -F -L swap "$drive2"
+mkfs.fat -I -F 32 -n boot "$drive3"
 
 echo "Mounting Disks..."
 mount /dev/disk/by-label/nixos /mnt
