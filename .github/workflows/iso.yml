@@ -1,4 +1,4 @@
-name: CI
+name: Build ISO
 
 on:
   push:
@@ -6,10 +6,12 @@ on:
       - master
     paths:
       - machines/iso.nix
+      - .github/workflows/iso.yml
 
   pull_request:
     paths:
       - machines/iso.nix
+      - .github/workflows/iso.yml
 
 jobs:
   build:
@@ -29,13 +31,6 @@ jobs:
 
       - name: Build NixOS ISO
         run: nix build .#nixosConfigurations.iso.config.system.build.isoImage
-
-      - name: Upload ISO artifact
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: nixos-iso
-          path: result/iso/nixos-*.iso
 
       - name: Release ISO
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
