@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 if [ $(whoami) != 'root' ]; then
     echo "You are not ROOT, rerunning with sudo..."
@@ -17,15 +18,14 @@ if [[ "$drive" != /dev/* ]]; then
     drive="/dev/$drive"
 fi
 
-parted "$drive" -- mklabel gpt
-parted "$drive" -- mkpart root ext4 512MB -8GB
-parted "$drive" -- mkpart swap linux-swap -8GB 100%
-parted "$drive" -- mkpart ESP fat32 1MB 512MB
-parted "$drive" -- set 3 esp on
-
-parted "$drive" name 1 nixos || true
-parted "$drive" name 2 swap || true
-parted "$drive" name 3 boot || true
+parted -s /dev/vda mklabel gpt
+parted -s /dev/vda mkpart root ext4 512MB -8GB
+parted -s /dev/vda mkpart swap linux-swap -8GB 100%
+parted -s /dev/vda mkpart ESP fat32 1MB 512MB
+parted -s /dev/vda set 3 esp on
+parted -s /dev/vda name 1 nixos || true
+parted -s /dev/vda name 2 swap || true
+parted -s /dev/vda name 3 boot || true
 
 echo "Formatting Disks..."
 suf=$([[ "$drive" == *nvme* || "$drive" == *mmcblk* ]] && echo "p" || echo "")
