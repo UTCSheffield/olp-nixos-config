@@ -2,7 +2,7 @@
 
 {  
   environment.systemPackages = with pkgs; [
-    (python313withPackages (with python-pkgs: [
+    (python313.withPackages (python-pkgs: with python-pkgs; [
       flake8
       rich
       typer
