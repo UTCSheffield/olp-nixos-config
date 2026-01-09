@@ -9,6 +9,7 @@
     ../hardware/generic.nix
     ../programs/firefox.nix
     ../programs/vscode.nix
+    ../programs/openscad.nix
   ];
   vscode.extensions = [ ];
 
