@@ -21,7 +21,7 @@ in pkgs.runCommand "openscad-with-extensions" {
   ln -sT ${pkgs.openscad}/share/applications/${pkgs.openscad.meta.mainProgram}-url-handler.desktop $out/share/applications/${pkgs.openscad.meta.mainProgram}-url-handler.desktop
 
   # copy extensions
-  ${lib.concatMapStringsSep "\n" (ext: ''
+  ${pkgs.lib.concatMapStringsSep "\n" (ext: ''
     mkdir -p "$out/libraries/${ext.name}"
     cp -r "${ext.path}/"* "$out/libraries/${ext.name}/"
   '') fetchedExtensions}
@@ -29,4 +29,4 @@ in pkgs.runCommand "openscad-with-extensions" {
   # wrap OpenSCAD binary
   ${pkgs.makeWrapper} ${pkgs.openscad}/bin/${pkgs.openscad.meta.mainProgram} \
     $out/bin/${pkgs.openscad.meta.mainProgram} --set OPENSCADPATH $out/libraries
-'';
+''

@@ -1,10 +1,6 @@
 { config, pkgs, ... }:
 
-{
-  imports = [
-    ./openscad-with-extensions.nix
-  ];
-  
+{  
   environment.systemPackages = [
     (import ./openscad-with-extensions.nix {
       inherit pkgs;
