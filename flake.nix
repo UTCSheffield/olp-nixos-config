@@ -21,14 +21,6 @@
             ./machines/MakerLab.nix
           ];
         };
-        makerlab-virtio = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = attrs;
-          modules = [
-            ./hardware/vm-virtio.nix
-            ./machines/MakerLab.nix
-          ];
-        };
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = attrs;
