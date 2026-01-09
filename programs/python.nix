@@ -3,6 +3,9 @@
 {  
   environment.systemPackages = with pkgs; [
     (python313.withPackages (python-pkgs: with python-pkgs; [
+      solidpython2
+
+      # ── QOL ────────────────────────────────────
       flake8
       rich
       typer
