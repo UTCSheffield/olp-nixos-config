@@ -40,6 +40,7 @@
   # ── Formatting / Web ─────────────────────────
   "esbenp.prettier-vscode"
   "dbaeumer.vscode-eslint"
+  "ms-python.flake8"
   "humao.rest-client"
   "ritwickdey.LiveServer"
 

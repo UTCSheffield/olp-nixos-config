@@ -3,6 +3,7 @@
 {  
   environment.systemPackages = with pkgs; [
     (python313withPackages (with python-pkgs: [
+      flake8
       rich
       typer
       click
