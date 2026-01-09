@@ -2,8 +2,7 @@
 
 {  
   environment.systemPackages = [
-    (import ./openscad-with-extensions.nix {
-      inherit pkgs;
+    (pkgs.callPackage ./openscad-with-extensions.nix {
       extensions = [
         {
           owner = "BelfrySCAD";
