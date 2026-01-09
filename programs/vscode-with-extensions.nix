@@ -40,7 +40,21 @@ let
           name="$(basename "$ext")"
           ln -sfn "$ext" "$home/.vscode/extensions/$name"
         done
-        ln -sfn "${extensionJsonFile}/share/vscode/extensions/extensions.json" "$home/.vscode/extensions/extensions.json"
+
+        user_json="$home/.vscode/extensions/extensions.json"
+        system_json="${extensionJsonFile}/share/vscode/extensions/extensions.json"
+        if [ ! -f "$user_json" ]; then
+          cp "$system_json" "$user_json"
+          continue
+        fi
+        
+        tmpfile="$(mktemp)"
+        jq -s '
+          { recommendations:
+            (.[0].recommendations + .[1].recommendations) | unique
+          }
+        ' "$system_json" "$user_json" > "$tmpfile"
+        mv "$tmpfile" "$user_json" 
       done
     '';
   };
@@ -52,7 +66,7 @@ in
 
 runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
   {
-    nativeBuildInputs = [ makeWrapper ];
+    nativeBuildInputs = [ makeWrapper jq ];
     buildInputs = [ vscode ];
     dontPatchELF = true;
     dontStrip = true;
