@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ../hardware/dell.nix
+    ../hardware/generic.nix
     ../programs/firefox.nix
     ../programs/vscode.nix
   ];
