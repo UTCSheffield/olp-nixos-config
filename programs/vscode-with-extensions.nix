@@ -1,64 +1,69 @@
 {
-  config,
-  pkgs,
   lib,
-  ...
+  stdenv,
+  runCommand,
+  buildEnv,
+  vscode,
+  vscode-utils,
+  makeWrapper,
+  writeTextFile,
+  vscodeExtensions ? [ ],
 }:
+
 let
-  normalUsers = lib.attrNames (lib.filterAttrs (_: u: u.isNormalUser or false) config.users.users);
-in
-{
-  options = {
-    vscode.extensions = lib.mkOption { default = [ ]; };
-    vscode.user = lib.mkOption { };
+  inherit (vscode) executableName longName;
+  wrappedPkgVersion = lib.getVersion vscode;
+  wrappedPkgName = lib.removeSuffix "-${wrappedPkgVersion}" vscode.name;
+
+  extensionJsonFile = writeTextFile {
+    name = "vscode-extensions-json";
+    destination = "/share/vscode/extensions/extensions.json";
+    text = vscode-utils.toExtensionJson vscodeExtensions;
   };
 
-  config = {
-    environment.systemPackages = [ pkgs.vscode ];
+  combinedExtensionsDrv = buildEnv {
+    name = "vscode-extensions";
+    paths = vscodeExtensions ++ [ extensionJsonFile ];
+  };
 
-    system.activationScripts.fix-vscode-extensions.text = ''
-      for user in ${lib.concatStringsSep " " normalUsers}; do
-          HOME_DIR=$(getent passwd "$user" | cut -d: -f6)
-          EXT_DIR="$HOME_DIR/.vscode/extensions"
+  wrapperScript = writeTextFile {
+    name = "vscode-wrapper";
+    text = ''
+      #!/usr/bin/env bash
+      # Loop over normal users
+      for user in $(awk -F: '$3 >= 1000 && $3 < 60000 {print $1}' /etc/passwd); do
+        home=$(getent passwd "$user" | cut -d: -f6)
+        [ -d "$home" ] && [ -w "$home" ] || continue
 
-          mkdir -p "$EXT_DIR"
-          chown "$user:users" "$EXT_DIR"
-
-          for ext in ${lib.concatMapStringsSep " " toString config.vscode.extensions}; do
-          ln -sf "$ext/share/vscode/extensions/"* "$EXT_DIR/"
-          done
-
-          chown -R "$user:users" "$EXT_DIR"
+        mkdir -p "$home/.vscode/extensions"
+        ln -sfn ${combinedExtensionsDrv} "$home/.vscode/extensions/system-extensions"
+        ln -sfn ${extensionJsonFile} "$home/.vscode/extensions/extensions.json"
       done
     '';
-
-    systemd.services.vscode-extensions-sync = {
-      description = "Ensure VSCode extensions for all users";
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = pkgs.writeShellScript "vscode-ext-sync" ''
-          for user in $(getent passwd | awk -F: '$3 >= 1000 {print $1}'); do
-            HOME_DIR=$(getent passwd "$user" | cut -d: -f6)
-            [ -d "$HOME_DIR" ] || continue
-
-            EXT_DIR="$HOME_DIR/.vscode/extensions"
-            mkdir -p "$EXT_DIR"
-
-            for ext in ${lib.concatMapStringsSep " " toString config.vscode.extensions}; do
-              ln -sf "$ext/share/vscode/extensions/"* "$EXT_DIR/"
-            done
-
-            chown -R "$user:users" "$EXT_DIR"
-          done
-        '';
-      };
-    };
-    systemd.timers.vscode-extensions-sync = {
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnBootSec = "2min";
-        OnUnitActiveSec = "20min";
-      };
-    };
   };
-}
+
+  extensionsFlag = ''
+    --add-flags "--extensions-dir \$HOME/.vscode/extensions"
+  '';
+in
+
+runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
+  {
+    nativeBuildInputs = [ makeWrapper ];
+    buildInputs = [ vscode ];
+    dontPatchELF = true;
+    dontStrip = true;
+    meta = vscode.meta;
+  }
+  ''
+    mkdir -p "$out/bin"
+    mkdir -p "$out/share/applications"
+    mkdir -p "$out/share/pixmaps"
+
+    ln -sT "${vscode}/share/pixmaps/vs${executableName}.png" "$out/share/pixmaps/vs${executableName}.png"
+    ln -sT "${vscode}/share/applications/${executableName}.desktop" "$out/share/applications/${executableName}.desktop"
+    ln -sT "${vscode}/share/applications/${executableName}-url-handler.desktop" "$out/share/applications/${executableName}-url-handler.desktop"
+
+    makeWrapper "${vscode}/bin/${executableName}" "$out/bin/${executableName}" --run "${wrapperScript}" ${extensionsFlag}
+
+  ''
