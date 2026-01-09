@@ -36,8 +36,11 @@ let
         [ -d "$home" ] && [ -w "$home" ] || continue
 
         mkdir -p "$home/.vscode/extensions"
-        ln -sfn ${combinedExtensionsDrv} "$home/.vscode/extensions/system-extensions"
-        ln -sfn ${extensionJsonFile} "$home/.vscode/extensions/extensions.json"
+        for ext in ${combinedExtensionsDrv}/share/vscode/extensions/*; do
+          name="$(basename "$ext")"
+          ln -sfn "$ext" "$home/.vscode/extensions/$name"
+        done
+        ln -sfn "${extensionJsonFile}/share/vscode/extensions/extensions.json" "$home/.vscode/extensions/extensions.json"
       done
     '';
   };
@@ -64,6 +67,6 @@ runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
     ln -sT "${vscode}/share/applications/${executableName}.desktop" "$out/share/applications/${executableName}.desktop"
     ln -sT "${vscode}/share/applications/${executableName}-url-handler.desktop" "$out/share/applications/${executableName}-url-handler.desktop"
 
-    makeWrapper "${vscode}/bin/${executableName}" "$out/bin/${executableName}" --run "${wrapperScript}" ${extensionsFlag}
+    makeWrapper "${vscode}/bin/${executableName}" "$out/bin/${executableName}" --run "bash ${wrapperScript}" ${extensionsFlag}
 
   ''
