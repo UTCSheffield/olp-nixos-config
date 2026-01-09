@@ -11,7 +11,6 @@
     ../programs/vscode.nix
     ../programs/openscad.nix
   ];
-  vscode.extensions = [ ];
 
   users.users.makerlab = {
     description = "MakerLab";
