@@ -8,6 +8,7 @@
   makeWrapper,
   writeTextFile,
   vscodeExtensions ? [ ],
+  jq
 }:
 
 let
@@ -66,8 +67,8 @@ in
 
 runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
   {
-    nativeBuildInputs = [ makeWrapper jq ];
-    buildInputs = [ vscode ];
+    nativeBuildInputs = [ makeWrapper ];
+    buildInputs = [ vscode jq ];
     dontPatchELF = true;
     dontStrip = true;
     meta = vscode.meta;
