@@ -10,6 +10,7 @@
     ../programs/firefox.nix
     ../programs/vscode.nix
     ../programs/openscad.nix
+    ../programs/python.nix
   ];
 
   users.users.makerlab = {
