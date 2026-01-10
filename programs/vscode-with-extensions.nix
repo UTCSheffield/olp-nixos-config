@@ -39,6 +39,9 @@ let
         mkdir -p "$home/.vscode/extensions"
         for ext in ${combinedExtensionsDrv}/share/vscode/extensions/*; do
           name="$(basename "$ext")"
+          if [ "$name" = "extensions.json" ]; then
+            continue
+          fi
           ln -sfn "$ext" "$home/.vscode/extensions/$name"
         done
 
@@ -48,14 +51,6 @@ let
           cp "$system_json" "$user_json"
           continue
         fi
-        
-        tmpfile="$(mktemp)"
-        jq -s '
-          {
-            (.[0] // []) + (.[1] // []) | unique
-          }
-        ' "$system_json" "$user_json" > "$tmpfile"
-        mv "$tmpfile" "$user_json" 
       done
     '';
   };
@@ -68,7 +63,7 @@ in
 runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
   {
     nativeBuildInputs = [ makeWrapper ];
-    buildInputs = [ vscode jq ];
+    buildInputs = [ vscode ];
     dontPatchELF = true;
     dontStrip = true;
     meta = vscode.meta;
