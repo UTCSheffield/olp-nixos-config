@@ -7,6 +7,7 @@
 {
   imports = [
     ../hardware/generic.nix
+    ../programs/cachix.nix
     ../programs/firefox.nix
     ../programs/vscode.nix
     ../programs/openscad.nix

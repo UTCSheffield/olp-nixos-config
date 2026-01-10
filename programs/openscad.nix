@@ -2,7 +2,7 @@
 
 {  
   environment.systemPackages = [
-    (pkgs.callPackage ./openscad-with-extensions.nix {
+    (pkgs.callPackage ./packages/openscad-with-extensions.nix {
       extensions = [
         {
           owner = "BelfrySCAD";
