@@ -8,7 +8,14 @@ if [ $(whoami) != 'root' ]; then
 fi
 
 read -p "Hostname: " hostname
-read -p "Config (ex: makerlab): " config
+read -p "Config (default: makerlab): " config
+if [ -z "$config" ]; then
+    config="makerlab"
+fi
+read -p "Branch (default: master): " branch
+if [ -z "$branch" ]; then
+    branch="master"
+fi
 read -sp "Root Password: " ROOT_PASSWORD
 
 lsblk
@@ -46,11 +53,12 @@ swapon "$drive3"
 
 echo "Installing System..."
 mkdir -p /mnt/etc
-git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos
+git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos --depth 1 --branch $branch
 
 cat <<EOF > "/mnt/etc/nixos/system.conf"
 hostname = $hostname
 config = $config
+branch = $branch
 EOF
 
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
