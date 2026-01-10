@@ -13,9 +13,9 @@ in pkgs.runCommand "openscad-with-extensions" {
   dontPatchELF = true;
   dontStrip = true;
 } ''
-  mkdir -p $out/bin $out/libraries $out/share/pixmaps $out/share/applications
+  mkdir -p $out/bin $out/libraries $out/share/icons/hicolor/256x256/apps $out/share/applications
 
-  ln -sT ${pkgs.openscad}/share/pixmaps/vs${pkgs.openscad.meta.mainProgram}.png $out/share/pixmaps/${pkgs.openscad.meta.mainProgram}.png
+  ln -sT ${pkgs.openscad}/share/icons/hicolor/256x256/apps/${pkgs.openscad.meta.mainProgram}.png $out/share/icons/hicolor/256x256/apps/${pkgs.openscad.meta.mainProgram}.png
   ln -sT ${pkgs.openscad}/share/applications/${pkgs.openscad.meta.mainProgram}.desktop $out/share/applications/${pkgs.openscad.meta.mainProgram}.desktop
   ln -sT ${pkgs.openscad}/share/applications/${pkgs.openscad.meta.mainProgram}-url-handler.desktop $out/share/applications/${pkgs.openscad.meta.mainProgram}-url-handler.desktop
 
