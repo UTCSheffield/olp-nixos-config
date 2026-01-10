@@ -51,8 +51,8 @@ let
         
         tmpfile="$(mktemp)"
         jq -s '
-          { recommendations:
-            (.[0].recommendations + .[1].recommendations) | unique
+          {
+            (.[0] // []) + (.[1] // []) | unique
           }
         ' "$system_json" "$user_json" > "$tmpfile"
         mv "$tmpfile" "$user_json" 
