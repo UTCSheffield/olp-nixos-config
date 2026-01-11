@@ -42,29 +42,12 @@
     gh
   ];
 
-  services.xserver.displayManager.lightdm.enable = false;
+  services.xserver.displayManager.gdm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.xserver = {
     enable = true;
     xkb.layout = "gb";
   };
-
-  services.dbus.enable = true;
-
-  services.xserver.displayManager.startx.enable = true;
-
-  environment.etc."profile.d/pam_oauth2_device.sh".text = ''
-    XINITRC="$HOME/.xinitrc"
-      cat > "$XINITRC" <<'EOF'
-#!/bin/sh
-exec startplasma-x11
-EOF
-    chmod 755 "$XINITRC"
-
-    if [ -z "$DISPLAY " ] && [ "$(tty)" = "/dev/tty1" ]; then
-      exec startx
-    fi
-  '';
 
   system.stateVersion = "25.11";
 }

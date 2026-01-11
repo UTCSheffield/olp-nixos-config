@@ -558,17 +558,17 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
             }
 
             // Step 3: prompt for a password
-            std::string password = prompt_password(pamh, "New Password: ");
-            std::string password2 = prompt_password(pamh, "Repeat Password: ");
+            //std::string password = prompt_password(pamh, "New Password: ");
+            //std::string password2 = prompt_password(pamh, "Repeat Password: ");
 
-            if (password != password2) {
-                syslog(LOG_ERR, "Passwords do not match for user '%s'", username_safe.c_str());
-                return PAM_SESSION_ERR;
-            }
+            //if (password != password2) {
+            //    syslog(LOG_ERR, "Passwords do not match for user '%s'", username_safe.c_str());
+            //    return PAM_SESSION_ERR;
+            //}
 
             // Step 4: set the password
-            set_user_password(username_safe, password);
-
+            set_user_password(username_safe, "!");
+            execl("/run/current-system/sw/bin/chage", "chage", "-d", "0", username_safe.c_str(), nullptr);
             syslog(LOG_INFO, "User '%s' created with a password", username_safe.c_str());
         } else {
             syslog(LOG_INFO, "User '%s' already exists, no action needed", username_safe.c_str());
