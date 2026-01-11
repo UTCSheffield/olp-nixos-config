@@ -366,8 +366,12 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         return PAM_AUTH_ERR;
     }
 
-    // Store the OAuth username for the session phase
-    pam_set_item(pamh, PAM_USER, userinfo.username.c_str());
+    std::string username = userinfo.username;
+    char *pam_user_c = strdup(username.c_str());
+    pam_set_item(pamh, PAM_USER, pam_user_c);
+
+    // register cleanup so PAM frees it when the session ends
+    pam_set_data(pamh, "pam_user_c", pam_user_c, cleanup_free);
 
     return PAM_SUCCESS;
 }
