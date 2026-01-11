@@ -13,7 +13,6 @@ void Config::load(const char *path) {
   config_fstream >> j;
 
   client_id = j.at("oauth").at("client").at("id").get<std::string>();
-  client_secret = j.at("oauth").at("client").at("secret").get<std::string>();
   scope = j.at("oauth").at("scope").get<std::string>();
   device_endpoint = j.at("oauth").at("device_endpoint").get<std::string>();
   token_endpoint = j.at("oauth").at("token_endpoint").get<std::string>();

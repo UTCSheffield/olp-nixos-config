@@ -104,7 +104,7 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb,
 }
 
 void make_authorization_request(const char *client_id,
-                                const char *client_secret, const char *scope,
+                                const char *scope,
                                 const char *device_endpoint, bool require_mfa,
                                 DeviceAuthResponse *response) {
   CURL *curl;
@@ -124,8 +124,6 @@ void make_authorization_request(const char *client_id,
         " urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
   }
   curl_easy_setopt(curl, CURLOPT_URL, device_endpoint);
-  curl_easy_setopt(curl, CURLOPT_USERNAME, client_id);
-  curl_easy_setopt(curl, CURLOPT_PASSWORD, client_secret);
   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, params.c_str());
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -151,7 +149,7 @@ void make_authorization_request(const char *client_id,
   }
 }
 
-void poll_for_token(const char *client_id, const char *client_secret,
+void poll_for_token(const char *client_id,
                     const char *token_endpoint, const char *device_code,
                     std::string *token) {
   int timeout = 900, interval = 3;
@@ -180,7 +178,6 @@ void poll_for_token(const char *client_id, const char *client_secret,
     }
     curl_easy_setopt(curl, CURLOPT_URL, token_endpoint);
     curl_easy_setopt(curl, CURLOPT_USERNAME, client_id);
-    curl_easy_setopt(curl, CURLOPT_PASSWORD, client_secret);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, params.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -360,12 +357,12 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     }
 
     make_authorization_request(
-        config.client_id.c_str(), config.client_secret.c_str(),
+        config.client_id.c_str(),
         config.scope.c_str(), config.device_endpoint.c_str(),
         config.require_mfa, &device_auth_response);
     show_prompt(pamh, config.qr_error_correction_level, config.qr_show,
                 &device_auth_response);
-    poll_for_token(config.client_id.c_str(), config.client_secret.c_str(),
+    poll_for_token(config.client_id.c_str(),
                    config.token_endpoint.c_str(),
                    device_auth_response.device_code.c_str(), &token);
     get_userinfo(config.userinfo_endpoint.c_str(), token.c_str(),
@@ -551,4 +548,15 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
   }
 
   return PAM_SUCCESS;
+}
+
+PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh,
+                                    int flags,
+                                    int argc,
+                                    const char **argv) {
+    (void)pamh;  // avoid unused parameter warnings
+    (void)flags;
+    (void)argc;
+    (void)argv;
+    return PAM_SUCCESS;
 }
