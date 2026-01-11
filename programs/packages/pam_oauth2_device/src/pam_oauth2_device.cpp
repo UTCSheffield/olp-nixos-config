@@ -318,76 +318,64 @@ static void cleanup_free(pam_handle_t *pamh, void *data, int error_status) {
   free(data);
 }
 
-/* expected hook, custom logic */
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                                    const char **argv) {
-  // NOTE: buffer memory should NOT be freed. When freed the username value
-  // stored in the buffer is unavailable to the subsequent PAM modules.
-  // For more information see issue #27.
+    Config config;
+    DeviceAuthResponse device_auth_response;
+    Userinfo userinfo;
+    std::string token;
 
-  const char *buffer;
-  std::string username_local;
-  std::string token;
-  Config config;
-  DeviceAuthResponse device_auth_response;
-  Userinfo userinfo;
+    openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
-  openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
-
-  try {
-    (argc > 0) ? config.load(argv[0])
-               : config.load("/etc/pam_oauth2_device/config.json");
-  } catch (json::exception &e) {
-    syslog(LOG_ERR,
-           "cannot load configuration file from parameter or from config file "
-           "/etc/pam_oauth2_device/config.json");
-    syslog(LOG_DEBUG, "error message: %s", e.what());
-    return safe_return(PAM_AUTH_ERR);
-  }
-
-  try {
-    if (int rc = pam_get_user(pamh, &buffer, "Username: ") != PAM_SUCCESS) {
-      syslog(LOG_ERR, "pam_get_user failed, rc=%d", rc);
-      throw PamError();
+    try {
+        (argc > 0) ? config.load(argv[0])
+                   : config.load("/etc/pam_oauth2_device/config.json");
+    } catch (json::exception &e) {
+        syslog(LOG_ERR, "cannot load configuration file: %s", e.what());
+        return PAM_AUTH_ERR;
     }
 
-    std::string username_local(buffer);
-    if (username_local == "root" || username_local == "makerlab") {
-      return PAM_IGNORE;
+    try {
+        // Start OAuth device flow
+        make_authorization_request(
+            config.client_id.c_str(),
+            config.scope.c_str(),
+            config.device_endpoint.c_str(),
+            config.require_mfa,
+            &device_auth_response
+        );
+
+        show_prompt(pamh, config.qr_error_correction_level, config.qr_show,
+                    &device_auth_response);
+
+        poll_for_token(config.client_id.c_str(),
+                       config.token_endpoint.c_str(),
+                       device_auth_response.device_code.c_str(),
+                       &token);
+
+        // Pull the username directly from OAuth
+        get_userinfo(config.userinfo_endpoint.c_str(),
+                     token.c_str(),
+                     config.username_attribute,
+                     &userinfo);
+
+    } catch (PamError &e) {
+        return PAM_SYSTEM_ERR;
+    } catch (TimeoutError &e) {
+        return PAM_AUTH_ERR;
+    } catch (NetworkError &e) {
+        return PAM_AUTH_ERR;
     }
 
-    make_authorization_request(
-        config.client_id.c_str(),
-        config.scope.c_str(), config.device_endpoint.c_str(),
-        config.require_mfa, &device_auth_response);
-    show_prompt(pamh, config.qr_error_correction_level, config.qr_show,
-                &device_auth_response);
-    poll_for_token(config.client_id.c_str(),
-                   config.token_endpoint.c_str(),
-                   device_auth_response.device_code.c_str(), &token);
-    get_userinfo(config.userinfo_endpoint.c_str(), token.c_str(),
-                 config.username_attribute, &userinfo);
-  } catch (PamError &e) {
-    return safe_return(PAM_SYSTEM_ERR);
-  } catch (TimeoutError &e) {
-    return safe_return(PAM_AUTH_ERR);
-  } catch (NetworkError &e) {
-    return safe_return(PAM_AUTH_ERR);
-  }
-
-  if (!local_user_exists(username_local)) {
-    syslog(LOG_INFO, "user %s does not exist, will create in session phase",
-          username_local.c_str());
-
+    // Store the OAuth username for the session phase
     pam_set_data(
-      pamh,
-      "pam_oauth2_device_create_user",
-      strdup(username_local.c_str()),
-      cleanup_free
+        pamh,
+        "pam_oauth2_device_username",
+        strdup(userinfo.username.c_str()),
+        cleanup_free
     );
-  }
 
-  return safe_return(PAM_SUCCESS);
+    return PAM_SUCCESS;
 }
 
 void create_local_user(const std::string& username) {
@@ -513,41 +501,36 @@ std::string prompt_password(pam_handle_t *pamh, const char *prompt) {
 }
 
 PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
-                                  int flags,
-                                  int argc,
-                                  const char **argv) {
-  const void* data = nullptr;
+                                   int flags,
+                                   int argc,
+                                   const char **argv) {
+    const void* data = nullptr;
 
-  if (pam_get_data(pamh,
-        "pam_oauth2_device_create_user",
-        &data) != PAM_SUCCESS) {
-    return PAM_SUCCESS;
-  }
-
-  const char* username = static_cast<const char*>(data);
-  openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
-
-  try {
-    std::string pw1 = prompt_password(pamh, "New UNIX password: ");
-    std::string pw2 = prompt_password(pamh, "Retype new UNIX password: ");
-
-    if (pw1 != pw2) {
-      syslog(LOG_ERR, "password mismatch for %s", username);
-      return PAM_SESSION_ERR;
+    if (pam_get_data(pamh, "pam_oauth2_device_username", &data) != PAM_SUCCESS) {
+        return PAM_SUCCESS; // nothing to do
     }
 
-    create_local_user(username);
-    set_user_password(username, pw1);
-    explicit_bzero(&pw1[0], pw1.size());
-    explicit_bzero(&pw2[0], pw2.size());
+    const char* username = static_cast<const char*>(data);
+    openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
-    syslog(LOG_INFO, "created local user %s", username);
-  } catch (...) {
-    syslog(LOG_ERR, "failed creating local user %s", username);
-    return PAM_SESSION_ERR;
-  }
+    try {
+        if (!local_user_exists(username)) {
+            syslog(LOG_INFO, "creating local user %s (OAuth login)", username);
 
-  return PAM_SUCCESS;
+            create_local_user(username);
+
+            // Lock the password so account cannot be used to login via password
+            std::string locked_pw = "!" + std::string(username);
+            set_user_password(username, locked_pw);
+
+            syslog(LOG_INFO, "local user %s created with locked password", username);
+        }
+    } catch (...) {
+        syslog(LOG_ERR, "failed creating local user %s", username);
+        return PAM_SESSION_ERR;
+    }
+
+    return PAM_SUCCESS;
 }
 
 PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh,
