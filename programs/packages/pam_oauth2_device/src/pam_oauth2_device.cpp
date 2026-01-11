@@ -385,7 +385,7 @@ void create_local_user(const std::string& username) {
       "/run/current-system/sw/bin/useradd",
       "useradd",
       "-m",                 // create home directory
-      "-s", "/bin/bash",    // default shell
+      "-s", "/run/current-system/sw/bin/bash",    // default shell
       username.c_str(),
       (char*)nullptr
     );
