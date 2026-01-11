@@ -542,6 +542,12 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
 
             // Step 3: prompt for a password
             std::string password = prompt_password(pamh, "Enter a password for your new account: ");
+            std::string password2 = prompt_password(pamh, "Enter a password for your new account: ");
+
+            if (password != password2) {
+                syslog(LOG_ERR, "Passwords do not match for user '%s'", username_safe.c_str());
+                return PAM_SESSION_ERR;
+            }
 
             // Step 4: set the password
             set_user_password(username_safe, password);
