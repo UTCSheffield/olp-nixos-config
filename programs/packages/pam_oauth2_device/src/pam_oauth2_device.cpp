@@ -335,12 +335,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   DeviceAuthResponse device_auth_response;
   Userinfo userinfo;
 
-  username_local = buffer;
-
-  if (username_local == "root" || username_local == "makerlab") {
-    return PAM_IGNORE;
-  }
-
   openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
   try {
@@ -358,6 +352,11 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     if (int rc = pam_get_user(pamh, &buffer, "Username: ") != PAM_SUCCESS) {
       syslog(LOG_ERR, "pam_get_user failed, rc=%d", rc);
       throw PamError();
+    }
+
+    std::string username_local(buffer);
+    if (username_local == "root" || username_local == "makerlab") {
+      return PAM_IGNORE;
     }
 
     make_authorization_request(
