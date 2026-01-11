@@ -370,7 +370,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                    config.token_endpoint.c_str(),
                    device_auth_response.device_code.c_str(), &token);
     get_userinfo(config.userinfo_endpoint.c_str(), token.c_str(),
-                 config.username_attribute.c_str(), &userinfo);
+                 config.username_attribute, &userinfo);
   } catch (PamError &e) {
     return safe_return(PAM_SYSTEM_ERR);
   } catch (TimeoutError &e) {
