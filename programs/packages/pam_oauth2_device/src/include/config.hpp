@@ -12,7 +12,7 @@ class Config {
   std::string client_id, scope, device_endpoint, token_endpoint,
       userinfo_endpoint, ldap_basedn, ldap_user,
       ldap_passwd, ldap_filter, ldap_attr;
-  json username_attribute;
+  nlohmann::json username_attribute;
   bool require_mfa, qr_show;
   std::set<std::string> ldap_hosts;
   int qr_error_correction_level;
