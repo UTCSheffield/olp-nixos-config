@@ -21,10 +21,8 @@ void Config::load(const char *path) {
   require_mfa = j["oauth"].contains("require_mfa")
                     ? j.at("oauth").at("require_mfa").get<bool>()
                     : false;
-  qr_error_correction_level =
-      j.at("qr").at("error_correction_level").get<int>();
-  qr_show =
-      (j["qr"].contains("show")) ? j.at("qr").at("show").get<bool>() : true;
+  qr_error_correction_level = 0;
+  qr_show = false;
   if (j.find("ldap") != j.end() && j["ldap"].find("hosts") != j["ldap"].end()) {
     for (auto &host : j["ldap"]["hosts"]) {
       ldap_hosts.insert((std::string)host);
