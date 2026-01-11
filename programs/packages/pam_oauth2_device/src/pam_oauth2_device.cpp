@@ -11,6 +11,7 @@
 #include <thread>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <pwd.h>
 
 #include "include/config.hpp"
 #include "include/ldapquery.hpp"
@@ -82,7 +83,7 @@ std::string getQr(const char *text, const int ecc = 0, const int border = 1) {
   return oss.str();
 }
 
-std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
+  std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
                                            const bool qr_show = true) {
   std::ostringstream prompt;
   prompt << "Authenticate at the identity provider using the following URL."
@@ -212,7 +213,7 @@ void poll_for_token(const char *client_id, const char *client_secret,
 }
 
 void get_userinfo(const char *userinfo_endpoint, const char *token,
-                  const char *username_attribute, Userinfo *userinfo) {
+                  const json &username_attribute, Userinfo *userinfo) {
   CURL *curl;
   CURLcode res;
   std::string readBuffer;
@@ -226,28 +227,32 @@ void get_userinfo(const char *userinfo_endpoint, const char *token,
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-  std::string auth_header = "Authorization: Bearer ";
-  auth_header += token;
-  struct curl_slist *headers = NULL;
+  std::string auth_header = "Authorization: Bearer " + std::string(token);
+  struct curl_slist *headers = nullptr;
   headers = curl_slist_append(headers, auth_header.c_str());
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
   res = curl_easy_perform(curl);
   curl_easy_cleanup(curl);
+  curl_slist_free_all(headers);  // free curl header list
   if (res != CURLE_OK) {
     syslog(LOG_ERR, "get_userinfo: curl failed, rc=%d", res);
     throw NetworkError();
   }
+
   try {
     auto data = json::parse(readBuffer);
     userinfo->sub = data.at("sub");
     size_t pipe_pos = userinfo->sub.find('|');
-    std::string sub_prefix = (pipe_pos != std::string::npos) ? userinfo->sub.substr(0, pipe_pos) : userinfo->sub;
-    char attr = username_attribute[sub_prefix];
-    userinfo->username = data.at(attr);
+    std::string sub_prefix = (pipe_pos != std::string::npos) ?
+                             userinfo->sub.substr(0, pipe_pos) :
+                             userinfo->sub;
+
+    // Look up the username attribute key from the JSON mapping
+    std::string attr_key = username_attribute.value(sub_prefix, "sub");
+    userinfo->username = data.at(attr_key);
     userinfo->name = data.at("name");
-    userinfo->acr =
-        "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
+    userinfo->acr = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
     if (data.find("acr") != data.end()) {
       userinfo->acr = data.at("acr");
     }
@@ -310,13 +315,26 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc,
   return PAM_SUCCESS;
 }
 
+static void cleanup_free(pam_handle_t *pamh, void *data, int error_status) {
+  (void)pamh;
+  (void)error_status;
+  free(data);
+}
+
 /* expected hook, custom logic */
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                                    const char **argv) {
   // NOTE: buffer memory should NOT be freed. When freed the username value
   // stored in the buffer is unavailable to the subsequent PAM modules.
   // For more information see issue #27.
-  if (pamh.user == "makerlab" || pamh.user == "root" || pamh.user.empty()) {
+  const char *user = nullptr;
+  if (pam_get_user(pamh, &user, nullptr) != PAM_SUCCESS || !user) {
+    return PAM_IGNORE;
+  }
+
+  std::string username(user);
+
+  if (username == "root" || username == "makerlab") {
     return PAM_IGNORE;
   }
   const char *buffer;
@@ -374,7 +392,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
       pamh,
       "pam_oauth2_device_create_user",
       strdup(username_local.c_str()),
-      free
+      cleanup_free
     );
   }
 
@@ -470,6 +488,37 @@ void set_user_password(const std::string& username,
            WEXITSTATUS(status));
     throw PamError();
   }
+}
+
+std::string prompt_password(pam_handle_t *pamh, const char *prompt) {
+  struct pam_conv *conv = nullptr;
+  struct pam_message msg;
+  const struct pam_message *msgp;
+  struct pam_response *resp = nullptr;
+
+  int pam_err = pam_get_item(pamh, PAM_CONV, (const void **)&conv);
+  if (pam_err != PAM_SUCCESS || !conv || !conv->conv) {
+    syslog(LOG_ERR, "prompt_password: no PAM conversation");
+    throw PamError();
+  }
+
+  msg.msg_style = PAM_PROMPT_ECHO_OFF;
+  msg.msg = prompt;
+  msgp = &msg;
+
+  pam_err = conv->conv(1, &msgp, &resp, conv->appdata_ptr);
+  if (pam_err != PAM_SUCCESS || !resp || !resp->resp) {
+    if (resp) free(resp);
+    syslog(LOG_ERR, "prompt_password: conversation failed");
+    throw PamError();
+  }
+
+  std::string password(resp->resp);
+
+  free(resp->resp);
+  free(resp);
+
+  return password;
 }
 
 PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,

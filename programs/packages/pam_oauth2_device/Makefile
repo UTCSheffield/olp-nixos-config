@@ -2,16 +2,18 @@ CXXFLAGS=-Wall -fPIC -std=c++11
 
 LDLIBS=-lpam -lcurl -lldap -llber
 
-objects = src/pam_oauth2_device.o \
-		  src/include/config.o \
-		  src/include/ldapquery.o \
-		  src/include/nayuki/BitBuffer.o \
-		  src/include/nayuki/QrCode.o \
-		  src/include/nayuki/QrSegment.o
+OBJDIR=build
+
+objects = $(OBJDIR)/pam_oauth2_device.o \
+          $(OBJDIR)/include/config.o \
+          $(OBJDIR)/include/ldapquery.o \
+          $(OBJDIR)/include/nayuki/BitBuffer.o \
+          $(OBJDIR)/include/nayuki/QrCode.o \
+          $(OBJDIR)/include/nayuki/QrSegment.o
 
 all: pam_oauth2_device.so
 
-%.o: %.c %.h
+$(OBJDIR)/%.o: src/%.cpp src/%.hpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 pam_oauth2_device.so: $(objects)

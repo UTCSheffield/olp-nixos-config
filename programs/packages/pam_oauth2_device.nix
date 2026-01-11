@@ -5,16 +5,15 @@ let
     pname = "pam_oauth2_device";
     version = "1.0.0";
 
-    src = builtins.toPath ./pam_oauth2_device;
+    src = ./pam_oauth2_device;
 
-    unpackPhase = "
-      cp -r $src .
-    ";
+    unpackPhase = "cp -r ${src}/* .";
 
     nativeBuildInputs = [ pkgs.gnumake ];
     buildInputs = [ pkgs.linux-pam pkgs.curl.dev pkgs.openldap.dev ];
 
     buildPhase = ''
+      mkdir -p build build/include build/include/nayuki
       make
     '';
 
