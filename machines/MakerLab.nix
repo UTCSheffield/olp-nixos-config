@@ -42,8 +42,6 @@
     gh
   ];
 
-  services.getty.enable = true;
-  services.getty.tty1 = true;
   services.desktopManager.plasma6.enable = true;
   services.displayManager.defaultSession = "plasmax11";
   services.xserver = {
