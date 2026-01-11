@@ -42,8 +42,8 @@
     gh
   ];
 
-  services.displayManager.lightdm.enable = true;
-  services.displayManager.lightdm.greeter.slick.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager.lightdm.greeters.slick.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.xserver = {
     enable = true;
