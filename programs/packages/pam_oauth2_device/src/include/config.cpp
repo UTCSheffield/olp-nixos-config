@@ -17,8 +17,7 @@ void Config::load(const char *path) {
   device_endpoint = j.at("oauth").at("device_endpoint").get<std::string>();
   token_endpoint = j.at("oauth").at("token_endpoint").get<std::string>();
   userinfo_endpoint = j.at("oauth").at("userinfo_endpoint").get<std::string>();
-  username_attribute =
-      j.at("oauth").at("username_attribute").get<json>();
+  username_attribute = j.at("oauth").at("username_attribute");
   require_mfa = j["oauth"].contains("require_mfa")
                     ? j.at("oauth").at("require_mfa").get<bool>()
                     : false;
