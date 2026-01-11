@@ -368,12 +368,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     }
 
     // Store the OAuth username for the session phase
-    pam_set_data(
-        pamh,
-        "pam_oauth2_device_username",
-        strdup(userinfo.username.c_str()),
-        cleanup_free
-    );
+    pam_set_item(pamh, PAM_USER, userinfo.username.c_str());
 
     return PAM_SUCCESS;
 }
@@ -506,7 +501,7 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
                                    const char **argv) {
     const void* data = nullptr;
 
-    if (pam_get_data(pamh, "pam_oauth2_device_username", &data) != PAM_SUCCESS || !data) {
+    if (pam_get_item(pamh, PAM_USER, &data) != PAM_SUCCESS || !data) {
         syslog(LOG_ERR, "pam_sm_open_session: no username stored in PAM data");
         return PAM_SESSION_ERR;
     }
