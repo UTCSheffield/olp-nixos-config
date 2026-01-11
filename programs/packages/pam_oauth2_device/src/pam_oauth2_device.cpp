@@ -326,6 +326,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
 
     openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
+    // Load configuration
     try {
         (argc > 0) ? config.load(argv[0])
                    : config.load("/etc/pam_oauth2_device/config.json");
@@ -334,8 +335,22 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         return PAM_AUTH_ERR;
     }
 
+    // Determine the username for the login attempt
+    const void* pam_user_data = nullptr;
+    if (pam_get_item(pamh, PAM_USER, &pam_user_data) != PAM_SUCCESS || !pam_user_data) {
+        syslog(LOG_ERR, "pam_sm_authenticate: PAM_USER not set");
+        return PAM_AUTH_ERR;
+    }
+    std::string username_safe(static_cast<const char*>(pam_user_data));
+
+    // If the user already exists locally, skip this module
+    if (local_user_exists(username_safe)) {
+        syslog(LOG_INFO, "pam_oauth2_device: user '%s' exists, skipping OAuth", username_safe.c_str());
+        return PAM_IGNORE;
+    }
+
+    // Otherwise, proceed with OAuth device flow
     try {
-        // Start OAuth device flow
         make_authorization_request(
             config.client_id.c_str(),
             config.scope.c_str(),
@@ -352,7 +367,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                        device_auth_response.device_code.c_str(),
                        &token);
 
-        // Pull the username directly from OAuth
         get_userinfo(config.userinfo_endpoint.c_str(),
                      token.c_str(),
                      config.username_attribute,
@@ -366,11 +380,9 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
         return PAM_AUTH_ERR;
     }
 
-    std::string username = userinfo.username;
-    char *pam_user_c = strdup(username.c_str());
+    // Set PAM_USER so subsequent PAM modules know which user this is
+    char *pam_user_c = strdup(userinfo.username.c_str());
     pam_set_item(pamh, PAM_USER, pam_user_c);
-
-    // register cleanup so PAM frees it when the session ends
     pam_set_data(pamh, "pam_user_c", pam_user_c, cleanup_free);
 
     return PAM_SUCCESS;
@@ -504,6 +516,7 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
                                    const char **argv) {
     const void* data = nullptr;
 
+    // Get the username set in pam_sm_authenticate
     if (pam_get_item(pamh, PAM_USER, &data) != PAM_SUCCESS || !data) {
         syslog(LOG_ERR, "pam_sm_open_session: no username stored in PAM data");
         return PAM_SESSION_ERR;
@@ -512,36 +525,37 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
     std::string username_safe(static_cast<const char*>(data));
 
     openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
-
     syslog(LOG_INFO, "pam_sm_open_session: starting session for user '%s'", username_safe.c_str());
 
     try {
         if (!local_user_exists(username_safe)) {
             syslog(LOG_INFO, "User '%s' does not exist, creating...", username_safe.c_str());
-            // Step 1: create user
+
+            // Step 1: create the user
             create_local_user(username_safe);
 
-            // Step 2: verify user was created
+            // Step 2: verify creation
             if (!local_user_exists(username_safe)) {
                 syslog(LOG_ERR, "User '%s' still does not exist after create_local_user!", username_safe.c_str());
                 return PAM_SESSION_ERR;
             }
-            syslog(LOG_INFO, "User '%s' successfully created", username_safe.c_str());
 
-            // Step 3: set a locked password
-            std::string locked_pw = "!" + std::string(username_safe.c_str());
-            set_user_password(username_safe.c_str(), locked_pw);
+            // Step 3: prompt for a password
+            std::string password = prompt_password(pamh, "Enter a password for your new account: ");
 
-            syslog(LOG_INFO, "User '%s' password locked", username_safe.c_str());
+            // Step 4: set the password
+            set_user_password(username_safe, password);
+
+            syslog(LOG_INFO, "User '%s' created with a password", username_safe.c_str());
         } else {
             syslog(LOG_INFO, "User '%s' already exists, no action needed", username_safe.c_str());
         }
     } catch (const std::exception &e) {
-        syslog(LOG_ERR, "pam_sm_open_session: exception while creating user '%s': %s",
+        syslog(LOG_ERR, "pam_sm_open_session: exception for user '%s': %s",
                username_safe.c_str(), e.what());
         return PAM_SESSION_ERR;
     } catch (...) {
-        syslog(LOG_ERR, "pam_sm_open_session: unknown error while creating user '%s'", username_safe.c_str());
+        syslog(LOG_ERR, "pam_sm_open_session: unknown error for user '%s'", username_safe.c_str());
         return PAM_SESSION_ERR;
     }
 
