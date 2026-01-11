@@ -86,13 +86,12 @@ std::string getQr(const char *text, const int ecc = 0, const int border = 1) {
   std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
                                            const bool qr_show = true) {
   std::ostringstream prompt;
-  prompt << "Authenticate at the identity provider using the following URL."
+  prompt << "Authenticate using the following URL."
          << std::endl
          << std::endl;
   prompt << std::regex_replace(verification_uri, std::regex("\\s"), "%20")
          << std::endl;
   prompt << "With code: " << user_code << std::endl;
-  prompt << std::endl << "Hit enter when you have authenticated." << std::endl;
   return prompt.str();
 }
 
