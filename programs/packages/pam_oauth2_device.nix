@@ -29,7 +29,7 @@ in
   config = {
     environment.systemPackages = [ pamOauth2 ];
 
-    environment.etc."pam_oauth2_device/config.json".source = builtins.toPath ./pam_oauth2_device_config.json;
+    environment.etc."pam_oauth2_device/config.json".source = builtins.toPath ./pam_oauth2_device.json;
 
     security.pam.services.login.rules.auth.settings = {
         order = 10;
