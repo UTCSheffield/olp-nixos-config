@@ -8,6 +8,7 @@
   imports = [
     ../hardware/generic.nix
     ../programs/cachix.nix
+    ../programs/packages/pam_oauth2_device.nix
     ../programs/firefox.nix
     ../programs/vscode.nix
     ../programs/openscad.nix
