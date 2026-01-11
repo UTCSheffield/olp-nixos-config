@@ -8,7 +8,7 @@ let
     src = builtins.toPath ./pam_oauth2_device;
 
     unpackPhase = "
-      cp -r $src/* .
+      cp -r $src .
     ";
 
     nativeBuildInputs = [ pkgs.gnumake ];

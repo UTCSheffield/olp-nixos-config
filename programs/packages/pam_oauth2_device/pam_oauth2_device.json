@@ -1,0 +1,15 @@
+{
+    "oauth": {
+        "client": {
+            "id": "2mljF7mms2NR59J5xAaqqa92ZDQSpehG"
+        },
+        "scope": "openid profile",
+        "device_endpoint": "https://dev-o8npedgahrnfehrq.uk.auth0.com/oauth/device/code",
+        "token_endpoint": "https://dev-o8npedgahrnfehrq.uk.auth0.com/oauth/token",
+        "userinfo_endpoint": "https://dev-o8npedgahrnfehrq.uk.auth0.com/userinfo",
+        "username_attribute": {
+            "github": "nickname",
+            "google-oauth2": "email"
+        }
+    }
+}
