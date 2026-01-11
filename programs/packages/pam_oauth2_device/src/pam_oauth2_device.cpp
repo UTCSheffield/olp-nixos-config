@@ -3,7 +3,6 @@
 #include <curl/curl.h>
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
-#include <security/pam_ext.h>
 #include <syslog.h>
 
 #include <chrono>
@@ -276,21 +275,20 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
     throw PamError();
   }
   prompt = device_auth_response->get_prompt(qr_error_correction_level, qr_show);
-  //msg.msg_style = PAM_PROMPT_ECHO_OFF;
-  //msg.msg = prompt.c_str();
-  //msgp = &msg;
-  //response = NULL;
-  //pam_err = (*conv->conv)(1, &msgp, &resp, conv->appdata_ptr);
-  //if (resp != NULL) {
-  //  if (pam_err == PAM_SUCCESS) {
-  //    response = resp->resp;
-  //  } else {
+  msg.msg_style = PAM_TEXT_INFO;
+  msg.msg = prompt.c_str();
+  msgp = &msg;
+  response = NULL;
+  pam_err = (*conv->conv)(1, &msgp, &resp, conv->appdata_ptr);
+  if (resp != NULL) {
+    if (pam_err == PAM_SUCCESS) {
+      response = resp->resp;
+    } else {
       free(resp->resp);
-  //  }
+    }
     free(resp);
-  //}
-  //if (response) free(response);
-  pam_info(pamh, "%s", prompt.c_str());
+  }
+  if (response) free(response);
 }
 
 bool local_user_exists(const std::string& username) {
