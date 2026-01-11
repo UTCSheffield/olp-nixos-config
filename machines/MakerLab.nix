@@ -44,11 +44,12 @@
 
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.displayManager.lightdm.greeters.slick.enable = true;
-  services.xserver.displayManager.lightdm.greeters.slick.extraConfig = [
-    "hide-users=true"      # hides user list, forces manual username entry
-    "allow-guest=false"    # optional: disable guest login
-    "theme-name=material"
-  ];
+  services.xserver.displayManager.lightdm.greeters.slick.extraConfig = ''
+    hide-users=true
+    allow-guest=false
+    theme-name=material
+  '';
+
   services.desktopManager.plasma6.enable = true;
   services.displayManager.defaultSession = "plasmax11";
   services.xserver = {
