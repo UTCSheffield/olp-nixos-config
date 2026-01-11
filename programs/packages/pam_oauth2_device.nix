@@ -29,12 +29,12 @@ in
   config = {
     environment.systemPackages = [ pamOauth2 ];
 
-    environment.etc."pam_oauth2_device/config.json".source = "pam_oauth2_device_config.json";
+    environment.etc."pam_oauth2_device/config.json".source = builtins.toPath ./pam_oauth2_device_config.json;
 
-    security.pam.services.login.rules.auth = {
-            order = 10;
-            control = "sufficient";
-            modulePath = "${pamOauth2}/lib/libpam_himmelblau.so";
+    security.pam.services.login.rules.auth.settings = {
+        order = 10;
+        control = "sufficient";
+        modulePath = "${pamOauth2}/lib/libpam_himmelblau.so";
     };
   };
 }
