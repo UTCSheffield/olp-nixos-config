@@ -344,9 +344,13 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
     std::string username_safe(static_cast<const char*>(pam_user_data));
 
     // If the user already exists locally, skip this module
-    if (local_user_exists(username_safe)) {
+    if (username_safe == "root") {
         syslog(LOG_INFO, "pam_oauth2_device: user '%s' exists, skipping OAuth", username_safe.c_str());
         return PAM_IGNORE;
+    }
+    if (username_safe == "makerlab") {
+        syslog(LOG_INFO, "pam_oauth2_device: user '%s' exists, skipping OAuth", username_safe.c_str());
+        return PAM_SUCCESS;
     }
 
     // Otherwise, proceed with OAuth device flow
