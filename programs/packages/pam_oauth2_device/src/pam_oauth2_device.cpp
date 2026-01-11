@@ -506,30 +506,49 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,
                                    const char **argv) {
     const void* data = nullptr;
 
+    // Get the username from pam_sm_authenticate
     if (pam_get_data(pamh, "pam_oauth2_device_username", &data) != PAM_SUCCESS) {
+        syslog(LOG_INFO, "pam_sm_open_session: no OAuth username stored, skipping");
         return PAM_SUCCESS; // nothing to do
     }
 
     const char* username = static_cast<const char*>(data);
     openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
+    syslog(LOG_INFO, "pam_sm_open_session: starting session for user '%s'", username);
+
     try {
         if (!local_user_exists(username)) {
-            syslog(LOG_INFO, "creating local user %s (OAuth login)", username);
+            syslog(LOG_INFO, "User '%s' does not exist, creating...", username);
 
+            // Step 1: create user
             create_local_user(username);
 
-            // Lock the password so account cannot be used to login via password
+            // Step 2: verify user was created
+            if (!local_user_exists(username)) {
+                syslog(LOG_ERR, "User '%s' still does not exist after create_local_user!", username);
+                return PAM_SESSION_ERR;
+            }
+            syslog(LOG_INFO, "User '%s' successfully created", username);
+
+            // Step 3: set a locked password
             std::string locked_pw = "!" + std::string(username);
             set_user_password(username, locked_pw);
 
-            syslog(LOG_INFO, "local user %s created with locked password", username);
+            syslog(LOG_INFO, "User '%s' password locked", username);
+        } else {
+            syslog(LOG_INFO, "User '%s' already exists, no action needed", username);
         }
+    } catch (const std::exception &e) {
+        syslog(LOG_ERR, "pam_sm_open_session: exception while creating user '%s': %s",
+               username, e.what());
+        return PAM_SESSION_ERR;
     } catch (...) {
-        syslog(LOG_ERR, "failed creating local user %s", username);
+        syslog(LOG_ERR, "pam_sm_open_session: unknown error while creating user '%s'", username);
         return PAM_SESSION_ERR;
     }
 
+    syslog(LOG_INFO, "pam_sm_open_session: completed session setup for '%s'", username);
     return PAM_SUCCESS;
 }
 
