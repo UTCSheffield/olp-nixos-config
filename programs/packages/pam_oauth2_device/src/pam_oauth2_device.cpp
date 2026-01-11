@@ -387,7 +387,7 @@ void create_local_user(const std::string& username) {
 
   if (pid == 0) {
     execl(
-      "/usr/sbin/useradd",
+      "/run/current-system/sw/bin/useradd",
       "useradd",
       "-m",                 // create home directory
       "-s", "/bin/bash",    // default shell
@@ -435,7 +435,7 @@ void set_user_password(const std::string& username,
     close(pipefd[1]);
 
     execl(
-      "/usr/sbin/chpasswd",
+      "/run/current-system/sw/bin/chpasswd",
       "chpasswd",
       (char*)nullptr
     );
