@@ -42,8 +42,8 @@
     gh
   ];
 
+  services.xserver.displayManager.lightdm.enable = false;
   services.desktopManager.plasma6.enable = true;
-  services.displayManager.defaultSession = "plasmax11";
   services.xserver = {
     enable = true;
     xkb.layout = "gb";

@@ -47,7 +47,7 @@ in
 
     environment.etc."bashrc.d/pam_oauth2_device.sh".text = ''
       if [[ $(tty) == /dev/tty1 ]]; then
-        exec /run/current-system/sw/bin/startplasma-wayland
+        exec /run/current-system/sw/bin/startplasma-x11
       fi
     '';
   };
