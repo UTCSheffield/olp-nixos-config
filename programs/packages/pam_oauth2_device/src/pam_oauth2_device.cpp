@@ -327,22 +327,19 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   // NOTE: buffer memory should NOT be freed. When freed the username value
   // stored in the buffer is unavailable to the subsequent PAM modules.
   // For more information see issue #27.
-  const char *user = nullptr;
-  if (pam_get_user(pamh, &user, nullptr) != PAM_SUCCESS || !user) {
-    return PAM_IGNORE;
-  }
 
-  std::string username(user);
-
-  if (username == "root" || username == "makerlab") {
-    return PAM_IGNORE;
-  }
   const char *buffer;
   std::string username_local;
   std::string token;
   Config config;
   DeviceAuthResponse device_auth_response;
   Userinfo userinfo;
+
+  username_local = buffer;
+
+  if (username_local == "root" || username_local == "makerlab") {
+    return PAM_IGNORE;
+  }
 
   openlog("pam_oauth2_device", LOG_PID | LOG_NDELAY, LOG_AUTH);
 
@@ -381,8 +378,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   } catch (NetworkError &e) {
     return safe_return(PAM_AUTH_ERR);
   }
-
-  username_local = buffer;
 
   if (!local_user_exists(username_local)) {
     syslog(LOG_INFO, "user %s does not exist, will create in session phase",
