@@ -31,7 +31,7 @@ in
 
     environment.etc."pam_oauth2_device/config.json".source = "pam_oauth2_device_config.json";
 
-    config.security.pam.services.login.rules.auth = {
+    security.pam.services.login.rules.auth = {
             order = 10;
             control = "sufficient";
             modulePath = "${pamOauth2}/lib/libpam_himmelblau.so";
