@@ -34,7 +34,7 @@ in
     security.pam.services.login.rules.auth.settings = {
         order = 10;
         control = "sufficient";
-        modulePath = "${pamOauth2}/lib/libpam_himmelblau.so";
+        modulePath = "${pamOauth2}/lib/security/pam_oauth2_device.so";
     };
   };
 }
