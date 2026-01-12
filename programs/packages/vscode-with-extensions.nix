@@ -1,14 +1,15 @@
 {
+  pkgs,
   lib,
   stdenv,
   runCommand,
   buildEnv,
   vscode,
   vscode-utils,
+  jq,
   makeWrapper,
   writeTextFile,
   vscodeExtensions ? [ ],
-  jq
 }:
 
 let
@@ -26,34 +27,62 @@ let
     name = "vscode-extensions";
     paths = vscodeExtensions ++ [ extensionJsonFile ];
   };
+  
+  pythonEnv = import ./python.nix { inherit pkgs; };
 
   wrapperScript = writeTextFile {
     name = "vscode-wrapper";
     text = ''
       #!/usr/bin/env bash
-      # Loop over normal users
-      for user in $(awk -F: '$3 >= 1000 && $3 < 60000 {print $1}' /etc/passwd); do
-        home=$(getent passwd "$user" | cut -d: -f6)
-        [ -d "$home" ] && [ -w "$home" ] || continue
+      set -e
 
-        mkdir -p "$home/.vscode/extensions"
-        for ext in ${combinedExtensionsDrv}/share/vscode/extensions/*; do
-          name="$(basename "$ext")"
-          if [ "$name" = "extensions.json" ]; then
-            continue
-          fi
-          ln -sfn "$ext" "$home/.vscode/extensions/$name"
-        done
+      HOME_DIR="$HOME"
+      [ -d "$HOME_DIR" ] || exit 0
 
-        user_json="$home/.vscode/extensions/extensions.json"
-        system_json="${extensionJsonFile}/share/vscode/extensions/extensions.json"
-        if [ ! -f "$user_json" ]; then
-          cp "$system_json" "$user_json"
-          continue
-        fi
+      PYTHON="${pythonEnv}/bin/python3.13"
+
+      # Get site-packages of the pythonEnv
+      EXTRA_PATHS="$($PYTHON - <<'EOF'
+import site, json
+print(json.dumps(site.getsitepackages()))
+EOF
+)"
+
+      # ── Extensions ─────────────────────────────
+      mkdir -p "$HOME_DIR/.vscode/extensions"
+      for ext in ${combinedExtensionsDrv}/share/vscode/extensions/*; do
+        name="$(basename "$ext")"
+        [ "$name" = "extensions.json" ] && continue
+        ln -sfn "$ext" "$HOME_DIR/.vscode/extensions/$name"
       done
+
+      # ── VS Code Settings (Pylance) ─────────────
+      SETTINGS_DIR="$HOME_DIR/.config/Code/User"
+      SETTINGS_FILE="$SETTINGS_DIR/settings.json"
+      mkdir -p "$SETTINGS_DIR"
+
+      if [ ! -f "$SETTINGS_FILE" ]; then
+        cat > "$SETTINGS_FILE" <<EOF
+{
+  "workbench.colorTheme": "GitHub Dark",
+  "python.defaultInterpreterPath": "$PYTHON",
+  "python.analysis.extraPaths": $EXTRA_PATHS,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic"
+}
+EOF
+      else
+        ${jq}/bin/jq \
+          --arg interp "$PYTHON" \
+          --argjson paths "$EXTRA_PATHS" \
+          '.["python.defaultInterpreterPath"]=$interp
+           | .["python.analysis.extraPaths"]=$paths' \
+          "$SETTINGS_FILE" > "$SETTINGS_FILE.tmp" \
+          && mv "$SETTINGS_FILE.tmp" "$SETTINGS_FILE"
+      fi
     '';
   };
+
 
   extensionsFlag = ''
     --add-flags "--extensions-dir \$HOME/.vscode/extensions"
