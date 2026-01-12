@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
+let
+    utc-solidpython2 = pkgs.callPackage ./solidpython2.nix {};
+in
 pkgs.python313.withPackages (python-pkgs: with python-pkgs; [
-    solidpython2
+    utc-solidpython2
 
     # ── QOL ────────────────────────────────────
     flake8

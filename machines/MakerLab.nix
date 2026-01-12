@@ -10,7 +10,6 @@
     ../programs/cachix.nix
     ../programs/firefox.nix
     ../programs/vscode.nix
-    ../programs/openscad.nix
     ../programs/python.nix
   ];
 
