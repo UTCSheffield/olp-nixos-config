@@ -32,7 +32,7 @@ func main() {
 	for {
 		waitForNetwork()
 
-		cmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+		cmd := exec.Command("git", "-C", "/etc/nixos", "rev-parse", "--abbrev-ref", "HEAD")
 	
 		output, err := cmd.Output()
 		if err != nil {
@@ -60,7 +60,7 @@ func main() {
 		}
 
 		commit := string(body)
-		cmd := exec.Command("git", "rev-parse", "HEAD")
+		cmd := exec.Command("git", "-C", "/etc/nixos", "rev-parse", "HEAD")
 	
 		output, err := cmd.Output()
 		if err != nil {
@@ -69,8 +69,27 @@ func main() {
 		}
 
 		if output == commit {
-			log.Printf("")
+			log.Printf("Up to date")
+			continue
 		}
+		
+		cmd := exec.Command("git", "-C", "/etc/nixos", "pull")
+	
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error executing command:", err)
+			return
+		}
+
+		cmd := exec.Command("nixos-rebuild", "switch", "--flake", "/etc/nixos#makerlab")
+	
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error executing command:", err)
+			return
+		}
+
+		fmt.Println("Updated successfully")
 
 		time.Sleep(time.Duration(rand.Intn(1)+1) * time.Minute)
 	}
