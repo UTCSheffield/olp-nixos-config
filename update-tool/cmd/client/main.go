@@ -32,6 +32,18 @@ func main() {
 	for {
 		waitForNetwork()
 
+		cmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+	
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error executing command:", err)
+			return
+		}
+
+		if output != "master" {
+			continue
+		}
+
 		res, err := http.Get("http://127.0.0.1:8080/poll")
 		if err != nil {
 			log.Printf("Error fetching poll endpoint: %v", err)
@@ -48,8 +60,17 @@ func main() {
 		}
 
 		commit := string(body)
+		cmd := exec.Command("git", "rev-parse", "HEAD")
+	
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error executing command:", err)
+			return
+		}
 
-		log.Printf(commit)
+		if output == commit {
+			log.Printf("")
+		}
 
 		time.Sleep(time.Duration(rand.Intn(1)+1) * time.Minute)
 	}
