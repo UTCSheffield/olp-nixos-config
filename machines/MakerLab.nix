@@ -16,7 +16,7 @@
   users.users.makerlab = {
     description = "MakerLab";
     isNormalUser = true;
-    extraGroups = [ "dialout" ];
+    extraGroups = [ "dialout" "networkmanager" ];
     hashedPassword = "$y$j9T$EmEGlmnrC0GA5eactKvPR/$RxyEC85GvBOaTEodmuKFJUV0K/Stg9kdehfxsd7oxG9";
   };
   hardware.bluetooth.enable = true;
@@ -40,6 +40,7 @@
     wget
     git
     gh
+    chromium
   ];
 
   services.displayManager.gdm.enable = true;
