@@ -11,6 +11,7 @@
     ../programs/firefox.nix
     ../programs/vscode.nix
     ../programs/python.nix
+    ../programs/update-tool.nix
   ];
 
   users.users.makerlab = {

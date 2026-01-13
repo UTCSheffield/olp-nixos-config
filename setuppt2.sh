@@ -56,9 +56,8 @@ mkdir -p /mnt/etc
 git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos --depth 1 --branch $branch
 
 cat <<EOF > "/mnt/etc/nixos/system.conf"
-hostname = $hostname
-config = $config
-branch = $branch
+hostname = "$hostname"
+config = "$config"
 EOF
 
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
