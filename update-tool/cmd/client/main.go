@@ -12,6 +12,43 @@ import (
 	"strings"
 )
 
+type Config struct {
+    Hostname string
+    Config   string
+}
+
+func readSystemConf() (Config, error) {
+    var c Config
+    data, err := os.ReadFile("/etc/nixos/system.conf")
+    if err != nil {
+        return c, err
+    }
+
+    for _, line := range strings.Split(string(data), "\n") {
+        line = strings.TrimSpace(line)
+        if line == "" || strings.HasPrefix(line, "#") {
+            continue
+        }
+
+        k, v, ok := strings.Cut(line, "=")
+        if !ok {
+            continue
+        }
+
+        key := strings.TrimSpace(k)
+        val := strings.Trim(strings.TrimSpace(v), `"`)
+
+        switch key {
+        case "hostname":
+            c.Hostname = val
+        case "config":
+            c.Config = val
+        }
+    }
+
+    return c, nil
+}
+
 func checkNetwork() bool {
 	timeout := 2 * time.Second
 	_, err := net.DialTimeout("tcp", "github.com:443", timeout)
@@ -60,7 +97,7 @@ func main() {
 	log.SetOutput(os.Stdout)
 	baseURL := getPollBaseURL()
 
-	sysConf, err := storage.ReadSystemConf()
+	sysConf, err := readSystemConf()
 	if err != nil {
 		log.SetOutput(os.Stderr)
 		log.Println("Error reading system configuration:", err)
@@ -82,7 +119,7 @@ func main() {
 	for {
 		waitForNetwork()
 
-		sysConf, err = storage.ReadSystemConf()
+		sysConf, err = readSystemConf()
 		if err != nil {
 			log.SetOutput(os.Stderr)
 			log.Println("Error reading system configuration:", err)

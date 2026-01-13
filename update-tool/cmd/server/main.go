@@ -8,8 +8,27 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"update-tool/pkg/storage"
 )
+
+const commitFile = "latest_commit.txt"
+
+func readCommitHash() (string, error) {
+	data, err := os.ReadFile(commitFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
+		return "", err
+	}
+	return string(data), nil
+}
+
+func writeCommitHash(hash string) error {
+	if hash == "" {
+		return fmt.Errorf("commit hash is empty")
+	}
+	return os.WriteFile(commitFile, []byte(hash), 0644)
+}
 
 type Config struct {
 	ListenPort string
@@ -90,7 +109,7 @@ func fetchCommitHash(owner, repo, branch string) (string, error) {
 }
 
 func pollHandler(w http.ResponseWriter, r *http.Request) {
-	hash, err := storage.ReadCommitHash()
+	hash, err := readCommitHash()
 	if err != nil {
 		http.Error(w, "Failed to read commit hash", http.StatusInternalServerError)
 		return
@@ -102,7 +121,7 @@ func pollHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to fetch commit hash", http.StatusInternalServerError)
 			return
 		}
-		storage.WriteCommitHash(hash)
+		writeCommitHash(hash)
 	}
 
 	fmt.Fprint(w, hash)
@@ -133,7 +152,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storage.WriteCommitHash(payload.After)
+	writeCommitHash(payload.After)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("OK"))
@@ -147,12 +166,14 @@ func main() {
 		log.Println("Failed to fetch commit hash")
 		return
 	}
-	storage.WriteCommitHash(hash)
+	writeCommitHash(hash)
+
+	cfg, err := ReadConfig("/etc/update-tool.conf")
 
 	http.HandleFunc("/poll", pollHandler)
 	http.HandleFunc("/webhook", webhookHandler)
-	fmt.Println("HTTP server started on :8080")
-	err = http.ListenAndServe(":8080", nil)
+	fmt.Println("HTTP server started")
+	err = http.ListenAndServe(cfg.ListenPort, nil)
 	if err != nil {
 		log.SetOutput(os.Stderr)
 		log.Println("Error starting server:", err)
