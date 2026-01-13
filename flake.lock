@@ -38,7 +38,6 @@
     },
     "root": {
       "inputs": {
-        "himmelblau": "himmelblau",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }
