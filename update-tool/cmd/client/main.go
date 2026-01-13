@@ -38,8 +38,18 @@ func getPollBaseURL() string {
 
 	for _, line := range strings.Split(string(data), "\n") {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "base_url=") {
-			return strings.TrimPrefix(line, "base_url=")
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		if strings.HasPrefix(line, "base_url") {
+			parts := strings.SplitN(line, "=", 2)
+			if len(parts) != 2 {
+				continue
+			}
+			val := strings.TrimSpace(parts[1])
+			val = strings.Trim(val, `"`) // remove quotes
+			return val
 		}
 	}
 
