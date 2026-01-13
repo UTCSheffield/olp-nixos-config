@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"os"
+    "strings"
 )
 
 const commitFile = "latest_commit.txt"
