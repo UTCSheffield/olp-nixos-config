@@ -2,11 +2,62 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"io"
 	"net/http"
+	"fmt"
+	"os"
+	"strings"
 	"update-tool/pkg/storage"
 )
+
+type Config struct {
+	ListenPort string
+	Owner      string
+	Repo       string
+	Branch     string
+}
+
+func ReadConfig(path string) (Config, error) {
+	cfg := Config{
+		ListenPort: "8080",
+		Owner:      "UTCSheffield",
+		Repo:       "olp-nixos-config",
+		Branch:     "master",
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return cfg, err
+	}
+
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		k, v, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		key := strings.TrimSpace(k)
+		val := strings.Trim(strings.TrimSpace(v), `"`) // remove quotes
+
+		switch key {
+		case "listen_port":
+			cfg.ListenPort = val
+		case "owner":
+			cfg.Owner = val
+		case "repo":
+			cfg.Repo = val
+		case "branch":
+			cfg.Branch = val
+		}
+	}
+
+	return cfg, nil
+}
 
 type GitHubCommit struct {
 	SHA string `json:"sha"`
@@ -89,11 +140,22 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.SetOutput(os.Stdout)
+	hash, err := fetchCommitHash("UTCSheffield", "olp-nixos-config", "master")
+	if err != nil {
+		log.SetOutput(os.Stderr)
+		log.Println("Failed to fetch commit hash")
+		return
+	}
+	storage.WriteCommitHash(hash)
+
 	http.HandleFunc("/poll", pollHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	fmt.Println("HTTP server started on :8080")
-	err := http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
-		fmt.Println("Error starting server:", err)
+		log.SetOutput(os.Stderr)
+		log.Println("Error starting server:", err)
+		return
 	}
 }

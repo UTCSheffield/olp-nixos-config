@@ -12,6 +12,7 @@
     ../programs/vscode.nix
     ../programs/openscad.nix
     ../programs/python.nix
+    ../programs/update-tool.nix
   ];
 
   users.users.makerlab = {
