@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.services.update-tool;
+  updateTool = pkgs.callPackage ./update-tool.nix {};
 in
 {
   options.services.update-tool = {
@@ -59,14 +60,14 @@ in
       branch      = "${cfg.branch}"
     '';
 
-    environment.systemPackages = [ pkgs.callPackage ./update-tool.nix {} ];
+    environment.systemPackages = [ updateTool ];
 
     systemd.services.update-tool = {
       description = "Update Tool HTTP client";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = "${pkgs.callPackage ./update-tool.nix { }}/bin/update-tool";
+        ExecStart = "${updateTool}/bin/client";
         Restart = "always";
       };
     };
@@ -76,7 +77,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = "${pkgs.callPackage ./update-tool.nix { }}/bin/update-tool-server";
+        ExecStart = "${updateTool}/bin/server";
         Restart = "always";
       };
     };

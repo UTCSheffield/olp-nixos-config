@@ -1,6 +1,6 @@
-{ lib, buildGoModule, ... }:
+{ lib, pkgs, ... }:
 
-buildGoModule {
+pkgs.buildGoModule {
     pname = "update-tool";
     version = "1.0.0";
 
