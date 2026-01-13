@@ -41,6 +41,7 @@
     git
     gh
     chromium
+    openscad
   ];
 
   services.displayManager.gdm.enable = true;
