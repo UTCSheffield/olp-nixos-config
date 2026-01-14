@@ -9,9 +9,6 @@ curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
 sudo ./setup.sh
 ```
 
-## TODO
-* ~~Install VSCode extensions while allowing new extensions to be installed~~
-
 ## Building
 ```bash
 nix build .#nixosConfigurations.makerlab.config.system.build.toplevel \
