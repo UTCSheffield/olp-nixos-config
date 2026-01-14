@@ -175,6 +175,6 @@ func main() {
 
 		log.Println("Updated successfully")
 
-		time.Sleep(1.5 * time.Minute)
+		time.Sleep(90 * time.Second)
 	}
 }
