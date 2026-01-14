@@ -175,6 +175,6 @@ func main() {
 
 		log.Println("Updated successfully")
 
-		time.Sleep(time.Duration(rand.Intn(1)+1) * time.Minute)
+		time.Sleep(1.5 * time.Minute)
 	}
 }
