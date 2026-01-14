@@ -21,7 +21,6 @@ read -sp "Root Password: " ROOT_PASSWORD
 lsblk
 read -p "Which Drive? (ex: sda or /dev/sda or /dev/nvme0n1) " drive
 echo "Partitioning..."
-
 if [[ "$drive" != /dev/* ]]; then
     drive="/dev/$drive"
 fi
