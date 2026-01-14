@@ -122,7 +122,7 @@ func main() {
 		output, err := cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
@@ -131,7 +131,7 @@ func main() {
 		output, err = cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
@@ -140,7 +140,7 @@ func main() {
 		output, err = cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
@@ -172,7 +172,7 @@ func main() {
 		output, err = cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
@@ -188,7 +188,7 @@ func main() {
 		output, err = cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
@@ -197,7 +197,7 @@ func main() {
 		output, err = cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", err)
+			log.Println("Error executing command:", output)
 			return
 		}
 
