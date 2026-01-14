@@ -171,7 +171,7 @@ func main() {
 		}
 
 		run("git", "-C", "/etc/nixos", "pull")
-		run("nixos-rebuild", "switch", "--flake", "/etc/nixos#"+sysConf.Config)
+		run("/run/current-system/sw/bin/nixos-rebuild", "switch", "--flake", "/etc/nixos#"+sysConf.Config)
 
 		log.Println("Updated successfully")
 
