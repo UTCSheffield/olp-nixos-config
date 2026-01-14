@@ -66,7 +66,7 @@ func waitForNetwork() {
 }
 
 func getPollBaseURL() string {
-	data, err := os.ReadFile("/etc/client.conf")
+	data, err := os.ReadFile("/etc/update-tool.conf")
 	if err != nil {
 		log.SetOutput(os.Stderr)
 		log.Println("Could not read config, using default")
