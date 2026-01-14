@@ -173,7 +173,7 @@ func main() {
 	http.HandleFunc("/poll", pollHandler)
 	http.HandleFunc("/webhook", webhookHandler)
 	fmt.Println("HTTP server started")
-	err = http.ListenAndServe(cfg.ListenPort, nil)
+	err = http.ListenAndServe(":" + cfg.ListenPort, nil)
 	if err != nil {
 		log.SetOutput(os.Stderr)
 		log.Println("Error starting server:", err)
