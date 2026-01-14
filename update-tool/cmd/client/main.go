@@ -117,9 +117,9 @@ func main() {
 			return
 		}
 
-		cmd = exec.Command("hostnamectl", "set-hostname", sysConf.Hostname)
+		cmd := exec.Command("hostnamectl", "set-hostname", sysConf.Hostname)
 		
-		output, err = cmd.Output()
+		output, err := cmd.Output()
 		if err != nil {
 			log.SetOutput(os.Stderr)
 			log.Println("Error executing command:", err)
