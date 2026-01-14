@@ -66,6 +66,7 @@ in
       description = "Update Tool HTTP client";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.git ];
       serviceConfig = {
         ExecStart = "${updateTool}/bin/client";
         Restart = "always";
@@ -78,7 +79,6 @@ in
       description = "Update Tool HTTP server";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.git ];
       serviceConfig = {
         ExecStart = "${updateTool}/bin/server";
         Restart = "always";
