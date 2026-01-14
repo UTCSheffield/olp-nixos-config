@@ -49,18 +49,6 @@
         johnpapa.vscode-peacock
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
-          name = "vexcode";
-          publisher = "VEXRobotics";
-          version = "0.7.2025041600";
-          sha256 = "sha256-BAXCFKD+N0TeooJDkNhezOJpC/ih+cXtH0GVO8VeqBo=";
-        }
-        {
-          name = "vexfeedback";
-          publisher = "VEXRobotics";
-          version = "0.2.6";
-          sha256 = "sha256-SCtNHNls4xVtLv+62H+OMVuZhf0Q4jJCnvNzLbtCn90=";
-        }
-        {
           name = "github-vscode-theme";
           publisher = "GitHub";
           version = "6.3.5";
