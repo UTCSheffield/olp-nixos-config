@@ -9,6 +9,9 @@ curl -s -L https://tinyurl.com/olpnixos  | sudo bash -
 sudo ./setup.sh
 ```
 
+# TODO
+* Auth0 authentication (Himmelblau?)
+
 ## Building
 ```bash
 nix build .#nixosConfigurations.makerlab.config.system.build.toplevel \
