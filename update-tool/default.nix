@@ -69,6 +69,8 @@ in
       serviceConfig = {
         ExecStart = "${updateTool}/bin/client";
         Restart = "always";
+        User = "root";
+        Group = "root";
       };
     };
 
@@ -79,6 +81,11 @@ in
       serviceConfig = {
         ExecStart = "${updateTool}/bin/server";
         Restart = "always";
+        User = "update-tool";
+        Group = "update-tool";
+        WorkingDirectory = "/var/lib/update-tool-server";
+        StateDirectory = "update-tool-server";
+        StateDirectoryMode = "0755";
       };
     };
   };
