@@ -130,7 +130,7 @@ func pollHandler(w http.ResponseWriter, r *http.Request) {
 type Payload struct {
 	Before  string `json:"before"`
 	After   string `json:"after"`
-	BaseRef string `json:"base_ref"`
+	Ref string `json:"ref"`
 }
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +146,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if payload.BaseRef != "refs/heads/master" {
+	if payload.Ref != "refs/heads/master" {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Ignored non-master branch"))
 		return
