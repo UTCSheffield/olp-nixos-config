@@ -6,47 +6,47 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
-	"time"
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 type Config struct {
-    Hostname string
-    Config   string
+	Hostname string
+	Config   string
 }
 
 func readSystemConf() (Config, error) {
-    var c Config
-    data, err := os.ReadFile("/etc/nixos/system.conf")
-    if err != nil {
-        return c, err
-    }
+	var c Config
+	data, err := os.ReadFile("/etc/nixos/system.conf")
+	if err != nil {
+		return c, err
+	}
 
-    for _, line := range strings.Split(string(data), "\n") {
-        line = strings.TrimSpace(line)
-        if line == "" || strings.HasPrefix(line, "#") {
-            continue
-        }
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
 
-        k, v, ok := strings.Cut(line, "=")
-        if !ok {
-            continue
-        }
+		k, v, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
 
-        key := strings.TrimSpace(k)
-        val := strings.Trim(strings.TrimSpace(v), `"`)
+		key := strings.TrimSpace(k)
+		val := strings.Trim(strings.TrimSpace(v), `"`)
 
-        switch key {
-        case "hostname":
-            c.Hostname = val
-        case "config":
-            c.Config = val
-        }
-    }
+		switch key {
+		case "hostname":
+			c.Hostname = val
+		case "config":
+			c.Config = val
+		}
+	}
 
-    return c, nil
+	return c, nil
 }
 
 func checkNetwork() bool {
@@ -68,7 +68,6 @@ func waitForNetwork() {
 func getPollBaseURL() string {
 	data, err := os.ReadFile("/etc/update-tool.conf")
 	if err != nil {
-		log.SetOutput(os.Stderr)
 		log.Println("Could not read config, using default")
 		return "http://127.0.0.1:8080"
 	}
@@ -80,29 +79,37 @@ func getPollBaseURL() string {
 		}
 
 		if strings.HasPrefix(line, "base_url") {
-			parts := strings.SplitN(line, "=", 2)
-			if len(parts) != 2 {
+			_, v, ok := strings.Cut(line, "=")
+			if !ok {
 				continue
 			}
-			val := strings.TrimSpace(parts[1])
-			val = strings.Trim(val, `"`) // remove quotes
-			return val
+			return strings.Trim(strings.TrimSpace(v), `"`)
 		}
 	}
 
 	return "http://127.0.0.1:8080"
 }
 
+func run(name string, args ...string) string {
+	cmd := exec.Command(name, args...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf(
+			"command failed: %s %s\nexit error: %v\noutput:\n%s",
+			name,
+			strings.Join(args, " "),
+			err,
+			output,
+		)
+	}
+	return strings.TrimSpace(string(output))
+}
+
 func main() {
 	log.SetOutput(os.Stdout)
-	baseURL := getPollBaseURL()
+	rand.Seed(time.Now().UnixNano())
 
-	sysConf, err := readSystemConf()
-	if err != nil {
-		log.SetOutput(os.Stderr)
-		log.Println("Error reading system configuration:", err)
-		return
-	}
+	baseURL := getPollBaseURL()
 
 	waitForNetwork()
 	log.Println("Client started")
@@ -110,49 +117,27 @@ func main() {
 	for {
 		waitForNetwork()
 
-		sysConf, err = readSystemConf()
+		sysConf, err := readSystemConf()
 		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error reading system configuration:", err)
-			return
+			log.Fatalf("Error reading system configuration: %v", err)
 		}
 
-		cmd := exec.Command("rm", "/etc/hostname")
-		
-		output, err := cmd.Output()
+		/* ---- hostname handling (NO SHELL) ---- */
+		err = os.WriteFile("/etc/hostname", []byte(sysConf.Hostname+"\n"), 0644)
 		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
+			log.Fatalf("Failed to write /etc/hostname: %v", err)
 		}
 
-		cmd = exec.Command("echo", sysConf.Hostname, ">", "/etc/hostname")
-		
-		output, err = cmd.Output()
-		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
-		}
-
-		cmd = exec.Command("git", "-C", "/etc/nixos", "rev-parse", "--abbrev-ref", "HEAD")
-
-		output, err = cmd.Output()
-		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
-		}
-
-		branch := strings.TrimSpace(string(output))
+		branch := run("git", "-C", "/etc/nixos", "rev-parse", "--abbrev-ref", "HEAD")
 		if branch != "master" {
+			log.Println("Not on master branch, skipping")
+			time.Sleep(1 * time.Minute)
 			continue
 		}
 
 		res, err := http.Get(baseURL + "/poll")
 		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Printf("Error fetching poll endpoint: %v", err)
+			log.Printf("Poll request failed: %v", err)
 			time.Sleep(10 * time.Second)
 			continue
 		}
@@ -160,46 +145,22 @@ func main() {
 		body, err := io.ReadAll(res.Body)
 		res.Body.Close()
 		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Printf("Error reading response body: %v", err)
+			log.Printf("Failed reading poll response: %v", err)
 			time.Sleep(10 * time.Second)
 			continue
 		}
 
-		commit := string(body)
-		cmd = exec.Command("git", "-C", "/etc/nixos", "rev-parse", "HEAD")
-	
-		output, err = cmd.Output()
-		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
-		}
+		remoteCommit := strings.TrimSpace(string(body))
+		currentCommit := run("git", "-C", "/etc/nixos", "rev-parse", "HEAD")
 
-		currentCommit := strings.TrimSpace(string(output))
-		commit = strings.TrimSpace(commit)
-		if currentCommit == commit {
+		if currentCommit == remoteCommit {
 			log.Println("Up to date")
+			time.Sleep(1 * time.Minute)
 			continue
 		}
-		
-		cmd = exec.Command("git", "-C", "/etc/nixos", "pull")
-	
-		output, err = cmd.Output()
-		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
-		}
 
-		cmd = exec.Command("nixos-rebuild", "switch", "--flake", "/etc/nixos#" + sysConf.Config)
-	
-		output, err = cmd.Output()
-		if err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Error executing command:", output)
-			return
-		}
+		run("git", "-C", "/etc/nixos", "pull")
+		run("nixos-rebuild", "switch", "--flake", "/etc/nixos#"+sysConf.Config)
 
 		log.Println("Updated successfully")
 
