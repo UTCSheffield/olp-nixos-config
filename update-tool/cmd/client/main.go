@@ -126,7 +126,7 @@ func main() {
 			return
 		}
 
-		cmd = exec.Command("hostnamectl", "set-hostname", sysConf.Hostname)
+		cmd = exec.Command("echo", sysConf.Hostname, ">", "/etc/hostname")
 		
 		output, err = cmd.Output()
 		if err != nil {
