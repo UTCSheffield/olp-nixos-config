@@ -105,6 +105,20 @@ func run(name string, args ...string) string {
 	return strings.TrimSpace(string(output))
 }
 
+func replaceHostname(hostname string) {
+	if err := os.Remove("/etc/hostname"); err != nil && !os.IsNotExist(err) {
+		log.Fatalf("failed to remove
+	f, err := os.OpenFile("/etc/hostname", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatalf("failed to create /etc/hostname: %v", err)
+	}
+	defer f.Close()
+
+	if _, err := f.WriteString(hostname + "\n"); err != nil {
+		log.Fatalf("failed to write hostname: %v", err)
+	}
+}
+
 func main() {
 	log.SetOutput(os.Stdout)
 	rand.Seed(time.Now().UnixNano())
@@ -122,11 +136,7 @@ func main() {
 			log.Fatalf("Error reading system configuration: %v", err)
 		}
 
-		/* ---- hostname handling (NO SHELL) ---- */
-		err = os.WriteFile("/etc/hostname", []byte(sysConf.Hostname+"\n"), 0644)
-		if err != nil {
-			log.Fatalf("Failed to write /etc/hostname: %v", err)
-		}
+		replaceHostname(sysConf.Hostname)
 
 		branch := run("git", "-C", "/etc/nixos", "rev-parse", "--abbrev-ref", "HEAD")
 		if branch != "master" {
