@@ -8,6 +8,19 @@ if [ $(whoami) != 'root' ]; then
 fi
 
 read -p "Hostname: " hostname
+if [ -z $hostname ] then
+    echo "Hostname empty, restarting..."
+    bash "$0" "$@"
+    exit
+fi
+
+read -sp "Root Password: " ROOT_PASSWORD
+if [ -z $ROOT_PASSWORD ] then
+    echo "Root password empty, restarting..."
+    bash "$0" "$@"
+    exit
+fi
+
 read -p "Config (default: makerlab): " config
 if [ -z "$config" ]; then
     config="makerlab"
@@ -16,7 +29,6 @@ read -p "Branch (default: master): " branch
 if [ -z "$branch" ]; then
     branch="master"
 fi
-read -sp "Root Password: " ROOT_PASSWORD
 
 lsblk
 read -p "Which Drive? (ex: sda or /dev/sda or /dev/nvme0n1) " drive
