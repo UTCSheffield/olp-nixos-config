@@ -9,8 +9,6 @@
     ../programs/cachix.nix
   ];
 
-  boot.kernelParams = [ "copytoram" ];
-
   environment.systemPackages = with pkgs; [
     git
   ];
@@ -19,45 +17,77 @@
 
   environment.etc."setup.sh".source = ../setup.sh;
   environment.etc."setup.sh".mode = "0755";
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  imports = [
+    ../programs/cachix.nix
+  ];
+
+  environment.systemPackages = with pkgs; [
+    git
+    networkmanager
+  ];
+
+  # Enable NetworkManager
+  networking.networkmanager.enable = true;
+
+  services.getty.autologinUser = lib.mkForce "root";
+
+  environment.etc."setup.sh".source = ../setup.sh;
+  environment.etc."setup.sh".mode = "0755";
+
   programs.bash.interactiveShellInit = ''
     [[ "$(tty)" != "/dev/tty1" ]] && return
 
-    echo "Available network interfaces:"
-    ip -o link show | awk -F': ' '{print $2}'
-    
+    echo "Available network devices:"
+    nmcli -t -f DEVICE,TYPE,STATE device status | column -t -s :
+
     echo
     read -rp "Use WiFi? (y/N): " use_wifi
-    
+
     if [[ "$use_wifi" == "y" || "$use_wifi" == "Y" ]]; then
         echo
-        read -rp "Enter WiFi interface (e.g. wlan0): " iface
-    
-        if ! ip link show "$iface" >/dev/null 2>&1; then
-            echo "Interface '$iface' does not exist"
+        read -rp "Enter WiFi device (e.g. wlan0): " iface
+
+        if ! nmcli device status | awk '{print $1}' | grep -qx "$iface"; then
+            echo "Device '$iface' does not exist"
             exit 1
         fi
-    
+
+        echo
+        nmcli device set "$iface" managed yes
+
+        echo "Scanning for WiFi networks..."
+        nmcli device wifi rescan ifname "$iface"
+        sleep 2
+        nmcli -f IN-USE,SSID,SIGNAL,SECURITY device wifi list ifname "$iface"
+
         echo
         read -rp "SSID: " ssid
         read -rsp "WiFi password: " psk
         echo
-    
-        # Bring interface up
-        ip link set "$iface" up
-    
-        # Start wpa_supplicant (in background)
-        wpa_supplicant -B \
-            -i "$iface" \
-            -c <(wpa_passphrase "$ssid" "$psk")
-    
-        echo "WiFi connection started on $iface"
+
+        if nmcli device wifi connect "$ssid" password "$psk" ifname "$iface"; then
+            echo "Connected to WiFi network '$ssid'"
+        else
+            echo "Failed to connect to WiFi"
+            exit 1
+        fi
     fi
 
     FLAG="$HOME/.installer-ran"
     [ -f "$FLAG" ] && return
 
     # wait for network (up to 30s)
-    for i in {1..30}; do ping -c1 -W1 1.1.1.1 &>/dev/null && break; sleep 1; done
+    for i in {1..30}; do
+        ping -c1 -W1 1.1.1.1 &>/dev/null && break
+        sleep 1
+    done
 
     touch "$FLAG"
     /etc/setup.sh
