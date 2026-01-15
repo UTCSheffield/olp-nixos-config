@@ -46,7 +46,20 @@
         echo "Scanning for WiFi networks..."
         nmcli device wifi rescan ifname "$iface"
         sleep 2
-        nmcli -f IN-USE,SSID,SIGNAL,SECURITY device wifi list ifname "$iface"
+        nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY device wifi list ifname "$iface" \
+          | awk -F: '
+            $2 != "" {
+              if (!($2 in max) || $3 > max[$2]) {
+                max[$2] = $3
+                line[$2] = $0
+              }
+            }
+            END {
+              for (s in line) print line[s]
+            }
+          ' \
+          | sort -t: -k3 -nr \
+          | column -t -s :
 
         echo
         read -rp "SSID: " ssid
