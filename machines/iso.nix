@@ -17,29 +17,6 @@
 
   environment.etc."setup.sh".source = ../setup.sh;
   environment.etc."setup.sh".mode = "0755";
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
-  imports = [
-    ../programs/cachix.nix
-  ];
-
-  environment.systemPackages = with pkgs; [
-    git
-    networkmanager
-  ];
-
-  # Enable NetworkManager
-  networking.networkmanager.enable = true;
-
-  services.getty.autologinUser = lib.mkForce "root";
-
-  environment.etc."setup.sh".source = ../setup.sh;
-  environment.etc."setup.sh".mode = "0755";
 
   programs.bash.interactiveShellInit = ''
     [[ "$(tty)" != "/dev/tty1" ]] && return
