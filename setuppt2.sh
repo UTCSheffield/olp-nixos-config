@@ -15,6 +15,7 @@ if [ -z "$hostname" ]; then
 fi
 
 read -sp "Root Password: " ROOT_PASSWORD
+echo
 if [ -z "$ROOT_PASSWORD" ]; then
     echo "Root password empty, restarting..."
     bash "$0" "$@"
