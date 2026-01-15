@@ -15,6 +15,8 @@
     git
   ];
 
+  networking.networkmanager.enable = true;
+
   services.getty.autologinUser = lib.mkForce "root";
 
   environment.etc."setup.sh".source = ../setup.sh;
