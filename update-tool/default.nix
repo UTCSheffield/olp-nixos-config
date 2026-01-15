@@ -60,8 +60,6 @@ in
       branch      = "${cfg.branch}"
     '';
 
-    environment.systemPackages = [ updateTool ];
-
     systemd.services.update-tool = {
       description = "Update Tool HTTP client";
       after = [ "network.target" ];
