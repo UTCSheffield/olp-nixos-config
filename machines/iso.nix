@@ -8,13 +8,17 @@
   imports = [
     ../programs/cachix.nix
   ];
+
+  boot.kernelParams = [ "copytoram" ]
+
   environment.systemPackages = with pkgs; [
     git
   ];
+
   services.getty.autologinUser = lib.mkForce "root";
+
   environment.etc."setup.sh".source = ../setup.sh;
   environment.etc."setup.sh".mode = "0755";
-
   programs.bash.interactiveShellInit = ''
     [[ "$(tty)" != "/dev/tty1" ]] && return
     FLAG="$HOME/.installer-ran"
