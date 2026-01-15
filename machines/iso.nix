@@ -9,7 +9,7 @@
     ../programs/cachix.nix
   ];
 
-  boot.kernelParams = [ "copytoram" ]
+  boot.kernelParams = [ "copytoram" ];
 
   environment.systemPackages = with pkgs; [
     git
