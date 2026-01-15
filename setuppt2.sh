@@ -8,14 +8,14 @@ if [ $(whoami) != 'root' ]; then
 fi
 
 read -p "Hostname: " hostname
-if [ -z $hostname ] then
+if [ -z "$hostname" ]; then
     echo "Hostname empty, restarting..."
     bash "$0" "$@"
     exit
 fi
 
 read -sp "Root Password: " ROOT_PASSWORD
-if [ -z $ROOT_PASSWORD ] then
+if [ -z "$ROOT_PASSWORD" ]; then
     echo "Root password empty, restarting..."
     bash "$0" "$@"
     exit
