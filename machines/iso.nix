@@ -15,6 +15,10 @@
 
   services.getty.autologinUser = lib.mkForce "root";
 
+  hardware.enableRedistributableFirmware = true;
+
+  networking.networkmanager.enable = true;
+
   environment.etc."setup.sh".source = ../setup.sh;
   environment.etc."setup.sh".mode = "0755";
 
