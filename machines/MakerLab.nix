@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  himmelblau,
   ...
 }:
 {
@@ -12,6 +13,7 @@
     ../programs/vscode.nix
     ../programs/python.nix
     ../programs/update-tool.nix
+    ../programs/himmelblau.nix
   ];
 
   users.users.makerlab = {

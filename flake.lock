@@ -1,5 +1,26 @@
 {
   "nodes": {
+    "himmelblau": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1768854600,
+        "narHash": "sha256-ZMfFqh6kzx0syKR7kN2MrM5F5W1FierlouTEgI8mbzY=",
+        "owner": "iLikeToCode",
+        "repo": "himmelblau",
+        "rev": "149e45fe76ba78b5259d0e4c1d4c2dc6ec30cb64",
+        "type": "github"
+      },
+      "original": {
+        "owner": "iLikeToCode",
+        "ref": "oidc_fix",
+        "repo": "himmelblau",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -7,11 +28,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767898632,
-        "narHash": "sha256-ZpkiMJahNh5Xo1Lqxy2e2SEwyhWDwxrlv4zUO99OIrc=",
+        "lastModified": 1768836546,
+        "narHash": "sha256-nJZkTamcXXMW+SMYiGFB6lB8l0aJw0xjssfN8xYd/Fs=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "40deed4ffe019874309b3eef429e4830346b0aa9",
+        "rev": "b56c5ad14fcf8b5bc887463552483bf000ca562a",
         "type": "github"
       },
       "original": {
@@ -22,11 +43,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1767799921,
-        "narHash": "sha256-r4GVX+FToWVE2My8VVZH4V0pTIpnu2ZE8/Z4uxGEMBE=",
+        "lastModified": 1768621446,
+        "narHash": "sha256-6YwHV1cjv6arXdF/PQc365h1j+Qje3Pydk501Rm4Q+4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d351d0653aeb7877273920cd3e823994e7579b0b",
+        "rev": "72ac591e737060deab2b86d6952babd1f896d7c5",
         "type": "github"
       },
       "original": {
@@ -38,6 +59,7 @@
     },
     "root": {
       "inputs": {
+        "himmelblau": "himmelblau",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }
