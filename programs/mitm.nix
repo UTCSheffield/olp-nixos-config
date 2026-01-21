@@ -17,6 +17,11 @@ in
     "${mitmCA}/mitmproxy-ca-cert.pem"
   ];
 
+  nix.settings = {
+    http-proxy = "";
+    https-proxy = "";
+  };
+
   #### 3. Proxy env vars
   environment.sessionVariables = {
     http_proxy  = "http://127.0.0.1:8080";
