@@ -14,7 +14,7 @@ in
 
   #### 2. Trust CA system-wide (pure)
   security.pki.certificates = [
-    (builtins.readFile "${mitmCA}/mitmproxy-ca-cert.pem")
+    "${mitmCA}/mitmproxy-ca-cert.pem"
   ];
 
   #### 3. Proxy env vars
