@@ -1,32 +1,23 @@
 { config, pkgs, lib, ... }:
 
 let
-  mitmDir = "/var/lib/mitmproxy";
-  caCert  = "${mitmDir}/mitmproxy-ca-cert.pem";
+  mitmCA = pkgs.runCommand "mitmproxy-ca" {} ''
+    export HOME=$TMPDIR
+    ${pkgs.mitmproxy}/bin/mitmdump --quit >/dev/null 2>&1
+    mkdir -p $out
+    cp $HOME/.mitmproxy/mitmproxy-ca-cert.pem $out/mitmproxy-ca-cert.pem
+  '';
 in
 {
-  #### 1. Install proxy
-  environment.systemPackages = with pkgs; [
-    mitmproxy
-  ];
+  #### 1. Install mitmproxy
+  environment.systemPackages = [ pkgs.mitmproxy ];
 
-  #### 2. Generate CA automatically (once, at activation)
-  system.activationScripts.mitmproxyCA = lib.stringAfter [ "var" ] ''
-    if [ ! -f ${caCert} ]; then
-      echo "Generating mitmproxy CA…"
-      mkdir -p ${mitmDir}
-      ${pkgs.mitmproxy}/bin/mitmdump --quit >/dev/null 2>&1
-      cp /root/.mitmproxy/mitmproxy-ca-cert.pem ${caCert}
-      chmod 644 ${caCert}
-    fi
-  '';
-
-  #### 3. Trust the CA system-wide
+  #### 2. Trust CA system-wide (pure)
   security.pki.certificates = [
-    (builtins.readFile caCert)
+    (builtins.readFile "${mitmCA}/mitmproxy-ca-cert.pem")
   ];
 
-  #### 4. Proxy env vars (system-wide)
+  #### 3. Proxy env vars
   environment.sessionVariables = {
     http_proxy  = "http://127.0.0.1:8080";
     https_proxy = "http://127.0.0.1:8080";
