@@ -1,24 +1,16 @@
 { config, pkgs, lib, ... }:
 
-let
-  mitmCA = pkgs.runCommand "mitmproxy-ca" {} ''
-    export HOME=$TMPDIR
-    ${pkgs.mitmproxy}/bin/mitmdump --quit >/dev/null 2>&1
-    mkdir -p $out
-    cp $HOME/.mitmproxy/mitmproxy-ca-cert.pem $out/mitmproxy-ca-cert.pem
-  '';
-in
 {
-  #### 1. Install mitmproxy
-  environment.systemPackages = [ pkgs.mitmproxy ];
-
-  #### 2. Trust CA system-wide (pure)
   security.pki.certificates = [
-    "${mitmCA}/mitmproxy-ca-cert.pem"
+    "/var/mitm.pem"
   ];
 
-  nix.settings = {
-    http-proxy = "";
-    https-proxy = "";
+  environment.sessionVariables = {
+    http_proxy  = "http://192.168.5.229:8080";
+    https_proxy = "http://192.168.5.229:8080";
+    HTTP_PROXY  = "http://192.168.5.229:8080";
+    HTTPS_PROXY = "http://192.168.5.229:8080";
+    no_proxy    = "localhost,127.0.0.1,::1";
+    NO_PROXY    = "localhost,127.0.0.1,::1";
   };
 }
