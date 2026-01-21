@@ -21,12 +21,4 @@ in
     http-proxy = "";
     https-proxy = "";
   };
-
-  #### 3. Proxy env vars
-  environment.sessionVariables = {
-    http_proxy  = "http://127.0.0.1:8080";
-    https_proxy = "http://127.0.0.1:8080";
-    HTTP_PROXY  = "http://127.0.0.1:8080";
-    HTTPS_PROXY = "http://127.0.0.1:8080";
-  };
 }
