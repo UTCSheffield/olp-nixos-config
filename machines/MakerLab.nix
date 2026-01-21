@@ -14,6 +14,7 @@
     ../programs/python.nix
     ../programs/update-tool.nix
     ../programs/himmelblau.nix
+    ../programs/mitm.nix
   ];
 
   users.users.makerlab = {
