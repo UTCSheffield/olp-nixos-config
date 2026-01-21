@@ -4,9 +4,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    himmelblau.url = "github:himmelblau-idm/himmelblau";
+    himmelblau.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    { self, nixpkgs, home-manager, ... }@attrs:
+    { self, nixpkgs, home-manager, himmelblau, ... }@attrs:
     {
       nixosConfigurations = {
         makerlab = nixpkgs.lib.nixosSystem {
