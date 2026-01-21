@@ -11,8 +11,8 @@ in
     (builtins.readFile mitmCert)
   ];
 
-  environment.sessionVariables = {
-    http_proxy  = "http://192.168.5.157:8080";
-    https_proxy = "http://192.168.5.157:8080";
+  networking.proxy = {
+    httpProxy = "http://192.168.5.157:8080";
+    httpsProxy = "http://192.168.5.157:8080";
   };
 }
