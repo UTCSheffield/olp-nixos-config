@@ -1,16 +1,18 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
+let
+  mitmCert = pkgs.fetchurl {
+    url = "http://192.168.5.229:8081/mitmproxy-ca-cert.pem";
+    hash = "084k5c1c0mi5i1y1pny3y0q75hh1njqa2ph2jxaz504mwyra89rh";
+  };
+in
 {
   security.pki.certificates = [
-    "/var/mitm.pem"
+    mitmCert
   ];
 
   environment.sessionVariables = {
     http_proxy  = "http://192.168.5.229:8080";
     https_proxy = "http://192.168.5.229:8080";
-    HTTP_PROXY  = "http://192.168.5.229:8080";
-    HTTPS_PROXY = "http://192.168.5.229:8080";
-    no_proxy    = "localhost,127.0.0.1,::1";
-    NO_PROXY    = "localhost,127.0.0.1,::1";
   };
 }
