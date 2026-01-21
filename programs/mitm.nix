@@ -8,7 +8,7 @@ let
 in
 {
   security.pki.certificates = [
-    mitmCert
+    (builtins.readFile mitmCert)
   ];
 
   environment.sessionVariables = {
