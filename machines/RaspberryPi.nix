@@ -78,7 +78,7 @@
       art
       pyfiglet
       faker
-      wordhoard
+      #wordhoard
       emoji
     ]))
   ];
