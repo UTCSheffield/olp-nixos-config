@@ -17,6 +17,42 @@
     initialPassword = "";
   };
 
+  systemd.services.firstboot-hostname = {
+    description = "Prompt for hostname on first boot";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-user-sessions.service" ];
+    before = [ "network.target" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      StandardInput = "tty";
+      StandardOutput = "tty";
+      TTYPath = "/dev/tty1";
+      RemainAfterExit = true;
+    };
+
+    script = ''
+      if [ -f /etc/hostname-set ]; then
+        exit 0
+      fi
+      rm -f /etc/hostname
+
+      echo ""
+      echo "=== First boot setup ==="
+      read -rp "Enter hostname: " HOSTNAME
+
+      if [ -z "$HOSTNAME" ]; then
+        HOSTNAME="nixos"
+      fi
+
+      echo "$HOSTNAME" > /etc/hostname
+      hostname "$HOSTNAME"
+
+      touch /etc/hostname-set
+      echo "Hostname set to $HOSTNAME"
+    '';
+  };
+
   networking.networkmanager.enable = true;
 
   nixpkgs.config.allowUnfree = true;
