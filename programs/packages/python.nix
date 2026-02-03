@@ -7,13 +7,6 @@ pkgs.python313.withPackages (python-pkgs: with python-pkgs; [
     utc-solidpython2
 
     pygame
-    colorama
-    rich
-    art
-    pyfiglet
-    faker
-    wordhoard
-    emoji
 
     # ── QOL ────────────────────────────────────
     flake8
