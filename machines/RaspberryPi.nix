@@ -87,7 +87,10 @@
     enable = true;
     xkb.layout = "gb";
     desktopManager.mate.enable = true;
-    displayManager.lightdm = true;
+    displayManager.lightdm = {
+      enable = true;
+      greeters.slick.enable = true;
+    };
   };
 
   system.stateVersion = "25.11";
