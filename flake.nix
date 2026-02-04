@@ -9,6 +9,26 @@
   };
   outputs =
     { self, nixpkgs, home-manager, himmelblau, ... }@attrs:
+    let
+      eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
+
+      packages = eachSystem (system:
+        (import ./programs/packages {
+          pkgs = nixpkgs.legacyPackages.${system};
+        })
+        // {
+          iso =
+            if system == "x86_64-linux"
+            then self.nixosConfigurations.iso.config.system.build.isoImage
+            else null;
+
+          sdImage =
+            if system == "aarch64-linux"
+            then self.nixosConfigurations.rpi.config.system.build.sdImage
+            else null;
+        }
+      );
+    in
     {
       nixosConfigurations = {
         makerlab = nixpkgs.lib.nixosSystem {
@@ -35,13 +55,10 @@
           ];
         };
       };
-      packages.x86_64-linux.iso =
-            self.nixosConfigurations.iso.config.system.build.isoImage;
-      hydraJobs.x86_64-linux.iso =
-            self.packages.x86_64-linux;
-      packages.aarch64-linux.sdImage =
-            self.nixosConfigurations.rpi.config.system.build.sdImage;
-      hydraJobs.aarch64-linux.sdImage =
-            self.packages.aarch64-linux.sdImage;
+
+
+      packages = packages;
+
+      hydraJobs = self.packages;
     };
 }

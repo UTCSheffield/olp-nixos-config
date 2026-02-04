@@ -1,12 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, python313 ? pkgs.python313, ... }:
 
 let
-    utc-solidpython2 = pkgs.callPackage ./solidpython2.nix {};
+    solidpython2 = import ./packages/python313Packages/solidpython2.nix { inherit pkgs; };
+    wordhoard = import ./packages/python313Packages/wordhoard.nix { inherit pkgs; };
 in
-pkgs.python313.withPackages (python-pkgs: with python-pkgs; [
-    utc-solidpython2
+python313.withPackages (python-pkgs: with python-pkgs; [
+    solidpython2
 
     pygame
+    colorama
+    rich
+    art
+    pyfiglet
+    faker
+    wordhoard
+    emoji
 
     # ── QOL ────────────────────────────────────
     flake8

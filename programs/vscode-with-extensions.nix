@@ -28,7 +28,7 @@ let
     paths = vscodeExtensions ++ [ extensionJsonFile ];
   };
   
-  pythonEnv = import ./python.nix { inherit pkgs; };
+  pythonEnv = import ./python-env.nix { inherit pkgs; };
 
   wrapperScript = writeTextFile {
     name = "vscode-wrapper";

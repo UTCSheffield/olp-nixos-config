@@ -1,13 +1,14 @@
-{ pkgs, lib, openscad }:
-
-let
-  buildPythonPackage  = pkgs.python3Packages.buildPythonPackage;
-  fetchFromGitHub     = pkgs.fetchFromGitHub;
-  openscad            = pkgs.openscad;
-  ply                 = pkgs.python3Packages.ply;
-  setuptools          = pkgs.python3Packages.setuptools;
-  poetry-core         = pkgs.python3Packages.poetry-core;
-in
+{
+  pkgs,
+  lib ? pkgs.lib,
+  openscad ? pkgs.openscad,
+  buildPythonPackage ? pkgs.python313Packages.buildPythonPackage,
+  fetchFromGitHub ? pkgs.fetchFromGitHub,
+  poetry-core ? pkgs.python313Packages.poetry-core,
+  ply ? pkgs.python313Packages.ply,
+  setuptools ? pkgs.python313Packages.setuptools,
+  ...
+}:
 
 buildPythonPackage rec {
   pname = "solidpython2";
@@ -39,12 +40,7 @@ buildPythonPackage rec {
   buildInputs = [ openscad ];
 
   pythonImportsCheck = [ "solid2" ];
-
-  checkPhase = ''
-    runHook preCheck
-    runHook postCheck
-  '';
-
+  
   meta = {
     homepage = "https://github.com/jeff-dh/SolidPython";
     description = "Python frontend for solid modelling that compiles to OpenSCAD";

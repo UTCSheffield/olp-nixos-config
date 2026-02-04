@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  pythonEnv = import ./packages/python.nix { inherit pkgs; };
+  pythonEnv = import ./python-env.nix { inherit pkgs; };
 in
 {
   environment.systemPackages = with pkgs; [

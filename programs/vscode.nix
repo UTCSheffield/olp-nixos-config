@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    ((pkgs.callPackage ./packages/vscode-with-extensions.nix {}).override {
+    ((pkgs.callPackage ./vscode-with-extensions.nix {}).override {
       vscode = pkgs.vscode;
       vscodeExtensions = with pkgs.vscode-extensions; [
         # ── Python ───────────────────────────────────
