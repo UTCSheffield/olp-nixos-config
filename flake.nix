@@ -33,11 +33,11 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-base.nix"
             ./machines/iso.nix
           ];
-        packages.x86_64-linux.iso =
-              self.nixosConfigurations.iso.config.system.build.isoImage;
-        packages.aarch64-linux.sdImage =
-              self.nixosConfigurations.rpi.config.system.build.sdImage;
         };
       };
+      packages.x86_64-linux.iso =
+            self.nixosConfigurations.iso.config.system.build.isoImage;
+      packages.aarch64-linux.sdImage =
+            self.nixosConfigurations.rpi.config.system.build.sdImage;
     };
 }
