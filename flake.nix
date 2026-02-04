@@ -38,7 +38,7 @@
       packages.x86_64-linux.iso =
             self.nixosConfigurations.iso.config.system.build.isoImage;
       hydraJobs.x86_64-linux.iso =
-            self.packages.x86_64-linux.sdImage;
+            self.packages.x86_64-linux.isoImage;
       packages.aarch64-linux.sdImage =
             self.nixosConfigurations.rpi.config.system.build.sdImage;
       hydraJobs.aarch64-linux.sdImage =
