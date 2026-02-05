@@ -47,13 +47,6 @@
 
         # ── Misc Nice-to-have ────────────────────────
         johnpapa.vscode-peacock
-      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "github-vscode-theme";
-          publisher = "GitHub";
-          version = "6.3.5";
-          sha256 = "sha256-dOadoYBPcYrpzmqOpJwG+/nPwTfJtlsOFDU3FctdR0o=";
-        }
       ];
     })
   ];

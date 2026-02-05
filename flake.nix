@@ -43,6 +43,22 @@
             ./machines/RaspberryPi.nix
           ];
         };
+        rpit = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = attrs;
+          modules = [
+            "${nixpkgs}/nixos/modules/profiles/minimal.nix"
+            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+            ./machines/RaspberryPi.nix
+            ({ pkgs, ... }:
+            {
+              disabledModules = [
+                "${nixpkgs}/nixos/modules/profiles/all-hardware.nix"
+                "${nixpkgs}/nixos/modules/profiles/base.nix"
+              ];
+            })
+          ];
+        };
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = attrs;
@@ -52,7 +68,6 @@
           ];
         };
       };
-
 
       packages = packages;
 

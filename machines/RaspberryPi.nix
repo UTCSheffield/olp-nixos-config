@@ -9,7 +9,6 @@
   imports = [
     ../programs/cachix.nix
     ../programs/firefox.nix
-    ../programs/vscode.nix
     ../programs/python.nix
     ../programs/firstboot-hostname.nix
   ];
@@ -20,6 +19,8 @@
     extraGroups = [ "networkmanager" "wheel" ];
     initialPassword = "raspberry";
   };
+
+  documentation.man.enable = false;
 
   networking.networkmanager.enable = true;
 
@@ -47,6 +48,8 @@
     displayManager.lightdm.enable = true;
     desktopManager.xfce.enable = true;
   };
+
+  environment.defaultPackages = [];
 
   system.stateVersion = "25.11";
 }

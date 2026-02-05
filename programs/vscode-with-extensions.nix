@@ -16,16 +16,25 @@ let
   inherit (vscode) executableName longName;
   wrappedPkgVersion = lib.getVersion vscode;
   wrappedPkgName = lib.removeSuffix "-${wrappedPkgVersion}" vscode.name;
+  
+  extensions = vscodeExtensions ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "github-vscode-theme";
+          publisher = "GitHub";
+          version = "6.3.5";
+          sha256 = "sha256-dOadoYBPcYrpzmqOpJwG+/nPwTfJtlsOFDU3FctdR0o=";
+        }
+      ];
 
   extensionJsonFile = writeTextFile {
     name = "vscode-extensions-json";
     destination = "/share/vscode/extensions/extensions.json";
-    text = vscode-utils.toExtensionJson vscodeExtensions;
+    text = vscode-utils.toExtensionJson extensions;
   };
 
   combinedExtensionsDrv = buildEnv {
     name = "vscode-extensions";
-    paths = vscodeExtensions ++ [ extensionJsonFile ];
+    paths = extensions ++ [ extensionJsonFile ];
   };
   
   pythonEnv = import ./python-env.nix { inherit pkgs; };
