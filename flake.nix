@@ -13,19 +13,16 @@
       eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
 
       packages = eachSystem (system:
-        (import ./programs/packages {
+        let
           pkgs = nixpkgs.legacyPackages.${system};
-        })
-        // {
-          iso =
-            if system == "x86_64-linux"
-            then self.nixosConfigurations.iso.config.system.build.isoImage
-            else null;
-
-          sdImage =
-            if system == "aarch64-linux"
-            then self.nixosConfigurations.rpi.config.system.build.sdImage
-            else null;
+          lib = pkgs.lib;
+        in
+        (import ./programs/packages { inherit pkgs; })
+        // lib.optionalAttrs (system == "x86_64-linux") {
+          iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+        }
+        // lib.optionalAttrs (system == "aarch64-linux") {
+          sdImage = self.nixosConfigurations.rpi.config.system.build.sdImage;
         }
       );
     in
