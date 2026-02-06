@@ -12,19 +12,12 @@
     let
       eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
 
-      packages = eachSystem (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          lib = pkgs.lib;
-        in
-        (import ./programs/packages { inherit pkgs; })
-        // lib.optionalAttrs (system == "x86_64-linux") {
-          iso = self.nixosConfigurations.iso.config.system.build.isoImage;
-        }
-        // lib.optionalAttrs (system == "aarch64-linux") {
-          sdImage = self.nixosConfigurations.rpi.config.system.build.sdImage;
-        }
-      );
+      nixosConfigsForSystem = system:
+        nixpkgs.lib.mapAttrs
+          (_: cfg: cfg.config.system.build.toplevel)
+          (nixpkgs.lib.filterAttrs
+            (_: cfg: cfg.pkgs.stdenv.hostPlatform.system == system)
+            self.nixosConfigurations);
     in
     {
       nixosConfigurations = {
@@ -37,14 +30,6 @@
         };
         rpi = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
-          specialArgs = attrs;
-          modules = [
-            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-            ./machines/RaspberryPi.nix
-          ];
-        };
-        rpit = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
           specialArgs = attrs;
           modules = [
             "${nixpkgs}/nixos/modules/profiles/minimal.nix"
@@ -69,8 +54,31 @@
         };
       };
 
-      packages = packages;
+      packages = eachSystem (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          lib = pkgs.lib;
+        in
+        (import ./. { inherit pkgs; flat = true; })
+      );
 
-      hydraJobs = self.packages;
+      hydraJobs = {
+        packages = self.packages;
+        configs = eachSystem (system:
+          nixosConfigsForSystem system
+        );
+        images = eachSystem (system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+            lib = pkgs.lib;
+          in
+          lib.optionalAttrs (system == "x86_64-linux") {
+            iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+          }
+          // lib.optionalAttrs (system == "aarch64-linux") {
+            rpi = self.nixosConfigurations.rpi.config.system.build.sdImage;
+          }
+        );
+      };
     };
 }

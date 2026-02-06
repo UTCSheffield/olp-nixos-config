@@ -1,5 +1,6 @@
 {
   pkgs,
+  self,
   lib,
   stdenv,
   runCommand,
@@ -37,7 +38,7 @@ let
     paths = extensions ++ [ extensionJsonFile ];
   };
   
-  pythonEnv = import ./python-env.nix { inherit pkgs; };
+  pythonEnv = import ./python-env.nix { inherit pkgs self; };
 
   wrapperScript = writeTextFile {
     name = "vscode-wrapper";

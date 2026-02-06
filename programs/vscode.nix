@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ self, config, pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
-    ((pkgs.callPackage ./vscode-with-extensions.nix {}).override {
+    ((pkgs.callPackage ./vscode-with-extensions.nix { inherit self; }).override {
       vscode = pkgs.vscode;
       vscodeExtensions = with pkgs.vscode-extensions; [
         # ── Python ───────────────────────────────────

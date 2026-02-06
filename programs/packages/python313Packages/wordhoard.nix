@@ -1,4 +1,5 @@
-{ pkgs,
+{
+  pkgs,
   lib ? pkgs.lib,
   buildPythonPackage ? pkgs.python313Packages.buildPythonPackage,
   fetchFromGitHub ? pkgs.fetchFromGitHub,

@@ -1,11 +1,12 @@
-{ pkgs, python313 ? pkgs.python313, ... }:
+{ self, pkgs, python313 ? pkgs.python313, ... }:
 
 let
-    solidpython2 = import ./packages/python313Packages/solidpython2.nix { inherit pkgs; };
-    wordhoard = import ./packages/python313Packages/wordhoard.nix { inherit pkgs; };
+    getPythonPackage = pkg:
+        self.packages.${pkgs.stdenv.hostPlatform.system}.${"python313Packages-" + pkg};
 in
 python313.withPackages (python-pkgs: with python-pkgs; [
-    solidpython2
+    getPythonPackage("solidpython2")
+    getPythonPackage("wordhoard")
 
     pygame
     colorama
@@ -13,7 +14,6 @@ python313.withPackages (python-pkgs: with python-pkgs; [
     art
     pyfiglet
     faker
-    wordhoard
     emoji
 
     # ── QOL ────────────────────────────────────
