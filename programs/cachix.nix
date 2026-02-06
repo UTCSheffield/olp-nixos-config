@@ -13,10 +13,12 @@
       substituters = [
         "https://utcsheffield.cachix.org"
         "https://himmelblau.cachix.org"
+        "https://nix-cache.archiesbytes.xyz"
       ];
       trusted-public-keys = [
         "utcsheffield.cachix.org-1:JlnNbGhsj00NjGND1yb6SHRoM6JO2HjgrbhpqwAp8xo="
         "himmelblau.cachix.org-1:yu8mq/NIBYsZHWzo4SOge97gpf02qugdZFT/JdRkswc="
+        "nix-cache.archiesbytes.xyz:1TTuu9TNSBMvC1EspXSnT2kg1Y04TwvfsfmmnJLhWmU="
       ];
     };
   };
