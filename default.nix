@@ -1,4 +1,4 @@
-{ pkgs, lib ? pkgs.lib, flat ? false, ... }:
+{ pkgs, lib, flat ? false, ... }:
 
 let
   readPackages = dir: prefix:

@@ -1,12 +1,11 @@
 { self, pkgs, python313 ? pkgs.python313, ... }:
 
 let
-    getPythonPackage = pkg:
-        self.packages.${pkgs.stdenv.hostPlatform.system}.${"python313Packages-" + pkg};
+    pythonPkgs = self.legacyPackages.${pkgs.stdenv.hostPlatform.system}.python313Packages;
 in
-python313.withPackages (python-pkgs: with python-pkgs; [
-    getPythonPackage("solidpython2")
-    getPythonPackage("wordhoard")
+python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
+    solidpython2
+    wordhoard
 
     pygame
     colorama

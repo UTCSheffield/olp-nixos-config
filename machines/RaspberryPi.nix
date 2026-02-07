@@ -6,12 +6,14 @@
   ...
 }:
 
+let
+  starwars-hostname = self.packages.${pkgs.stdenv.hostPlatform.system}.starwars-hostname;
+in
 {
   imports = [
     ../programs/cachix.nix
     ../programs/firefox.nix
     ../programs/python.nix
-    ../programs/firstboot-hostname.nix
   ];
 
   users.users.pi = {
@@ -41,6 +43,7 @@
     wget
     git
     thonny
+    starwars-hostname
   ];
 
   services.xserver = {

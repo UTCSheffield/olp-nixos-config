@@ -21,14 +21,14 @@
     in
     {
       nixosConfigurations = {
-        makerlab = nixpkgs.lib.nixosSystem {
+        makerlab = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = attrs;
           modules = [
             ./machines/MakerLab.nix
           ];
         };
-        rpi = nixpkgs.lib.nixosSystem {
+        rpi = nixpkgs.lib.nixosSystem rec {
           system = "aarch64-linux";
           specialArgs = attrs;
           modules = [
@@ -54,12 +54,24 @@
         };
       };
 
+      legacyPackages = eachSystem (system:
+        import ./. {
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+          lib = nixpkgs.lib;
+          flat = false;
+        }
+      );
+
       packages = eachSystem (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          lib = pkgs.lib;
-        in
-        (import ./. { inherit pkgs; flat = true; })
+        import ./. {
+          pkgs = import nixpkgs {
+            inherit system;
+          };
+          lib = nixpkgs.lib;
+          flat = true;
+        }
       );
 
       hydraJobs = {
