@@ -16,6 +16,11 @@ in
     ../programs/python.nix
   ];
 
+  swapDevices = [{
+    device = "/swapfile";
+    size = 6 * 1024;
+  }];
+
   users.users.pi = {
     description = "Raspberry Pi";
     isNormalUser = true;
