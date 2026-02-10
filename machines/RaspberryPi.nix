@@ -14,6 +14,7 @@ in
     ../programs/cachix.nix
     ../programs/firefox.nix
     ../programs/python.nix
+    ../programs/thonny.nix
   ];
 
   swapDevices = [{
@@ -48,7 +49,6 @@ in
     wget
     git
     starwars-hostname
-    (pkgs.callPackage ../programs/pycharm.nix { inherit self; })
   ];
 
   services.xserver = {

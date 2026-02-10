@@ -1,23 +1,26 @@
 {
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  python3,
-  makeDesktopItem,
-  copyDesktopItems,
-  desktopToDarwinBundle,
+  pkgs,
+  lib ? pkgs.lib,
+  stdenv ? pkgs.stdenv,
+  fetchFromGitHub ? pkgs.fetchFromGitHub,
+  python3 ? pkgs.python3,
+  makeDesktopItem ? pkgs.makeDesktopItem,
+  copyDesktopItems ? pkgs.copyDesktopItems,
+  desktopToDarwinBundle ? pkgs.desktopToDarwinBundle,
   pythonEnv ? "",
   ...
 }:
 
 let
+  jediPath = "${python3.pkgs.jedi}/${python3.sitePackages}";
+
   pythonPathSuffix =
     if pythonEnv == "" then
-      toPythonPath python3.pkgs.jedi
+      jediPath
     else
       pythonEnv;
 in
-python3.pkgs.buildPythonApplication (finalAttrs: {
+python3.pkgs.buildPythonApplication rec {
   pname = "thonny";
   version = "4.1.7";
   pyproject = true;
@@ -25,7 +28,7 @@ python3.pkgs.buildPythonApplication (finalAttrs: {
   src = fetchFromGitHub {
     owner = "thonny";
     repo = "thonny";
-    tag = "v${finalAttrs.version}";
+    tag = "v${version}";
     hash = "sha256-RnjnXB5jU13uwRpL/Pn14QY7fRbRkq09Vopc3fv+z+Y=";
   };
 
@@ -95,4 +98,4 @@ python3.pkgs.buildPythonApplication (finalAttrs: {
     platforms = lib.platforms.unix;
     mainProgram = "thonny";
   };
-})
+}
