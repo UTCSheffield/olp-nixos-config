@@ -7,6 +7,8 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     solidpython2
     wordhoard
 
+    jedi
+
     pygame
     colorama
     rich

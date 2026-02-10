@@ -47,8 +47,8 @@ in
     vim
     wget
     git
-    thonny
     starwars-hostname
+    (pkgs.callPackage ../programs/pycharm.nix { inherit self; })
   ];
 
   services.xserver = {
