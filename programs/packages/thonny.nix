@@ -11,15 +11,6 @@
   ...
 }:
 
-let
-  jediPath = "${python3.pkgs.jedi}/${python3.sitePackages}";
-
-  pythonPathSuffix =
-    if pythonEnv == "" then
-      jediPath
-    else
-      pythonEnv;
-in
 python3.pkgs.buildPythonApplication rec {
   pname = "thonny";
   version = "4.1.7";
@@ -79,6 +70,10 @@ python3.pkgs.buildPythonApplication rec {
 
   postInstall = ''
     install -Dm644 ./packaging/icons/thonny-48x48.png $out/share/icons/hicolor/48x48/apps/thonny.png
+    cat > $out/lib/python*/site-packages/thonny/defaults.ini <<'EOF'
+[CustomInterpreter]
+path = /run/current-system/sw/bin/python3
+EOF
   '';
 
   doCheck = false;
