@@ -65,7 +65,7 @@ python3.pkgs.buildPythonApplication rec {
 
   preFixup = ''
     wrapProgram "$out/bin/thonny" \
-       --prefix PYTHONPATH : $PYTHONPATH:${pythonPathSuffix}
+       --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi})
   '';
 
   postInstall = ''
