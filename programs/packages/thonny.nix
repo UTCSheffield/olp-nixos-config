@@ -65,15 +65,25 @@ python3.pkgs.buildPythonApplication rec {
 
   preFixup = ''
     wrapProgram "$out/bin/thonny" \
-       --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi})
+      --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi}) \
+      --run '
+        CONFIG_DIR="$HOME/.config/Thonny"
+        CONFIG_FILE="$CONFIG_DIR/configuration.ini"
+  
+        mkdir -p "$CONFIG_DIR"
+  
+        if [ ! -f "$CONFIG_FILE" ]; then
+          cat > "$CONFIG_FILE" <<EOF
+  [CustomInterpreter]
+  path = /run/current-system/sw/bin/python3
+  EOF
+        fi
+      '
   '';
+
 
   postInstall = ''
     install -Dm644 ./packaging/icons/thonny-48x48.png $out/share/icons/hicolor/48x48/apps/thonny.png
-    cat > $out/lib/python*/site-packages/thonny/defaults.ini <<'EOF'
-[CustomInterpreter]
-path = /run/current-system/sw/bin/python3
-EOF
   '';
 
   doCheck = false;
