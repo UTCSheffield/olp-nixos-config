@@ -19,7 +19,7 @@ in
 
   swapDevices = [{
     device = "/swapfile";
-    size = 6 * 1024;
+    size = 2 * 1024;
   }];
 
   users.users.pi = {
