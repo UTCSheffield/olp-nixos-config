@@ -9,7 +9,7 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
 
     jedi
 
-    pygame
+    pygame-ce
     colorama
     rich
     art
