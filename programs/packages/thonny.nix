@@ -65,20 +65,7 @@ python3.pkgs.buildPythonApplication rec {
 
   preFixup = ''
     wrapProgram "$out/bin/thonny" \
-      --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi}) \
-      --run '
-        CONFIG_DIR="$HOME/.config/Thonny"
-        CONFIG_FILE="$CONFIG_DIR/configuration.ini"
-  
-        mkdir -p "$CONFIG_DIR"
-  
-        if [ ! -f "$CONFIG_FILE" ]; then
-          cat > "$CONFIG_FILE" <<EOF
-  [CustomInterpreter]
-  path = /run/current-system/sw/bin/python3
-  EOF
-        fi
-      '
+      --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi}):${pythonEnv}/lib/python3.13/site-packages
   '';
 
 
