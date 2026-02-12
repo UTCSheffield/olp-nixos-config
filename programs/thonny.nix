@@ -5,6 +5,6 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
-    (pkgs.callPackage ./packages/thonny.nix { inherit pythonEnv; })
+    (self.packages.${pkgs.stdenv.hostPlatform.system}.thonny.override { inherit pythonEnv; })
   ];
 }
