@@ -65,8 +65,7 @@ python3.pkgs.buildPythonApplication rec {
 
   preFixup = ''
     wrapProgram "$out/bin/thonny" \
-      --prefix PYTHONPATH : $PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi})\
-      ${lib.optionalString (pythonEnv != "") ":${pythonEnv}/lib/python3.13/site-packages"}
+      --prefix PYTHONPATH : "$PYTHONPATH:$(toPythonPath ${python3.pkgs.jedi})${lib.optionalString (pythonEnv != "") ":${pythonEnv}/lib/python3.13/site-packages"}"
   '';
 
 
