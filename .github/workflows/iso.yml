@@ -7,12 +7,13 @@ on:
     paths:
       - machines/iso.nix
       - .github/workflows/iso.yml
+      - flake.lock
 
   pull_request:
     paths:
       - machines/iso.nix
       - .github/workflows/iso.yml
-
+      
 jobs:
   build:
     runs-on: ubuntu-latest
