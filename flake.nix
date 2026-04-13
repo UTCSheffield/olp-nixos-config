@@ -4,11 +4,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    himmelblau.url = "github:himmelblau-idm/himmelblau";
-    himmelblau.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    { self, nixpkgs, home-manager, himmelblau, ... }@attrs:
+    { self, nixpkgs, home-manager, ... }@attrs:
     let
       eachSystem = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
 

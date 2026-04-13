@@ -14,7 +14,7 @@
     ../programs/vscode.nix
     ../programs/python.nix
     ../programs/update-tool.nix
-    ../programs/himmelblau.nix
+    #../programs/himmelblau.nix
   ];
 
   users.users.makerlab = {
