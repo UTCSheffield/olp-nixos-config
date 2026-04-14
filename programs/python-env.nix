@@ -5,10 +5,7 @@ let
 in
 python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     solidpython2
-    wordhoard
-
     jedi
-
     pygame-ce
     colorama
     rich
@@ -16,6 +13,7 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     pyfiglet
     faker
     emoji
+    streamlit
 
     # ── QOL ────────────────────────────────────
     flake8
