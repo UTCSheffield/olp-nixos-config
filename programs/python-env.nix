@@ -14,6 +14,8 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     faker
     emoji
     streamlit
+    streamlit_stl
+    nicegui
 
     # ── QOL ────────────────────────────────────
     flake8
