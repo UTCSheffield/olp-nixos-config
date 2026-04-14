@@ -58,9 +58,9 @@ mkfs.ext4 -F -L nixos "$drive2"
 mkswap -f -L swap "$drive3"
 
 echo "Mounting Disks..."
-mount /dev/disk/by-label/nixos /mnt
+mount "$drive2" /mnt
 mkdir -p /mnt/boot
-mount /dev/disk/by-label/boot /mnt/boot
+mount "$drive1" /mnt/boot
 swapon "$drive3"
 
 echo "Installing System..."
