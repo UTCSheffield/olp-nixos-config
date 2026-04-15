@@ -75,6 +75,5 @@ EOF
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
 echo -e "root:$ROOT_PASSWORD" | nixos-enter -c "chpasswd"
 
-echo "Rebooting in 5 seconds..."
+echo "Exiting in 5 seconds..."
 sleep 5
-reboot
