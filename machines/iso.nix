@@ -85,5 +85,34 @@
 
     touch "$FLAG"
     /etc/setup.sh
+
+    # Find an active WiFi connection managed by NetworkManager
+    WIFI_LINE=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | grep ':wifi:' || true)
+    
+    if [ -z "$WIFI_LINE" ]; then
+        echo "No active WiFi connection found"
+        exit 0
+    fi
+    
+    # Extract connection name
+    CONN=$(echo "$WIFI_LINE" | head -n1 | cut -d: -f1)
+    
+    # Locate corresponding .nmconnection file
+    FILE=$(grep -rl "id=${CONN}" /etc/NetworkManager/system-connections/ || true)
+    
+    if [ -z "$FILE" ]; then
+        echo "Connection '$CONN' found but no file located"
+        exit 1
+    fi
+    
+    # Export directory (adjust as needed)
+    EXPORT_DIR="/mnt/shared/nm-profiles"
+    mkdir -p "$EXPORT_DIR"
+    
+    cp "$FILE" "$EXPORT_DIR/"
+    chmod 600 "$EXPORT_DIR/"*.nmconnection
+    
+    echo "Exported WiFi profile: $CONN → $EXPORT_DIR"
+    reboot
   '';
 }
