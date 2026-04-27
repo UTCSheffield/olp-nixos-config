@@ -46,6 +46,7 @@
     gh
     chromium
     openscad
+    burpsuite
   ];
 
   services.displayManager.gdm.enable = true;
