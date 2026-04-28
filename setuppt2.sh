@@ -75,7 +75,7 @@ EOF
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
 echo -e "root:$ROOT_PASSWORD" | nixos-enter -c "chpasswd"
 
-WIFI_LINE=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | grep ':wifi:' || true)
+WIFI_LINE=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | grep ':802-11-wireless:' || true)
 
 if [ -n "$WIFI_LINE" ]; then
     echo "Copying WiFi profile..."
