@@ -77,6 +77,7 @@ fi
 
 echo "Installing System..."
 mkdir -p /mnt/etc
+rm -rf /mnt/etc/nixos
 git clone https://github.com/UTCSheffield/olp-nixos-config /mnt/etc/nixos --depth 1 --branch $branch
 
 cat <<EOF > "/mnt/etc/nixos/system.conf"
