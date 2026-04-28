@@ -3,7 +3,7 @@
 {
   imports = [
     ../programs/update-tool.nix
-    ../machines/generic.nix
+    ../hardware/generic.nix
   ];
   
   hardware.graphics.enable = true;
