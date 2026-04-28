@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
+NO_FORMAT=0
+
+for arg in "$@"; do
+    case "$arg" in
+        --no-disk-format)
+            NO_FORMAT=1
+            ;;
+    esac
+done
+
 if [ $(whoami) != 'root' ]; then
     echo "You are not ROOT, rerunning with sudo..."
     sudo bash "$0" "$@"
@@ -31,37 +41,39 @@ if [ -z "$branch" ]; then
     branch="master"
 fi
 
-lsblk
-read -p "Which Drive? (ex: sda or /dev/sda or /dev/nvme0n1) " drive
-echo "Partitioning..."
-if [[ "$drive" != /dev/* ]]; then
-    drive="/dev/$drive"
+if [ "$NO_FORMAT" -eq 0 ]; then
+    lsblk
+    read -p "Which Drive? (ex: sda or /dev/sda or /dev/nvme0n1) " drive
+    if [[ "$drive" != /dev/* ]]; then
+        drive="/dev/$drive"
+    fi
+
+    suf=$([[ "$drive" == *nvme* || "$drive" == *mmcblk* ]] && echo "p" || echo "")
+
+    drive1="${drive}${suf}1"
+    drive2="${drive}${suf}2"
+    drive3="${drive}${suf}3"
+    echo "Partitioning..."
+
+    parted -s $drive -- mklabel gpt
+    parted -s $drive -- mkpart ESP fat32 1MiB 2049MiB
+    parted -s $drive -- set 1 esp on
+    parted -s $drive -- mkpart root ext4 2050MiB -8GiB
+    parted -s $drive -- mkpart swap linux-swap -8GiB 100%
+    partprobe "$drive"
+    udevadm settle
+
+    echo "Formatting Disks..."
+    mkfs.fat -I -F 32 -n boot "$drive1"
+    mkfs.ext4 -F -L nixos "$drive2"
+    mkswap -f -L swap "$drive3"
+
+    echo "Mounting Disks..."
+    mount "$drive2" /mnt
+    mkdir -p /mnt/boot
+    mount "$drive1" /mnt/boot
+    swapon "$drive3"
 fi
-
-parted -s $drive -- mklabel gpt
-parted -s $drive -- mkpart ESP fat32 1MiB 2049MiB
-parted -s $drive -- set 1 esp on
-parted -s $drive -- mkpart root ext4 2050MiB -8GiB
-parted -s $drive -- mkpart swap linux-swap -8GiB 100%
-partprobe "$drive"
-udevadm settle
-
-echo "Formatting Disks..."
-suf=$([[ "$drive" == *nvme* || "$drive" == *mmcblk* ]] && echo "p" || echo "")
-
-drive1="${drive}${suf}1"
-drive2="${drive}${suf}2"
-drive3="${drive}${suf}3"
-
-mkfs.fat -I -F 32 -n boot "$drive1"
-mkfs.ext4 -F -L nixos "$drive2"
-mkswap -f -L swap "$drive3"
-
-echo "Mounting Disks..."
-mount "$drive2" /mnt
-mkdir -p /mnt/boot
-mount "$drive1" /mnt/boot
-swapon "$drive3"
 
 echo "Installing System..."
 mkdir -p /mnt/etc
