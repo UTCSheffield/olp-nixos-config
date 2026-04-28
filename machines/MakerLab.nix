@@ -28,9 +28,6 @@
 
   networking.networkmanager.enable = true;
 
-  nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = "nix-command flakes";
-
   time.timeZone = "Europe/London";
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {
