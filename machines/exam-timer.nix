@@ -5,6 +5,10 @@
     ../programs/update-tool.nix
     ../hardware/generic.nix
   ];
+
+  environment.systemPackages = with pkgs; [
+    git
+  ];
   
   hardware.graphics.enable = true;
 
