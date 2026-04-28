@@ -13,7 +13,7 @@
   services.cage = {
     enable = true;
     user = "kioskuser";
-    program = "${pkgs.chromium}/bin/chromium --kiosk --app https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html";
+    program = "${pkgs.chromium}/bin/chromium --kiosk --app=https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html";
   };
 
   users.users.kioskuser = {
