@@ -26,6 +26,13 @@
             ./machines/MakerLab.nix
           ];
         };
+        exam-timer = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = attrs;
+          modules = [
+            ./machines/exam-timer.nix
+          ];
+        };
         rpi = nixpkgs.lib.nixosSystem rec {
           system = "aarch64-linux";
           specialArgs = attrs;
