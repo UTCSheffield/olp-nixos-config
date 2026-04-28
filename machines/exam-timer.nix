@@ -1,7 +1,14 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../programs/update-tool.nix
+    ../machines/generic.nix
+  ];
+  
   hardware.graphics.enable = true;
+
+  networking.networkmanager.enable = true;
 
   services.cage = {
     enable = true;
