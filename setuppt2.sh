@@ -75,5 +75,25 @@ EOF
 nixos-install --flake /mnt/etc/nixos#$config --no-root-password
 echo -e "root:$ROOT_PASSWORD" | nixos-enter -c "chpasswd"
 
+WIFI_LINE=$(nmcli -t -f NAME,TYPE,DEVICE connection show --active | grep ':wifi:' || true)
+
+if [ -n "$WIFI_LINE" ]; then
+    echo "Copying WiFi profile..."
+
+    CONN=$(echo "$WIFI_LINE" | head -n1 | cut -d: -f1)
+    FILE=$(grep -rl "id=$CONN" /etc/NetworkManager/system-connections/ || true)
+
+    if [ -n "$FILE" ]; then
+        mkdir -p /mnt/etc/NetworkManager/system-connections
+        cp "$FILE" /mnt/etc/NetworkManager/system-connections/
+        chmod 600 /mnt/etc/NetworkManager/system-connections/*.nmconnection
+        echo "Copied WiFi profile: $CONN"
+    else
+        echo "Active WiFi connection found, but profile file was not located"
+    fi
+else
+    echo "No active WiFi connection found"
+fi
+
 echo "Exiting in 5 seconds..."
 sleep 5
