@@ -5,6 +5,8 @@
     ../hardware/generic.nix
   ];
 
+  time.timeZone = "Europe/London";
+
   environment.systemPackages = with pkgs; [
     chromium
     openbox
