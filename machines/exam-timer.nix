@@ -12,6 +12,10 @@
   
   networking.networkmanager.enable = true;
 
+  services.xserver.displayManager.sessionCommands = ''
+    ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --same-as eDP-1
+  '';
+
   services.cage = {
     enable = true;
     user = "kioskuser";
