@@ -13,6 +13,7 @@ on:
     paths:
       - machines/iso.nix
       - .github/workflows/iso.yml
+  workflow_dispatch:
       
 jobs:
   build:
