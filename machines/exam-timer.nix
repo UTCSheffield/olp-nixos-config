@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../programs/update-tool.nix
     ../hardware/generic.nix
   ];
 
