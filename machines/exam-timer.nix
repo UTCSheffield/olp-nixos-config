@@ -3,6 +3,7 @@
 {
   imports = [
     ../hardware/generic.nix
+    ../programs/update-tool.nix
   ];
 
   time.timeZone = "Europe/London";
