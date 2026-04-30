@@ -63,9 +63,9 @@
 
     # mirror all outputs to primary
     for out in $(xrandr | grep " connected" | cut -d" " -f1); do
-      xrandr --output "$out" --auto
+      xrandr --output "$out" --auto --scale-from 1920x1080
       if [ "$out" != "$PRIMARY" ]; then
-        xrandr --output "$out" --same-as "$PRIMARY"
+        xrandr --output "$out" --same-as "$PRIMARY" --scale-from 1920x1080
       fi
     done
 
