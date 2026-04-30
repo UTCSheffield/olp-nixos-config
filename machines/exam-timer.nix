@@ -32,6 +32,7 @@
     requires = ["greetd.service"];
     script = ''
       export DISPLAY=:0
+      PRIMARY=$(xrandr | grep " connected" | cut -d" " -f1 | head -n1)
       for out in $(xrandr | grep " connected" | cut -d" " -f1); do
         xrandr --output "$out" --auto --scale-from 1920x1080
         if [ "$out" != "$PRIMARY" ]; then
@@ -84,9 +85,6 @@
     # start window manager FIRST
     openbox-session &
     sleep 2
-
-    # detect primary output
-    PRIMARY=$(xrandr | grep " connected" | cut -d" " -f1 | head -n1)
 
     # launch Chromium in APP MODE (NOT kiosk)
     chromium \
