@@ -26,11 +26,12 @@
   services.xserver.windowManager.openbox.enable = true;
 
   systemd.services.mirror = {
-    path = [ xorg.xrandr ];
+    path = with pkgs; [ xorg.xrandr ];
     description = "Mirror Screens";
     wantedBy = ["multi-user.target"];
     requires = ["greetd.service"];
     script = ''
+      export DISPLAY=:0
       for out in $(xrandr | grep " connected" | cut -d" " -f1); do
         xrandr --output "$out" --auto --scale-from 1920x1080
         if [ "$out" != "$PRIMARY" ]; then
