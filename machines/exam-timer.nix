@@ -26,6 +26,7 @@
   services.xserver.windowManager.openbox.enable = true;
 
   systemd.services.mirror = {
+    path = [ xorg.xrandr ];
     description = "Mirror Screens";
     wantedBy = ["multi-user.target"];
     requires = ["greetd.service"];
