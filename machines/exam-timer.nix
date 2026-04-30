@@ -28,8 +28,6 @@
   services.greetd = {
     enable = true;
 
-    vt = 1;
-
     settings.default_session = {
       user = "kioskuser";
       command = "startx -- :0 vt1";
