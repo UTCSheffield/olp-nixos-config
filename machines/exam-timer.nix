@@ -21,8 +21,9 @@
   networking.networkmanager.enable = true;
 
   services.xserver.enable = true;
+  services.libinput.enable = true;
 
-  services.xserver.windowManager.openbox.enable = false;
+  services.xserver.windowManager.openbox.enable = true;
 
   services.greetd = {
     enable = true;
