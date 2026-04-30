@@ -25,6 +25,33 @@
   services.xserver.displayManager.startx.enable = true;
   services.xserver.windowManager.openbox.enable = true;
 
+  systemd.services.mirror = {
+    description = "Mirror Screens";
+    wantedBy = ["multi-user.target"];
+    requires = ["greetd.service"];
+    script = ''
+      for out in $(xrandr | grep " connected" | cut -d" " -f1); do
+        xrandr --output "$out" --auto --scale-from 1920x1080
+        if [ "$out" != "$PRIMARY" ]; then
+          xrandr --output "$out" --same-as "$PRIMARY" --scale-from 1920x1080
+        fi
+      done
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "kioskuser";
+    };
+  };
+
+  systemd.timers.mirror = {
+    description = "Mirror Screens Timer";
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnCalendar = "*:*:00/5";
+      AccuracySec = "1";
+    };
+  };
+
   services.greetd = {
     enable = true;
 
@@ -58,14 +85,6 @@
 
     # detect primary output
     PRIMARY=$(xrandr | grep " connected" | cut -d" " -f1 | head -n1)
-
-    # mirror all outputs to primary
-    for out in $(xrandr | grep " connected" | cut -d" " -f1); do
-      xrandr --output "$out" --auto --scale-from 1920x1080
-      if [ "$out" != "$PRIMARY" ]; then
-        xrandr --output "$out" --same-as "$PRIMARY" --scale-from 1920x1080
-      fi
-    done
 
     # launch Chromium in APP MODE (NOT kiosk)
     chromium \
