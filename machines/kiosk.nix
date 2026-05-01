@@ -7,6 +7,9 @@
     ../programs/update-tool.nix
   ];
 
+  systemd.tpm2.enable = false; # improve boot time
+  boot.initrd.systemd.tpm2.enable = false;
+
   specialisation = {
     art.configuration = {
         kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/"
