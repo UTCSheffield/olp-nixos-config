@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io"
 	"log"
 	"math/rand"
@@ -121,6 +122,9 @@ func replaceHostname(hostname string) {
 }
 
 func main() {
+	oneshot := flag.Bool("oneshot", false, "run once then exit")
+	flag.Parse()
+
 	log.SetOutput(os.Stdout)
 	rand.Seed(time.Now().UnixNano())
 
@@ -174,6 +178,10 @@ func main() {
 		run("/run/current-system/sw/bin/nixos-rebuild", "switch", "--flake", "/etc/nixos#"+sysConf.Config)
 
 		log.Println("Updated successfully")
+
+		if *oneshot {
+			return
+		}
 
 		time.Sleep(90 * time.Second)
 	}

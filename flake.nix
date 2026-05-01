@@ -33,6 +33,13 @@
             ./machines/exam-timer.nix
           ];
         };
+        kiosk = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = attrs;
+          modules = [
+            ./machines/kiosk.nix
+          ];
+        };
         rpi = nixpkgs.lib.nixosSystem rec {
           system = "aarch64-linux";
           specialArgs = attrs;
