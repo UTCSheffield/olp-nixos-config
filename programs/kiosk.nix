@@ -5,12 +5,12 @@
 
         url = lib.mkOption {
             type = lib.types.str;
-            default = "https://google.com";
+            default = "";
             description = "URL for kiosk to load";
         };
     };
 
-    config = lib.mkIf config.kiosk.enable {
+    config = lib.mkIf (config.kiosk.url != "") {
         time.timeZone = "Europe/London";
 
         environment.systemPackages = with pkgs; [
