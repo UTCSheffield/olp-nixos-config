@@ -86,4 +86,6 @@
     touch "$FLAG"
     /etc/setup.sh
   '';
+
+  system.stateVersion = "25.11";
 }
