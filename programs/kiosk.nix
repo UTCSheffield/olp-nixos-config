@@ -94,6 +94,7 @@
             # launch Chromium in APP MODE (NOT kiosk)
             chromium \
             --app=${config.kiosk.url} \
+            --incognito \
             --start-maximized \
             --no-first-run \
             --disable-pinch \
