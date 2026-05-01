@@ -7,9 +7,26 @@
     ../programs/update-tool.nix
   ];
 
-  specialisation.test.configuration = {
-    kiosk.enable = true;
-    kiosk.url = "https://example.com";
+  specialisation = {
+    art.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/"
+    };
+
+    sprig-gallery.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/sprig-arcade/"
+    };
+
+    sprig-random.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/sprig-arcade/random/"
+    };
+
+    exam-timer.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html"
+    };
+
+    adhoc-exam-timer.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/adhoc.html"
+    };
   };
 
   system.stateVersion = "25.11";
