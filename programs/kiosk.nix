@@ -1,8 +1,6 @@
 { pkgs, lib, config, ... }:
 {
     options.kiosk = {
-        enable = lib.mkEnableOption "Enable kiosk service";
-
         url = lib.mkOption {
             type = lib.types.str;
             default = "";
@@ -23,8 +21,8 @@
             xorg.xset
         ];
 
-        networking.networkmanager.enable = true;
-
+        systemd.services."autovt@tty1".enable = false;
+        
         services.xserver.enable = true;
 
         services.xserver.displayManager.startx.enable = true;

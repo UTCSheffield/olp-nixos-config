@@ -9,6 +9,7 @@
 
   systemd.tpm2.enable = false; # improve boot time
   boot.initrd.systemd.tpm2.enable = false;
+  networking.networkmanager.enable = true;
 
   specialisation = {
     art.configuration = {
@@ -43,14 +44,11 @@
 
       serviceConfig = {
         ExecStart =
-          "${pkgs.callPackage ../update-tool/update-tool.nix { }}/bin/client";
+          "${pkgs.callPackage ../update-tool/update-tool.nix { }}/bin/client --oneshot";
         StandardInput = "tty";
         StandardOutput = "tty";
         TTYPath = "/dev/tty1";
       };
     }
   );
-
-  systemd.services."autovt@tty1".enable =
-    lib.mkIf (config.specialisation != {}) false;
 }
