@@ -32,7 +32,8 @@
             path = with pkgs; [ xorg.xrandr ];
             description = "Mirror Screens";
             wantedBy = ["multi-user.target"];
-            requires = ["greetd.service"];
+            after = [ "display-manager.service" ];
+            wants = [ "display-manager.service" ];
             script = ''
             export DISPLAY=:0
             PRIMARY=$(xrandr | grep " connected" | cut -d" " -f1 | head -n1)
