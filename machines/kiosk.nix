@@ -10,6 +10,7 @@
   systemd.tpm2.enable = false; # improve boot time
   boot.initrd.systemd.tpm2.enable = false;
   networking.networkmanager.enable = true;
+  systemd.services."autovt@tty1".enable = false;
 
   specialisation = {
     art.configuration = {

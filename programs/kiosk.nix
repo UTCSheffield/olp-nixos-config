@@ -20,8 +20,6 @@
             xorg.xrandr
             xorg.xset
         ];
-
-        systemd.services."autovt@tty1".enable = false;
         
         services.xserver.enable = true;
 
