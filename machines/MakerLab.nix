@@ -43,7 +43,8 @@
     gh
     chromium
     openscad
-    burpsuite
+    nodejs_24
+    pnpm
   ];
 
   services.displayManager.gdm.enable = true;
