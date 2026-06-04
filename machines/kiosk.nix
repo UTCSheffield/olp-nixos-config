@@ -12,6 +12,19 @@
   networking.networkmanager.enable = true;
   systemd.services."autovt@tty1".enable = false;
 
+  systemd.services."autovt@tty2".enable = false;
+  systemd.services.nmtty2 = {
+    enable = true;
+    wantedBy = [ "multi-user.target" ];
+
+    serviceConfig = {
+      ExecStart = "nmtui";
+      StandardInput = "tty";
+      StandardOutput = "tty";
+      TTYPath = "/dev/tty2";
+    };
+  };
+
   specialisation = {
     art.configuration = {
         kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/";
