@@ -18,7 +18,7 @@
     wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
-      ExecStart = "nmtui";
+      ExecStart = "${pkgs.networkmanager}/bin/nmtui";
       StandardInput = "tty";
       StandardOutput = "tty";
       TTYPath = "/dev/tty2";
