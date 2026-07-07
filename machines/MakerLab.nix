@@ -44,6 +44,7 @@
     openscad
     nodejs_24
     pnpm
+    bambu-studio
   ];
 
   services.displayManager.gdm.enable = true;
