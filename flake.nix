@@ -26,6 +26,18 @@
             ./machines/MakerLab.nix
           ];
         };
+        makerlab-us = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = attrs;
+          modules = [
+            ./machines/MakerLab.nix
+            ({}:
+            {
+              console.keyMap = lib.mkForce "us";
+              services.xserver.xkb.layout = lib.mkForce "us";
+            })
+          ];
+        };
         exam-timer = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = attrs;
