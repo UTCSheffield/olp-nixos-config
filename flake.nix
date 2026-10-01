@@ -31,7 +31,7 @@
           specialArgs = attrs;
           modules = [
             ./machines/MakerLab.nix
-            ({}:
+            ({ lib, ... }:
             {
               console.keyMap = lib.mkForce "us";
               services.xserver.xkb.layout = lib.mkForce "us";
