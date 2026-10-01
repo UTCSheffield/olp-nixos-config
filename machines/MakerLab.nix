@@ -31,7 +31,7 @@
   i18n.defaultLocale = "en_GB.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    keyMap = lib.mkForce "uk";
+    keyMap = lib.mkDefault "uk";
     useXkbConfig = true;
   };
 
@@ -51,7 +51,7 @@
   services.desktopManager.plasma6.enable = true;
   services.xserver = {
     enable = true;
-    xkb.layout = "gb";
+    xkb.layout = lib.mkDefault "gb";
   };
 
   system.stateVersion = "25.11";
