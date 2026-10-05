@@ -7,6 +7,8 @@
     ../programs/update-tool.nix
   ];
 
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
   console.keyMap = lib.mkDefault "gb";
   services.xserver.xkb.layout = lib.mkDefault "gb";
 
