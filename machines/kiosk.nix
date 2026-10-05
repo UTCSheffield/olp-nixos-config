@@ -28,6 +28,7 @@
     wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 15";
       ExecStart = "${pkgs.networkmanager}/bin/nmtui";
       StandardInput = "tty";
       StandardOutput = "tty";
