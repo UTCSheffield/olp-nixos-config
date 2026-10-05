@@ -7,6 +7,9 @@
     ../programs/update-tool.nix
   ];
 
+  console.keyMap = lib.mkDefault "gb";
+  services.xserver.xkb.layout = lib.mkDefault "gb";
+
   systemd.tpm2.enable = false; # improve boot time
   boot.initrd.systemd.tpm2.enable = false;
   networking.networkmanager.enable = true;
