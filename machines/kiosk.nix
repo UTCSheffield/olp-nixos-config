@@ -70,6 +70,10 @@
       after = [ "multi-user.target" ];
       requires = [ "network.target" ];
 
+      path = [
+        pkgs.git
+      ];
+
       serviceConfig = {
         ExecStart =
           "${pkgs.callPackage ../update-tool/update-tool.nix { }}/bin/client --oneshot";
