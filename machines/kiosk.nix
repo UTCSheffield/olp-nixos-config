@@ -13,6 +13,11 @@
   systemd.tpm2.enable = false; # improve boot time
   boot.initrd.systemd.tpm2.enable = false;
   networking.networkmanager.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+
   systemd.services."autovt@tty1".enable = false;
 
   systemd.services."autovt@tty2".enable = false;
