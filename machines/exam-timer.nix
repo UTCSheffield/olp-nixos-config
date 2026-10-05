@@ -6,6 +6,8 @@
     ../programs/update-tool.nix
   ];
 
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
   time.timeZone = "Europe/London";
 
   environment.systemPackages = with pkgs; [
