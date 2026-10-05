@@ -9,7 +9,7 @@
 
   boot.kernelParams = [ "ipv6.disable=1" ];
 
-  console.keyMap = lib.mkDefault "gb";
+  console.keyMap = lib.mkDefault "uk";
   services.xserver.xkb.layout = lib.mkDefault "gb";
 
   systemd.tpm2.enable = false; # improve boot time
