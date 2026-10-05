@@ -50,9 +50,13 @@
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html";
     };
 
+    healthcareers-nhs.configuration = {
+        kiosk.url = "https://www.healthcareers.nhs.uk/FindYourCareer";
+    };
+
     adhoc-exam-timer.configuration = {
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/adhoc.html";
-    };
+    };  
   };
 
   system.stateVersion = "25.11";
