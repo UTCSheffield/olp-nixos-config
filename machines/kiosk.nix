@@ -25,14 +25,21 @@
   systemd.services."autovt@tty2".enable = false;
   systemd.services.nmtty2 = {
     enable = true;
-    wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
-      ExecStartPre = "${pkgs.coreutils}/bin/sleep 15";
       ExecStart = "${pkgs.networkmanager}/bin/nmtui";
       StandardInput = "tty";
       StandardOutput = "tty";
       TTYPath = "/dev/tty2";
+    };
+  };
+
+  systemd.timers.nmtty2 = {
+    wantedBy = [ "timers.target" ];
+  
+    timerConfig = {
+      OnBootSec = "15s";
+      Unit = "nmtty2.service";
     };
   };
 
