@@ -16,6 +16,8 @@
     #../programs/himmelblau.nix
   ];
 
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
   users.users.makerlab = {
     description = "MakerLab";
     isNormalUser = true;
