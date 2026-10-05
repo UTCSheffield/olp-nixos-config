@@ -9,6 +9,8 @@
     ../programs/cachix.nix
   ];
 
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
   environment.systemPackages = with pkgs; [
     git
   ];
