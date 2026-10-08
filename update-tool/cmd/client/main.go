@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"math/rand"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -106,18 +108,42 @@ func run(name string, args ...string) string {
 	return strings.TrimSpace(string(output))
 }
 
-func replaceHostname(hostname string) {
-	if err := os.Remove("/etc/hostname"); err != nil && !os.IsNotExist(err) {
-		log.Fatalf("failed to remove /etc/hostname: %v", err)
+func replaceHostname(hostname string) error {
+	if hostname == "" {
+		return fmt.Errorf("hostname is empty in /etc/nixos/system.conf")
 	}
-	f, err := os.OpenFile("/etc/hostname", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	current, err := os.Hostname()
 	if err != nil {
-		log.Fatalf("failed to create /etc/hostname: %v", err)
+		return fmt.Errorf("read current hostname: %w", err)
 	}
-	defer f.Close()
+	if current != hostname {
+		if err := syscall.Sethostname([]byte(hostname)); err != nil {
+			return fmt.Errorf("set hostname: %w", err)
+		}
+	}
 
-	if _, err := f.WriteString(hostname + "\n"); err != nil {
-		log.Fatalf("failed to write hostname: %v", err)
+	data, err := os.ReadFile("/etc/hostname")
+	if err == nil && string(data) == hostname+"\n" {
+		return nil
+	}
+	// NixOS may manage this file as a symlink into the read-only Nix store.
+	if err := os.Remove("/etc/hostname"); err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("remove /etc/hostname: %w", err)
+	}
+	if err := os.WriteFile("/etc/hostname", []byte(hostname+"\n"), 0644); err != nil {
+		return fmt.Errorf("write /etc/hostname: %w", err)
+	}
+	return nil
+}
+
+func syncHostname() {
+	sysConf, err := readSystemConf()
+	if err != nil {
+		log.Printf("Hostname sync: %v", err)
+		return
+	}
+	if err := replaceHostname(sysConf.Hostname); err != nil {
+		log.Printf("Hostname sync: %v", err)
 	}
 }
 
@@ -130,6 +156,15 @@ func main() {
 
 	baseURL := getPollBaseURL()
 
+	syncHostname()
+	go func() {
+		ticker := time.NewTicker(time.Minute)
+		defer ticker.Stop()
+		for range ticker.C {
+			syncHostname()
+		}
+	}()
+
 	waitForNetwork()
 	log.Println("Client started")
 
@@ -140,8 +175,6 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error reading system configuration: %v", err)
 		}
-
-		replaceHostname(sysConf.Hostname)
 
 		branch := run("git", "-C", "/etc/nixos", "rev-parse", "--abbrev-ref", "HEAD")
 		if branch != "master" {
