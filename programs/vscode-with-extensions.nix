@@ -51,9 +51,10 @@ let
 
       PYTHON="${pythonEnv}/bin/python3.13"
 
-      # Get site-packages of the pythonEnv
-      EXTRA_PATHS="$($PYTHON - <<'EOF'
-import site, json
+      EXTRA_PATHS="$("$PYTHON" - <<'EOF'
+import json
+import site
+
 print(json.dumps(site.getsitepackages()))
 EOF
 )"
@@ -78,7 +79,8 @@ EOF
   "python.defaultInterpreterPath": "$PYTHON",
   "python.analysis.extraPaths": $EXTRA_PATHS,
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.typeCheckingMode": "basic"
+  "python.analysis.typeCheckingMode": "basic",
+  "ruff.lint.ignore": ["F403", "F405"]
 }
 EOF
       else
@@ -86,7 +88,10 @@ EOF
           --arg interp "$PYTHON" \
           --argjson paths "$EXTRA_PATHS" \
           '.["python.defaultInterpreterPath"]=$interp
-           | .["python.analysis.extraPaths"]=$paths' \
+          | .["python.analysis.extraPaths"]=$paths
+          | .["ruff.lint.ignore"]=(
+              ((.["ruff.lint.ignore"] // []) + ["F403", "F405"]) | unique
+            )' \
           "$SETTINGS_FILE" > "$SETTINGS_FILE.tmp" \
           && mv "$SETTINGS_FILE.tmp" "$SETTINGS_FILE"
       fi
@@ -113,9 +118,21 @@ runCommand "${wrappedPkgName}-with-extensions-${wrappedPkgVersion}"
     mkdir -p "$out/share/pixmaps"
 
     ln -sT "${vscode}/share/pixmaps/vs${executableName}.png" "$out/share/pixmaps/vs${executableName}.png"
-    ln -sT "${vscode}/share/applications/${executableName}.desktop" "$out/share/applications/${executableName}.desktop"
-    ln -sT "${vscode}/share/applications/${executableName}-url-handler.desktop" "$out/share/applications/${executableName}-url-handler.desktop"
 
-    makeWrapper "${vscode}/bin/${executableName}" "$out/bin/${executableName}" --run "bash ${wrapperScript}" ${extensionsFlag}
+    for desktop in "${vscode}"/share/applications/*.desktop; do
+      target="$out/share/applications/$(basename "$desktop")"
+      cp "$desktop" "$target"
 
+      sed -i -E \
+        "s|^Exec=[^ ]+|Exec=$out/bin/${executableName}|" \
+        "$target"
+    done
+
+    makeWrapper "${vscode}/bin/${executableName}" "$out/bin/${executableName}" \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
+        pkgs.ncurses5
+        pkgs.stdenv.cc.cc.lib
+      ]}" \
+      --run "bash ${wrapperScript}" \
+      ${extensionsFlag}
   ''

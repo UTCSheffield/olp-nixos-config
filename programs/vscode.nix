@@ -1,6 +1,14 @@
 { self, config, pkgs, ... }:
 
 {
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      ncurses5
+      stdenv.cc.cc.lib
+    ];
+  };
+
   environment.systemPackages = with pkgs; [
     ((pkgs.callPackage ./vscode-with-extensions.nix { inherit self; }).override {
       vscode = pkgs.vscode;
@@ -30,7 +38,6 @@
         # ── Formatting / Web ─────────────────────────
         esbenp.prettier-vscode
         dbaeumer.vscode-eslint
-        ms-python.flake8
         humao.rest-client
         ritwickdey.liveserver
 
@@ -46,6 +53,19 @@
 
         # ── Misc Nice-to-have ────────────────────────
         johnpapa.vscode-peacock
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "vexcode";
+          publisher = "VEXRobotics";
+          version = "0.8.2026020401";
+          sha256 = "5hyFx6tTrBJ9dY/fUjkBja9S+i6Tksz3fPCdtT0qDqU=";
+        }
+        {
+          name = "vexfeedback";
+          publisher = "VEXRobotics";
+          version = "0.2.9";
+          sha256 = "0HwkH/ryPhV04zB3wxZ7uSV5ZPJBX4d3KcdsyWdukeE=";
+        }
       ];
     })
   ];

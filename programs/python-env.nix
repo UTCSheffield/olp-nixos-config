@@ -18,7 +18,6 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     nicegui
 
     # ── QOL ────────────────────────────────────
-    flake8
     rich
     typer
     click
