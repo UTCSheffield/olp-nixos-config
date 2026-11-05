@@ -16,7 +16,7 @@
         # ── Python ───────────────────────────────────
         ms-python.python
         ms-python.debugpy
-        ms-python.vscode-python-envs
+        # ms-python.vscode-python-envs #want this but it might come with ms-python.python in an update
         ms-python.vscode-pylance
         ms-toolsai.jupyter
         charliermarsh.ruff
