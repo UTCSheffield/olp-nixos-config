@@ -15,6 +15,8 @@
       vscodeExtensions = with pkgs.vscode-extensions; [
         # ── Python ───────────────────────────────────
         ms-python.python
+        ms-python.debugpy
+        ms-python.vscode-python-envs
         ms-python.vscode-pylance
         ms-toolsai.jupyter
         charliermarsh.ruff
@@ -53,6 +55,7 @@
 
         # ── Misc Nice-to-have ────────────────────────
         johnpapa.vscode-peacock
+        antyos.openscad
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "vexcode";
