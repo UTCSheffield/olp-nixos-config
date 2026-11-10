@@ -67,6 +67,10 @@
     adhoc-exam-timer.configuration = {
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/adhoc.html";
     };  
+
+    raidl-health-tech.configuration = {
+        kiosk.url = "https://raidl-health-tech.up.railway.app/";
+    };  
   };
 
   system.stateVersion = "25.11";
