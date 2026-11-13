@@ -16,6 +16,7 @@ python313.withPackages (python-pkgs: with python-pkgs // pythonPkgs; [
     streamlit
     streamlit_stl
     nicegui
+    cairosvg
 
     # ── QOL ────────────────────────────────────
     rich
