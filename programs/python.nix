@@ -6,5 +6,7 @@ in
 {
   environment.systemPackages = with pkgs; [
     pythonEnv
+    cairo
+    cairosvg
   ];
 }
