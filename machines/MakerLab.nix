@@ -49,8 +49,6 @@
     bambu-studio
   ];
 
-  environment.variables.SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt"
-
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.xserver = {
