@@ -49,6 +49,8 @@
     bambu-studio
   ];
 
+  # environment.variables.SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt" # This makes the babu certs work
+
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.xserver = {
