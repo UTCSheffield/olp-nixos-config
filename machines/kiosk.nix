@@ -44,17 +44,17 @@
   };
 
   specialisation = {
-    art.configuration = {
-        kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/";
-    };
+    #art.configuration = {
+    #    kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/";
+    #};
 
     sprig-gallery.configuration = {
         kiosk.url = "https://utcsheffield.github.io/sprig-arcade/";
     };
 
-    sprig-random.configuration = {
-        kiosk.url = "https://utcsheffield.github.io/sprig-arcade/random/";
-    };
+    #sprig-random.configuration = {
+    #    kiosk.url = "https://utcsheffield.github.io/sprig-arcade/random/";
+    #};
 
     exam-timer.configuration = {
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html";
@@ -68,9 +68,14 @@
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/adhoc.html";
     };  
 
-    raidl-health-tech.configuration = {
-        kiosk.url = "https://raidl-health-tech.up.railway.app/";
+    #raidl-health-tech.configuration = {
+    #    kiosk.url = "https://raidl-health-tech.up.railway.app/";
+    #};
+
+    kiosk-page.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/kiosk.html";
     };  
+    
   };
 
   system.stateVersion = "25.11";
