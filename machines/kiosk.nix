@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+vening{ pkgs, config, lib, ... }:
 
 {
   imports = [
@@ -72,8 +72,8 @@
     #    kiosk.url = "https://raidl-health-tech.up.railway.app/";
     #};
 
-    kiosk-page.configuration = {
-        kiosk.url = "https://utcsheffield.github.io/kiosk.html";
+    computing-open-evening.configuration = {
+        kiosk.url = "https://utcsheffield.github.io/open-evening.html";
     };  
     
   };
