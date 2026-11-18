@@ -112,6 +112,7 @@
             echo "===================================="
         
             chromium \
+                --user-data-dir=/var/lib/chromium-kiosk \
                 --app=${config.kiosk.url} \
                 --incognito \
                 --start-maximized \
@@ -132,14 +133,8 @@
             echo "===================================="
         
             echo ""
-            echo "[DEBUG] X session will remain alive."
             echo "[DEBUG] Log: /tmp/xinit-debug.log"
             echo ""
-        
-            # Keep X alive so errors can be inspected
-            while true; do
-                sleep 3600
-            done
         '';
 
         users.users.kioskuser = {
