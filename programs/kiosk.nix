@@ -23,7 +23,7 @@
         
         services.xserver.enable = true;
 
-        #services.xserver.displayManager.startx.enable = true;
+        services.xserver.displayManager.startx.enable = true;
         services.xserver.windowManager.openbox.enable = true;
 
         systemd.services.mirror = {
