@@ -1,4 +1,4 @@
-vening{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 {
   imports = [
