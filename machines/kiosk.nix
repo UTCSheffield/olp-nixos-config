@@ -69,7 +69,7 @@
 
   systemd.services.update-tool = lib.mkIf (config.specialisation != {}) (
     lib.mkForce {
-      enable = true;
+      enable = false;
       wantedBy = [ "multi-user.target" ];
       after = [ "multi-user.target" ];
       requires = [ "network.target" ];
