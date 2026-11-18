@@ -23,7 +23,7 @@
         
         services.xserver.enable = true;
 
-        services.xserver.displayManager.startx.enable = true;
+        #services.xserver.displayManager.startx.enable = true;
         services.xserver.windowManager.openbox.enable = true;
 
         systemd.services.mirror = {
@@ -52,8 +52,8 @@
             description = "Mirror Screens Timer";
             wantedBy = ["timers.target"];
             timerConfig = {
-            OnCalendar = "*:*:00/5";
-            AccuracySec = "1";
+                OnCalendar = "*:*:00/15";
+                AccuracySec = "1";
             };
         };
 
