@@ -44,17 +44,9 @@ vening{ pkgs, config, lib, ... }:
   };
 
   specialisation = {
-    #art.configuration = {
-    #    kiosk.url = "https://utcsheffield.github.io/olp-hydra-art/";
-    #};
-
     sprig-gallery.configuration = {
         kiosk.url = "https://utcsheffield.github.io/sprig-arcade/";
     };
-
-    #sprig-random.configuration = {
-    #    kiosk.url = "https://utcsheffield.github.io/sprig-arcade/random/";
-    #};
 
     exam-timer.configuration = {
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/timer.html";
@@ -68,14 +60,9 @@ vening{ pkgs, config, lib, ... }:
         kiosk.url = "https://utcsheffield.github.io/UTC-Exam-Timer-2/web/adhoc.html";
     };  
 
-    #raidl-health-tech.configuration = {
-    #    kiosk.url = "https://raidl-health-tech.up.railway.app/";
-    #};
-
     computing-open-evening.configuration = {
         kiosk.url = "https://utcsheffield.github.io/open-evening.html";
     };  
-    
   };
 
   system.stateVersion = "25.11";
