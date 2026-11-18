@@ -105,6 +105,14 @@
             else
                 echo "[ERROR] Openbox process has exited"
             fi
+
+            echo "[CHROMIUM] Cleaning stale profile locks..."
+        
+            PROFILE="/var/lib/chromium-kiosk"
+        
+            rm -f "$PROFILE/SingletonLock"
+            rm -f "$PROFILE/SingletonSocket"
+            rm -f "$PROFILE/SingletonCookie"
         
             echo "===================================="
             echo "[DEBUG] Launching Chromium..."
