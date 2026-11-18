@@ -104,6 +104,7 @@
         users.users.kioskuser = {
             isNormalUser = true;
             home = "/home/kioskuser";
+            extraGroups = [ "video" "input" ];
         };
 
         system.stateVersion = "25.11";
