@@ -78,27 +78,68 @@
         '';
 
         environment.etc."X11/xinit/xinitrc".text = ''
+            # Log everything to a file and the X session output
+            exec > >(tee -a /tmp/xinit-debug.log) 2>&1
+        
+            echo "===================================="
+            echo " XINIT DEBUG START: $(date)"
+            echo "===================================="
+        
+            echo "[DEBUG] Disabling screen blanking..."
             xset s off
             xset -dpms
             xset s noblank
-
+        
             sleep 2
-
-            # start window manager FIRST
+        
+            echo "[DEBUG] Starting Openbox..."
             openbox-session &
+            OPENBOX_PID=$!
+        
+            echo "[DEBUG] Openbox PID: $OPENBOX_PID"
             sleep 2
-
-            # launch Chromium in APP MODE (NOT kiosk)
+        
+            echo "[DEBUG] Checking Openbox..."
+            if kill -0 $OPENBOX_PID 2>/dev/null; then
+                echo "[OK] Openbox is running"
+            else
+                echo "[ERROR] Openbox process has exited"
+            fi
+        
+            echo "===================================="
+            echo "[DEBUG] Launching Chromium..."
+            echo "[DEBUG] URL: ${config.kiosk.url}"
+            echo "===================================="
+        
             chromium \
-            --app=${config.kiosk.url} \
-            --incognito \
-            --start-maximized \
-            --no-first-run \
-            --disable-pinch \
-            --disable-infobars \
-            --noerrdialogs \
-            --disable-session-crashed-bubble \
-            --ozone-platform=x11
+                --app=${config.kiosk.url} \
+                --incognito \
+                --start-maximized \
+                --no-first-run \
+                --disable-pinch \
+                --disable-infobars \
+                --noerrdialogs \
+                --disable-session-crashed-bubble \
+                --ozone-platform=x11
+        
+            CHROMIUM_EXIT=$?
+        
+            echo ""
+            echo "===================================="
+            echo "[ERROR/EXIT] Chromium terminated"
+            echo "[EXIT CODE] $CHROMIUM_EXIT"
+            echo "[TIME] $(date)"
+            echo "===================================="
+        
+            echo ""
+            echo "[DEBUG] X session will remain alive."
+            echo "[DEBUG] Log: /tmp/xinit-debug.log"
+            echo ""
+        
+            # Keep X alive so errors can be inspected
+            while true; do
+                sleep 3600
+            done
         '';
 
         users.users.kioskuser = {
