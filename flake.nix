@@ -52,22 +52,6 @@
             ./machines/kiosk.nix
           ];
         };
-        rpi = nixpkgs.lib.nixosSystem rec {
-          system = "aarch64-linux";
-          specialArgs = attrs;
-          modules = [
-            "${nixpkgs}/nixos/modules/profiles/minimal.nix"
-            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-            ./machines/RaspberryPi.nix
-            ({ pkgs, ... }:
-            {
-              disabledModules = [
-                "${nixpkgs}/nixos/modules/profiles/all-hardware.nix"
-                "${nixpkgs}/nixos/modules/profiles/base.nix"
-              ];
-            })
-          ];
-        };
         iso = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = attrs;
@@ -110,9 +94,6 @@
           in
           lib.optionalAttrs (system == "x86_64-linux") {
             iso = self.nixosConfigurations.iso.config.system.build.isoImage;
-          }
-          // lib.optionalAttrs (system == "aarch64-linux") {
-            rpi = self.nixosConfigurations.rpi.config.system.build.sdImage;
           }
         );
       };

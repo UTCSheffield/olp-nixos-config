@@ -1,6 +1,6 @@
 # OLP NixOS Configuration
 
-NixOS configurations for UTC Sheffield OLP's MakerLab computers, Raspberry Pis, exam timers, and browser displays. The repository defines installed software, desktop settings, machine profiles, installation media, and a client for distributing configuration updates.
+NixOS configurations for UTC Sheffield OLP's MakerLab computers, exam timers, and browser displays. The repository defines installed software, desktop settings, machine profiles, installation media, and a client for distributing configuration updates.
 
 The flake uses the `nixos-25.11` branch of Nixpkgs. Exact dependency revisions are recorded in `flake.lock`.
 
@@ -14,10 +14,9 @@ Use these names when the installer asks for a configuration or when running `nix
 | `makerlab-us` | x86_64 Linux | MakerLab desktop with a US keyboard layout. |
 | `exam-timer` | x86_64 Linux | Automatically opens the UTC Exam Timer in Chromium app mode and periodically mirrors connected displays. |
 | `kiosk` | x86_64 Linux | Base configuration with boot specialisations for different browser displays. |
-| `rpi` | aarch64 Linux | Raspberry Pi SD image with XFCE, Firefox, Python, and Thonny. |
 | `iso` | x86_64 Linux | Installation ISO with networking prompts and the installation launcher. |
 
-The PC profiles use UEFI/systemd-boot and filesystems identified by the labels `boot`, `nixos`, and `swap`. The Raspberry Pi uses a separate SD image build.
+The PC profiles use UEFI/systemd-boot and filesystems identified by the labels `boot`, `nixos`, and `swap`.
 
 ## Repository layout
 
@@ -26,7 +25,7 @@ The PC profiles use UEFI/systemd-boot and filesystems identified by the labels `
 | `flake.nix` | Machine configurations, package outputs, and Hydra build jobs. |
 | `flake.lock` | Pinned input revisions. |
 | `default.nix` | Discovers custom package definitions and exports flat and nested package sets. |
-| `machines/` | Desktop, kiosk, exam timer, Raspberry Pi, and installer profiles. |
+| `machines/` | Desktop, kiosk, exam timer, and installer profiles. |
 | `hardware/generic.nix` | Shared PC boot, filesystem, and hardware settings. |
 | `programs/` | Reusable application and service configuration. |
 | `programs/packages/` | Custom Nix packages, including additional Python libraries. |
@@ -94,7 +93,7 @@ Replace `makerlab` with the machine's profile. Review any local changes before p
 
 The `makerlab`, `makerlab-us`, `exam-timer`, and `kiosk` profiles enable `update-tool`. It reads the desired commit from `https://nixos-updates.archiesbytes.xyz/poll`, compares it with the local checkout, and runs `git pull` followed by `nixos-rebuild switch` when they differ.
 
-The client currently only updates checkouts on `master`. A machine installed from another branch requires manual updates. The Raspberry Pi profile does not currently import the update service.
+The client currently only updates checkouts on `master`. A machine installed from another branch requires manual updates.
 
 Check the service and its logs with:
 
@@ -157,7 +156,7 @@ Rebuild the `kiosk` profile and reboot to select the new entry. Boot specialisat
 - Change VS Code extensions in `programs/vscode.nix`.
 - Change Firefox policies in `programs/firefox.nix`.
 
-Keep machine passwords and other secrets out of new commits. The Raspberry Pi image currently creates a `pi` account with initial password `raspberry`; change it after first boot. MakerLab's account password is defined by a hash in its machine profile; the installer's password prompt sets the root password separately.
+Keep machine passwords and other secrets out of new commits. MakerLab's account password is defined by a hash in its machine profile; the installer's password prompt sets the root password separately.
 
 ### Updating dependencies
 
@@ -192,14 +191,6 @@ nix build .#nixosConfigurations.iso.config.system.build.isoImage --print-build-l
 ```
 
 The ISO is placed under `result/iso/`.
-
-Build the Raspberry Pi SD image on an aarch64 Linux builder, or with an appropriately configured remote/emulated builder:
-
-```bash
-nix build .#nixosConfigurations.rpi.config.system.build.sdImage --print-build-logs
-```
-
-Image output is placed under `result/sd-image/`. Flash the generated image to an SD card using an image-writing tool, decompressing it first if the tool requires it.
 
 GitHub Actions runs `nix flake check` for pushes to `master` and pull requests. A separate workflow builds installation ISOs for its configured path filters or manual dispatch, and publishes a release for qualifying pushes to `master`.
 
